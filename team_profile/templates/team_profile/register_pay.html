@@ -1,0 +1,69 @@
+{% extends 'team_profile/team_base.html' %}
+{% block extra_styles %}
+<style>
+    h2 {
+        color: white;
+        display: block;
+        padding-bottom: 15px;
+    }
+    .pay {
+        background-color: #0057e7;
+        cursor: pointer;
+        color: #fff;
+        padding: 7px;
+        border: 0;
+        display: block;
+        margin: 25px auto 0 auto;
+        width: 120px;
+        border-radius: 5px;
+        position: relative;
+    }
+    .join:hover {
+        box-shadow: 0px 3px 2px #0092e7 inset;
+    }
+    .container,
+    .container-register {
+        background-color: rgba(31, 32, 35, 0.8);
+        padding: 20px;
+        border-radius: 20px;
+        height: auto;
+        align-content: flex-start;
+        justify-self: center;
+        width:367px;
+        justify-content:center;
+        display:flex;
+        flex-wrap:wrap;
+        flex-direction:column;
+    }
+    .container{
+        margin-top:80px;
+    }
+    .container-register{
+        margin-top:20px;
+    }
+    div {
+        color: #fff;
+    }
+    input {
+        background: rgba(128, 128, 128, 0.305);
+        border-radius: 25px;
+        border: 0;
+        color: #fff;
+    }
+    input:focus {
+        background-color: rgba(118, 112, 112, 0.519);
+    }
+    
+</style>
+{% endblock %}
+{% block content %}
+<div class="container">
+  <h2>Payment for Team: {{ team.name }}</h2>
+  <p>Total members: {{ team.members.count }}</p>
+  <p>Amount to pay: ₹2000</p>
+  <form method="post">
+    {% csrf_token %}
+    <button class="pay" type="submit">Pay and Register</button>
+  </form>
+</div>
+{% endblock %}

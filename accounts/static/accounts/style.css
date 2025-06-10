@@ -1,0 +1,463 @@
+/* accounts/style.css - Themed for Sim2Real Login/Signup (Professional Version) */
+
+/* Define CSS Variables for consistent theming */
+:root {
+    --primary-blue: #007bff;
+    --accent-purple: #6a1a9a; /* Deeper, more subdued purple for a professional look */
+    --light-purple: #8e2de2; /* Slightly brighter for accents */
+    --dark-bg-color-1: #0a0a1a; /* Darkest base color */
+    --dark-bg-color-2: #150f2e; /* Slightly lighter dark color */
+    --card-bg: rgba(20, 18, 38, 0.98); /* Near opaque, deep dark for card */
+    --border-color: rgba(255, 255, 255, 0.1); /* Very subtle border */
+    --input-bg: rgba(255, 255, 255, 0.03); /* Extremely subtle transparent background for inputs */
+    --input-focus-bg: rgba(255, 255, 255, 0.06); /* Slightly lighter on focus */
+    --text-color: #e9ecef; /* Near white for main text (off-white for professionalism) */
+    --text-light: #adb5bd; /* Slightly dimmer for labels/secondary text */
+    --glow-color: #8e2de2; /* Main glow color (using the slightly brighter accent) */
+}
+
+body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* Main body background: animated gradient */
+    background: linear-gradient(-45deg, var(--dark-bg-color-1), var(--dark-bg-color-2), var(--dark-bg-color-1), var(--dark-bg-color-2));
+    background-size: 400% 400%;
+    animation: gradientAnimation 20s ease infinite; /* Slower, smoother animation */
+    font-family: 'Segoe UI', Arial, sans-serif; /* Consistent font */
+    overflow: hidden; /* Hide overflow to prevent scrollbars */
+    position: relative; /* Needed for ::before pseudo-element */
+    color: var(--text-color); /* Default text color */
+}
+
+/* Keyframes for the body's animated gradient background */
+@keyframes gradientAnimation {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Pseudo-element for blurred NITK.webp background image */
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("/static/assets/NITK.webp"); /* The NITK image */
+    background-size: cover;
+    background-position: center center;
+    /* Adjusted filter and opacity for a more visible, yet professional background */
+    filter: grayscale(40%) brightness(0.6) blur(4px); /* Less grayscale, brighter, slightly less blur */
+    opacity: 0.35; /* More visible visibility */
+    z-index: -2; /* Behind everything else */
+    pointer-events: none; /* Ensure it doesn't interfere with interaction */
+    animation: imageEffect 70s linear infinite alternate; /* Slow, subtle animation for the image itself */
+    will-change: transform, filter; /* Optimize for animation */
+}
+
+@keyframes imageEffect {
+    0% {
+        transform: scale(1) translate(0, 0);
+        filter: grayscale(40%) brightness(0.6) blur(4px);
+    }
+    25% {
+        transform: scale(1.02) translate(1%, 1%);
+        filter: grayscale(45%) brightness(0.58) blur(5px);
+    }
+    50% {
+        transform: scale(1.04) translate(0, -1%);
+        filter: grayscale(50%) brightness(0.55) blur(6px);
+    }
+    75% {
+        transform: scale(1.02) translate(-1%, 1%);
+        filter: grayscale(45%) brightness(0.58) blur(5px);
+    }
+    100% {
+        transform: scale(1) translate(0, 0);
+        filter: grayscale(40%) brightness(0.6) blur(4px);
+    }
+}
+
+
+/* General reset and utility styles */
+*, :after, :before { box-sizing: border-box }
+.clearfix:after,.clearfix:before { content:''; display:table }
+.clearfix:after { clear:both; display: block }
+a { color:inherit; text-decoration: none; }
+
+/* Dark overlay for the background image, acting as a visual filter */
+/* This will go on top of the image (body::before) and the main body gradient */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    /* Slightly less opaque to allow the image to show through more */
+    background: rgba(0, 0, 0, 0.4); /* Reduced opacity for more background visibility */
+    backdrop-filter: blur(1px); /* Even lighter blur, just to soften slightly */
+    -webkit-backdrop-filter: blur(1px);
+    z-index: -1; /* Above body::before, below login-wrap */
+    pointer-events: none; /* Ensure it doesn't interfere with interaction */
+}
+
+.login-wrap {
+    width: 100%;
+    margin: auto;
+    max-width: 440px; /* Narrower for a premium, focused feel */
+    min-height: 600px; /* Adjusted height */
+    position: relative;
+    background: var(--card-bg); /* Deep, near opaque card background */
+    border-radius: 12px; /* Less rounded for a sharper, professional look */
+    /* Glassmorphism effect */
+    backdrop-filter: blur(25px); /* Strong blur for clear separation */
+    -webkit-backdrop-filter: blur(25px);
+    border: 1px solid var(--border-color); /* Very subtle border */
+    /* Professional, diffused shadow */
+    box-shadow: 
+        0 10px 30px rgba(0,0,0,0.4), /* Primary shadow */
+        0 0 15px rgba(var(--light-purple), 0.2); /* Very subtle purple tint glow */
+    z-index: 1; /* Above the overlay */
+    padding: 40px; /* Increased padding inside the card for more breathing room */
+    overflow: hidden; /* Ensures shadows/borders respect border-radius */
+    display: flex; /* Use flex for internal layout */
+    flex-direction: column;
+    justify-content: center; /* Center content vertically if space allows */
+}
+
+.login-html {
+    width: 100%;
+    height: 100%;
+    position: relative; /* Changed from absolute for better flow within flex container */
+    padding: 0; /* Remove internal padding, handled by .login-wrap */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.button-resend {
+    background: none;
+    color: var(--text-light);
+    border: none;
+    cursor: pointer;
+    padding-bottom: 8px;
+    font-size: 0.85em;
+    transition: color 0.2s ease, text-decoration 0.2s ease;
+}
+.button-resend:hover {
+    text-decoration: underline;
+    color: var(--light-purple);
+}
+.button {
+    cursor: pointer;
+}
+
+.page-type {
+    color: var(--text-color);
+    font-size: 2.5em; /* Slightly smaller for professionalism */
+    text-align: center;
+    width: 100%;
+    text-transform: uppercase;
+    padding-bottom: 40px; /* More spacing */
+    letter-spacing: 3px; /* Refined spacing */
+    font-weight: 700; /* Standard bold */
+    text-shadow: none; /* Remove text shadow for cleaner look */
+}
+
+.login-form .group {
+    margin-bottom: 28px; /* Consistent spacing */
+}
+.login-form .group .label {
+    width: 100%;
+    color: var(--text-light);
+    display: block;
+    font-weight: 600;
+    margin-bottom: 10px; /* Consistent spacing */
+    font-size: 14px; /* Slightly smaller for professionalism */
+    opacity: 0.9;
+}
+
+.login-form .group .input {
+    width: 100%;
+    color: var(--text-color);
+    display: block;
+    font-weight: 500;
+    border: 1px solid var(--border-color);
+    padding: 14px 18px; /* Consistent padding */
+    border-radius: 8px; /* Slightly less rounded for a professional look */
+    background: var(--input-bg);
+    outline: none;
+    transition: all 0.3s ease;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.2); /* Very subtle inner shadow */
+}
+
+.login-form .group .input:focus {
+    border-color: var(--accent-purple);
+    box-shadow: 0 0 0 2px rgba(var(--accent-purple), 0.3), inset 0 1px 4px rgba(0,0,0,0.3); /* Subtle outer glow and inner shadow */
+    background-color: var(--input-focus-bg);
+}
+
+.login-form .group .button {
+    border: none;
+    padding: 15px 25px; /* Adjusted padding */
+    border-radius: 8px; /* Consistent with input fields */
+    text-align: center;
+    font-weight: 600; /* Bolder for buttons */
+    font-size: 1.05em; /* Slightly smaller for professionalism */
+    color: white;
+    /* Purple gradient background, matching btn-glow */
+    background: linear-gradient(90deg, var(--accent-purple), var(--light-purple));
+    box-shadow: 0 4px 15px rgba(var(--light-purple), 0.4); /* Softer initial glow */
+    transition: all 0.3s ease; /* Faster transition */
+    background-size: 200% auto;
+    letter-spacing: 1px; /* Subtle letter spacing */
+    text-transform: uppercase;
+    cursor: pointer;
+}
+
+.login-form .group .button:hover {
+    background-position: right center;
+    box-shadow: 0 0 20px rgba(var(--light-purple), 0.7), 
+                0 0 30px rgba(var(--accent-purple), 0.5); /* Stronger but still professional glow */
+    transform: translateY(-2px) scale(1.005); /* More subtle lift and scale */
+}
+
+.password-field {
+    position: relative;
+}
+.password-field .toggle-password {
+    position: absolute;
+    top: 50%;
+    right: 15px;
+    transform: translateY(-50%);
+    color: var(--text-light);
+    font-size: 16px; /* Standard icon size */
+    cursor: pointer;
+    transition: color 0.3s ease;
+    display: block;
+}
+.password-field .toggle-password:hover {
+    color: var(--light-purple);
+    text-shadow: none; /* Remove subtle glow, rely on color change */
+}
+
+/* Django Messages Styling */
+.messages {
+    list-style: none;
+    padding: 12px 18px; /* Refined padding */
+    margin: 20px auto;
+    border-radius: 8px;
+    font-weight: 500; /* Slightly less bold */
+    color: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 0.4s ease-out; /* Faster fade in */
+    backdrop-filter: blur(5px); /* Consistent blur */
+    -webkit-backdrop-filter: blur(5px);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Specific message types */
+.messages.error-message, .messages li.error {
+    background-color: rgba(220, 53, 69, 0.85); /* Slightly less opaque */
+    border: 1px solid #dc3545;
+}
+.messages li.success {
+    background-color: rgba(40, 167, 69, 0.85);
+    border: 1px solid #28a745;
+}
+.messages li.info {
+    background-color: rgba(23, 162, 184, 0.85);
+    border: 1px solid #17a2b8;
+}
+.messages li.warning {
+    background-color: rgba(255, 193, 7, 0.85);
+    border: 1px solid #ffc107;
+}
+
+.hr {
+    height: 1px; /* Thinner line */
+    margin: 45px 0 35px 0; /* Adjusted margin */
+    background: rgba(255, 255, 255, 0.08); /* Very subtle, static line */
+    position: relative;
+    overflow: hidden;
+    border-radius: 0.5px;
+}
+/* Removed hr::before animation for a cleaner, more professional look */
+
+
+.foot-lnk {
+    text-align: center;
+    margin-top: 25px; /* Increased margin above links */
+    margin-bottom: 10px;
+}
+.foot-lnk a {
+    color: var(--text-light);
+    font-size: 0.9em;
+    transition: color 0.3s ease;
+}
+.foot-lnk a:hover {
+    color: var(--light-purple);
+    text-decoration: underline;
+    text-shadow: none; /* Removed text-shadow on hover for cleaner look */
+}
+
+/* Media Queries for Responsiveness */
+/* Extra Large devices (desktops, 1200px and up) - Current desktop styles should apply */
+
+/* Large devices (laptops/desktops, 992px and up) */
+@media screen and (max-width: 1024px) {
+    .login-wrap {
+        max-width: 400px;
+        min-height: 550px;
+        padding: 35px;
+    }
+    .page-type {
+        font-size: 2.2em;
+        padding-bottom: 35px;
+        letter-spacing: 2.5px;
+    }
+    .login-form .group {
+        margin-bottom: 22px;
+    }
+    .login-form .group .label {
+        font-size: 13px;
+    }
+    .login-form .group .input,
+    .login-form .group .button {
+        padding: 12px 16px;
+        font-size: 1em;
+    }
+    .password-field .toggle-password {
+        font-size: 16px;
+    }
+    .hr {
+        margin: 40px 0 30px 0;
+    }
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media screen and (max-width: 768px) {
+    .login-wrap {
+        max-width: 340px;
+        min-height: 500px;
+        border-radius: 10px;
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
+        box-shadow: 
+            0 8px 25px rgba(0,0,0,.35), 
+            0 0 10px rgba(var(--light-purple), 0.15);
+        padding: 30px;
+    }
+    .page-type {
+        font-size: 2em;
+        padding-bottom: 30px;
+        letter-spacing: 2px;
+    }
+    .login-form .group {
+        margin-bottom: 18px;
+    }
+    .login-form .group .label {
+        font-size: 12px;
+        margin-bottom: 6px;
+    }
+    .login-form .group .input,
+    .login-form .group .button {
+        padding: 10px 14px;
+        font-size: 0.9em;
+        border-radius: 7px;
+    }
+    .password-field .toggle-password {
+        font-size: 14px;
+        right: 12px;
+    }
+    .hr {
+        margin: 30px 0 20px 0;
+    }
+    .messages {
+        padding: 10px 15px;
+        margin: 15px auto;
+        font-size: 0.8em;
+    }
+    .foot-lnk {
+        margin-top: 20px;
+    }
+    .foot-lnk a {
+        font-size: 0.8em;
+    }
+}
+
+/* Small devices (phones, 576px and down) */
+@media screen and (max-width: 576px) {
+    body {
+        height: auto;
+        padding-top: 0;
+        align-items: flex-start;
+        animation: none; /* Disable gradient animation for mobile */
+    }
+    body::before { /* Disable image animation on mobile */
+        animation: none;
+        filter: grayscale(60%) brightness(0.5) blur(5px); /* Set a static blur for mobile */
+        opacity: 0.3; /* Slightly more visible static image on mobile */
+    }
+    .login-wrap {
+        width: 100vw;
+        min-height: 100vh;
+        border-radius: 0;
+        box-shadow: none;
+        max-width: none;
+        margin: 0;
+        border: none;
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        padding: 0; /* Remove internal padding on mobile full screen */
+    }
+    .login-html {
+        padding: 25px 15px 15px 15px; /* Minimal padding on small phones */
+        height: auto;
+    }
+    .page-type {
+        font-size: 1.4em; /* Smaller font for very small screens */
+        padding-bottom: 15px;
+        letter-spacing: 1px;
+    }
+    .login-form .group {
+        margin-bottom: 12px;
+    }
+    .login-form .group .label {
+        font-size: 11px;
+        margin-bottom: 3px;
+    }
+    .login-form .group .input,
+    .login-form .group .button {
+        padding: 7px 10px;
+        font-size: 0.85em;
+        border-radius: 5px;
+    }
+    .password-field .toggle-password {
+        right: 8px;
+        font-size: 12px;
+    }
+    .hr {
+        margin: 20px 0;
+    }
+    .messages {
+        font-size: 0.75em;
+        padding: 7px 10px;
+        margin: 10px auto;
+    }
+    .foot-lnk {
+        margin-top: 15px;
+        margin-bottom: 5px;
+    }
+    .foot-lnk a {
+        font-size: 0.75em;
+    }
+}

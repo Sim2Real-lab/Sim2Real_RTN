@@ -1,0 +1,40 @@
+{%load static%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{%static 'team_profile/style.css'%}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Team</title>
+</head>
+<body>
+    <header>
+      <div class="back"><a href="{%url 'home'%}"><i class="fa fa-home"></i></a></div>
+      <div class="dropdown">
+        <a class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" href="#" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+          <img src="{% static 'assets/default.png' %}" alt="Profile" class="profile-img">
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownUser1">
+            <li><a class="dropdown-item" href="{%url 'profile'%}">My Profile</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+              <form method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+            <button type="submit" class="dropdown-item">Logout</button>
+            </form>
+          </li>
+        </ul> 
+        </div>
+        </header>
+        <div class="overlay"></div>
+        {% if not user.team.exists %}
+           <div class="alert alert-warning text-center mt-4" role="alert">
+    You are not part of any team. <a href="{% url 'create_team' %}">Create</a> or <a href="{% url 'join_team' %}">Join</a> a team.
+  </div>
+        {% endif %}
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

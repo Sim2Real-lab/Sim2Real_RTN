@@ -1,0 +1,264 @@
+{% comment %}
+    landing_page/templates/landing_page/sponsor.html
+    (Content from your original sponsor page HTML)
+{% endcomment %}
+{%load static%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sponsor Us - Sim2Real Robotics Competition</title>
+    {# Use Django's static tag to correctly link your stylesheet for the sponsor page #}
+    <link rel="stylesheet" href="{% static 'landing_page/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+</head>
+<body>
+    {# Navbar for the sponsor page - simplified or full if you replicate main navbar #}
+    <nav class="navbar navbar-expand-lg navbar-dark px-4 fixed-top"> {# Navbar uncommented #}
+        <a class="navbar-brand fw-bold" href="{% url 'landing_page:main_landing_page' %}">🤖 Sim2Real</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavSponsor" aria-controls="navbarNavSponsor" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="group collapse navbar-collapse" id="navbarNavSponsor">
+            <div class="group">
+          <ul class="navbar-nav ms-auto me-3">
+            <li class="nav-item"><a class="nav-link" href="#sponsorship-tiers">Packages</a></li>
+            <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'landing_page:main_landing_page' %}">Back to Main</a></li>
+          </ul>
+        </div>
+        </div>
+    </nav>
+    
+
+    <header class="hero">
+        <div class="container">
+            <h1 data-aos="fade-down">Partner with the Future of Robotics</h1>
+            <p class="subtitle" data-aos="fade-down" data-aos-delay="200">
+                Join us in shaping the next generation of robotics innovators. The Sim2Real Robotics Competition is where cutting-edge simulation meets real-world application.
+            </p>
+            <a href="#sponsorship-tiers" class="cta-button" data-aos="fade-up" data-aos-delay="400">View Sponsorship Packages</a>
+        </div>
+    </header>
+
+    <main> {# No inline style="padding-top: 80px;" #}
+        <section class="why-sponsor">
+            <div class="container">
+                <h2 data-aos="fade-up">Why Sponsor Sim2Real?</h2>
+                <div class="benefits-grid">
+                    <div class="benefit-card" data-aos="fade-up" data-aos-delay="100">
+                        <div class="icon-wrapper"><i class="fas fa-bullseye"></i></div>
+                        <h3>Brand Visibility</h3>
+                        <p>Showcase your brand to a targeted audience of talented students, university faculty, and industry professionals in the robotics and AI space.</p>
+                    </div>
+                    <div class="benefit-card" data-aos="fade-up" data-aos-delay="200">
+                        <div class="icon-wrapper"><i class="fas fa-users"></i></div>
+                        <h3>Recruitment Opportunities</h3>
+                        <p>Connect with and recruit top-tier talent from leading universities. Our participants are the future leaders of the tech industry.</p>
+                    </div>
+                    <div class="benefit-card" data-aos="fade-up" data-aos-delay="300">
+                        <div class="icon-wrapper"><i class="fas fa-lightbulb"></i></div>
+                        <h3>Drive Innovation</h3>
+                        <p>Align your company with the forefront of robotics research and development. Support the translation of simulation breakthroughs into tangible, real-world solutions.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="sponsorship-tiers" class="sponsorship-tiers">
+            <div class="container">
+                <h2 data-aos="fade-up">Sponsorship Packages</h2>
+                <div class="tiers-container">
+                    {# Loop through sponsors here, categorized by tier (assuming this still displays example tiers or actual sponsors) #}
+                        <div class="tier-card" data-aos="zoom-in" data-aos-delay="200">
+                            <div class="tier-header">
+                                <h3>{{ sponsor.tier }}</h3>
+                                <p class="price">$5,000</p>
+                            </div>
+                            <div class="tier-body">
+                                <ul>
+                                    <li><i class="fas fa-check-circle"></i> Logo on marketing materials & website</li>
+                                    <li><i class="fas fa-check-circle"></i> Social media mentions</li>
+                                    <li><i class="fas fa-check-circle"></i> Access to participant resume book</li>
+                                    <li><i class="fas fa-check-circle"></i> Booth at our finals event</li>
+                                </ul>
+                            </div>
+                            <div class="tier-footer">
+                                <a href="#contact" class="cta-button">Become a Gold Sponsor</a>
+                            </div>
+                        </div>
+                    
+                        <div class="tier-card featured" data-aos="zoom-in-up">
+                           <div class="featured-ribbon"><span>Most Popular</span></div>
+                            <div class="tier-header">
+                                <h3>{{ sponsor.tier }}</h3>
+                                <p class="price">$10,000</p>
+                            </div>
+                            <div class="tier-body">
+                                <ul>
+                                    <li><i class="fas fa-check-circle"></i> Keynote speaking opportunity</li>
+                                    <li><i class="fas fa-check-circle"></i> Premium logo placement</li>
+                                    <li><i class="fas fa-check-circle"></i> Dedicated social media campaign</li>
+                                    <li><i class="fas fa-check-circle"></i> Branded challenge in the competition</li>
+                                    <li><i class="fas fa-check-circle"></i> Full access to participant resume book</li>
+                                    <li><i class="fas fa-check-circle"></i> Prime booth at our finals event</li>
+                                </ul>
+                            </div>
+                            <div class="tier-footer">
+                                <a href="#contact" class="cta-button">Become a Platinum Sponsor</a>
+                            </div>
+                        </div>
+
+                        <div class="tier-card" data-aos="zoom-in" data-aos-delay="200">
+                            <div class="tier-header">
+                                <h3>{{ sponsor.tier }}</h3>
+                                <p class="price">$2,500</p>
+                            </div>
+                            <div class="tier-body">
+                                <ul>
+                                    <li><i class="fas fa-check-circle"></i> Logo on our website</li>
+                                    <li><i class="fas fa-check-circle"></i> Grouped social media mention</li>
+                                    <li><i class="fas fa-check-circle"></i> Access to participant resume book</li>
+                                </ul>
+                            </div>
+                            <div class="tier-footer">
+                                <a href="#contact" class="cta-button">Become a Silver Sponsor</a>
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="past-sponsors">
+            <div class="container">
+                <h2 data-aos="fade-up">Our Previous Sponsors</h2>
+                <div class="logos" data-aos="fade-up" data-aos-delay="200">
+                    {% for sponsor in past_sponsors %}
+                        {# Display sponsor name using placeholder if no logo URL #}
+                        <img src="https://via.placeholder.com/150x60?text={{ sponsor.name|urlencode }}" alt="{{ sponsor.name }} Logo">
+                    {% empty %}
+                        <p>No past sponsors to display yet.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+        
+        <section class="testimonials">
+            <div class="container">
+                <h2 data-aos="fade-up">What Our Sponsors Say</h2>
+                <div class="testimonial-grid">
+                    <div class="testimonial-card" data-aos="fade-right" data-aos-delay="100">
+                        <p class="quote">"Sponsoring Sim2Real was a game-changer for our talent acquisition. We connected with the brightest minds in robotics before they even graduated. The ROI was immediate and impressive."</p>
+                        <div class="author">
+                            <p class="name">Jane Doe</p>
+                            <p class="title">Head of Marketing, Niveus Solution</p>
+                        </div>
+                    </div>
+                    <div class="testimonial-card" data-aos="fade-left" data-aos-delay="200">
+                        <p class="quote">"The brand exposure we received was phenomenal. Our logo was front and center in a community that matters to us. We'll definitely be back next year."</p>
+                        <div class="author">
+                            <p class="name">John Smith</p>
+                            <p class="title">CMO, Quest Global</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="gallery">
+            <div class="container">
+                <h2 data-aos="fade-up">Experience the Excitement</h2>
+                <div class="gallery-grid">
+                    <div class="gallery-item" data-aos="zoom-in">
+                        <img src="https://images.unsplash.com/photo-1678559997232-9ab5d4911394?q=80&w=2070&auto=format&fit=crop" alt="Robotics competition in action">
+                    </div>
+                    <div class="gallery-item" data-aos="zoom-in" data-aos-delay="100">
+                        <img src="https://images.unsplash.com/photo-1694291845185-50239a5c88c0?q=80&w=2070&auto=format&fit=crop" alt="Students collaborating on a robot">
+                    </div>
+                    <div class="gallery-item" data-aos="zoom-in" data-aos-delay="200">
+                        <img src="https://images.unsplash.com/photo-1531297484001-80022131f5a1?q=80&w=2020&auto=format&fit=crop" alt="Code on a screen with hardware in background">
+                    </div>
+                    <div class="gallery-item" data-aos="zoom-in" data-aos-delay="300">
+                        <img src="https://images.unsplash.com/photo-1674064687079-9311e9383637?q=80&w=1932&auto=format&fit=fit" alt="Close-up of a robotic arm">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="contact">
+            <div class="container" data-aos="fade-up">
+                <h2>Ready to Make an Impact?</h2>
+                <p>Contact us to discuss sponsorship opportunities or to create a custom package that aligns with your company's goals.</p>
+
+                {# Django Messages for feedback specific to this form #}
+                {% if messages %}
+                    <ul class="messages">
+                        {% for message in messages %}
+                            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+
+                {# Django Contact Form for Sponsor Inquiries #}
+                <form method="post" class="contact-form" action="{% url 'landing_page:sponsor_contact_submit' %}">
+                    {% csrf_token %} {# Django security feature #}
+
+                    <div class="form-group">
+                        <label for="id_name">Your Name:</label>
+                        <input type="text" id="id_name" name="name" required placeholder="John Doe">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="id_organisation">Organization :</label>
+                        <input type="text" id="id_organisation" name="organisation" placeholder="Acme Robotics Corp">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="id_contact">Contact :</label> {# Corrected label for contact number #}
+                        <input type="text" id="id_contact" name="mobile_number" placeholder="9134XX01XX">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="id_contact_email">Contact Email:</label>
+                        <input type="email" id="id_contact_email" name="contact_email" required placeholder="your.email@example.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="id_message">Message:</label>
+                        <textarea id="id_message" name="message" rows="5" required placeholder="Tell us about your sponsorship interest..."></textarea>
+                    </div>
+
+                    <button type="submit" class="cta-button-secondary">Send Message</button>
+                </form>
+
+                <div class="static-contact-details">
+                    <h3>Or Reach Out Directly:</h3>
+                    <p><i class="fas fa-envelope"></i> Email: <a href="mailto:sponsorship@sim2real.com">sponsorship@sim2real.com</a></p>
+                    <p><i class="fas fa-phone"></i> Phone: +1 (555) 123-4567</p>
+                    <div class="social-links">
+                        <a href="#" class="social-icon" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" class="social-icon" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-icon" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer-section text-white pt-5 pb-3 mt-auto">
+        <div class="container">
+            <p>&copy; 2025 Sim2Real Robotics Competition. All Rights Reserved.</p>
+        </div>
+    </footer>
+    
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 800,
+            once: true,
+        });
+    </script>
+</body>
+</html>

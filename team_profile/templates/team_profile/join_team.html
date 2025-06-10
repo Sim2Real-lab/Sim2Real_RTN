@@ -1,0 +1,123 @@
+{% extends 'team_profile/team_base.html' %}
+{% block title %}Join Team{% endblock %}
+{% block extra_styles %}
+<style>
+    h2 {
+        color: white;
+        display: block;
+        padding-bottom: 15px;
+    }
+    .join{
+    background-color:#0057e7;;
+    cursor: pointer;
+    color: #fff;
+    padding: 7px;
+    border: 0;
+    display: block;
+    margin: 25px auto 0 auto; 
+    width: 120px;
+    border-radius: 5px;
+    position: relative;
+    width: 50%;
+    }
+    .join:hover {
+  box-shadow: 0px 3px 2px #0092e7 inset;
+}
+
+.container{
+    background-color:rgba(31, 32, 35, 0.8);
+    padding:20px;
+    border-radius:20px;
+    height:250px;
+    align-content:center;
+    justify-self: center;
+    height:auto;
+}
+div{
+    color:#fff;
+}
+input{
+    background:rgba(128, 128, 128, 0.305);
+    border-radius:25px;
+    border:0;
+    color: #fff;
+}
+input:focus{
+    background-color: rgba(118, 112, 112, 0.519);
+}
+.individual-members {
+    margin: 20px;
+    background:  rgba(118, 112, 112, 0.519);
+    height: 100px;
+    border-radius: 10px;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    padding-left: 25px;
+    padding-right: 25px;
+    flex-direction:column;
+}
+.role-tag{
+    display:block;
+}
+
+    ul {
+        list-style-type: none;
+        padding-left: 0;
+    }
+
+    li {
+        margin-bottom: 8px;
+        font-size: 16px;
+    }
+
+    .highlight {
+        font-weight: bold;
+        color: #58a6ff;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    {% if already_in_team %}
+        <h2>You are already in a team!</h2>
+    {% elif pending %}
+        <h2>Your join request is pending.</h2>
+        <p>Waiting for leader of <strong>{{ team_name }}</strong> to accept.</p>
+    {% elif joined_team %}
+        <h2>You are now member of team <strong>{{ team.name }}</strong>!</h2>
+        <h3>Current Team Members:</h3>
+    <ul>
+        {% for member in members %}
+             {% if member == team.leader %}
+            <li>
+                <span class="highlight">{{ member.username }}</span>  - Leader
+                {% endif %}
+            </li>
+        {% endfor %}
+        {% for member in members%}
+        {% if member != team.leader%}
+        <li>
+                <span class="highlight">{{ member.username }}</span>  - Member
+                {% endif %}
+            </li>
+            {% endfor %}
+    </ul>
+    <section >
+        {%if registered%}
+    <p>Team Registration status: <span style="color:green;font-weight:bold">Registered</span></p>
+    {%else%}
+    <p>Team Registration status: <span style="color:red;font-weight:bold">Not Registered</span></p>
+    </section>
+    {%endif%}
+    {% else %}
+        <h2>Join a Team</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button class="join" type="submit">Send Join Request</button>
+        </form>
+    {% endif %}
+</div>
+{% endblock %}

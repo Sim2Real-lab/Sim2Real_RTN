@@ -1,0 +1,148 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SIM2REAL | ROBOTECH-NITK</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{%static "home/style.css" %}">
+</head>
+<body>
+<div class="top-panel">
+<header class="d-flex justify-content-between align-items-center px-4 py-3">
+  <div>
+    <h1>SIM2REAL 2025</h1>
+    <strong>ROBOTECH NITK</strong>
+    <p>Simulate. Build. Compete.</p>
+  </div>
+  <div>
+    {% if user.is_authenticated %}
+      <div class="dropdown">
+        <a class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" href="#" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+          <img src="{% static 'assets/default.png' %}" alt="Profile" class="profile-img">
+          <div style="display: flex, flex-direction:column,padding:0,margin:0;">
+          <span >Welcome<br></span>
+          <strong class="username">{{ user.username }}</strong>
+        </div>
+        </a>
+        <button id="menuToggleBtn" class="menu-toggle d-md-none" onclick="toggleMenu()">☰</button>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownUser1">
+            <li><a class="dropdown-item" href="{%url 'profile'%}">My Profile</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <form method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+            <button type="submit" class="dropdown-item">Logout</button>
+            </form>
+            </li>
+        </ul>
+      </div>
+    {% endif %}
+    
+  </div>
+</header>
+
+<nav class="main-nav">
+  <a href="{%url 'user_query'%}" class="nav-link-item">View Teams</a><hr class="vertical">
+  <a href="{%url 'user_query'%}" class="nav-link-item">Check General Queries</a><hr class="vertical">
+  <a href="{%url 'user_query'%}" class="nav-link-item">Make Bulk emails</a><hr class="vertical">
+  <a href="{%url 'user_query'%}" class="nav-link-item">Check Submissions</a><hr class="vertical">
+  <a href="{%url 'user_query'%}" class="nav-link-item">Upload Newsletter templates</a><hr class="vertical">
+  <a href="{%url 'respond_queries'%}" class="nav-link-item">Check User Queries</a>
+</nav>
+</div>
+
+</div>
+<div class="container main-content-area mt-4">
+  <!-- Dynamic content relevant to a logged-in hackathon participant -->
+  <section class="dashboard-section p-4 rounded-lg shadow-lg">
+    <h2 class="text-center mb-4">Sim2Real 2025 Dashboard</h2>
+
+<div class="container mt-4">
+  <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card feature-card">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fas fa-users me-2"></i> Check Registration</h5>
+                    <p class="card-text">Form or join a team, manage requests, and collaborate with your members.</p>
+                    <a href="{% url 'teamprofile' %}" class="btn btn-sm btn-outline-light">Go to Team</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="card feature-card">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fas fa-question-circle-o"></i> Test Module</h5>
+                    <p class="card-text">Attempt Scripting Quiz</p>
+                    <a href="{% url 'teamprofile' %}" class="btn btn-sm btn-outline-light">Attempt Now</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="card feature-card">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fas fa-file-upload me-2"></i> Check Submission</h5>
+                    <p class="card-text">Submit your project, view guidelines, and track your submission status.</p>
+                    <a href="{% url 'teamprofile' %}" class="btn btn-sm btn-outline-light">Check</a> {# Placeholder URL #}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="card feature-card">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fas fa-file-upload me-2"></i>Check Queries</h5>
+                    <p class="card-text">Submit your project, view guidelines, and track your submission status.</p>
+                    <a href="{% url 'respond_queries' %}" class="btn btn-sm btn-outline-light">Check</a> {# Placeholder URL #}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="card feature-card">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fas fa-file-upload me-2"></i> Send emails</h5>
+                    <p class="card-text">Submit your project, view guidelines, and track your submission status.</p>
+                    <a href="{% url 'teamprofile' %}" class="btn btn-sm btn-outline-light">Check</a> {# Placeholder URL #}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="card feature-card">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fas fa-file-upload me-2"></i> Make Announcements</h5>
+                    <p class="card-text">Submit your project, view guidelines, and track your submission status.</p>
+                    <a href="{% url 'teamprofile' %}" class="btn btn-sm btn-outline-light">Check</a> {# Placeholder URL #}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="card feature-card">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fas fa-file-upload me-2"></i> Mail Newsletters</h5>
+                    <p class="card-text">Submit your project, view guidelines, and track your submission status.</p>
+                    <a href="{% url 'teamprofile' %}" class="btn btn-sm btn-outline-light">Check</a> {# Placeholder URL #}
+                </div>
+            </div>
+        </div>
+      <div class="col-md-6 mb-4">
+            <div class="card feature-card">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fas fa-user"></i> My Profile</h5>
+                    <p class="card-text">Form or join a team, manage requests, and collaborate with your members.</p>
+                    <a href="{% url 'profile' %}" class="btn btn-sm btn-outline-light">My Profile</a>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  {% block content %}
+  <!-- All sections (home, schedule, teams, etc.) can go here if extending this layout -->
+  {% endblock %}
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{%static "home/script.js" %}"></script>
+</body>
+</html>

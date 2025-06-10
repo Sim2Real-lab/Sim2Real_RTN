@@ -1,0 +1,62 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIGN UP | SIM2REAL</title>
+    <link rel="stylesheet" href="{%static 'accounts/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+<div class="overlay"></div>
+<div class="login-wrap">
+    <div class="login-html">
+        <strong class="page-type" id="type">Sign Up</strong>
+        <div class="login-form">
+            <form class="sign-up-htm" method="post" action="{% url 'signup' %}">
+                {% csrf_token %}
+                <div class="group">
+                    <label for="user" class="label">Email Id</label>
+                    <input name="email" id="user" type="text" class="input">
+                </div>
+                <div class="group">
+                    <label for="password1" class="label">Password</label>
+                    <div class="password-field">
+                    <input name="password1" id="password1" class="input" type="password" data-type="password">
+                    <span class="toggle-password" data-toggle="#password1"><i class="fa fa-eye"></i></span>
+                    </div>
+                </div>
+                <div class="group">
+                    <label for="password2" class="label">Confirm Password</label>
+                <div class="password-field">
+                    <input name="password2" id="password2" class="input" type="password" data-type="password">
+                    <span class="toggle-password" data-toggle="#password2"><i class="fa fa-eye"></i></span>
+                </div>
+                </div>
+                <div class="group">
+                    <button id="submit" class="button" value="Sign Up" type="submit">SIGN UP</button>
+                </div>
+                <div class="hr"></div>
+                {% if signup_error %}
+                    <div class="error-message">{{ signup_error }}</div>
+                    {% if "already registered" in signup_error|lower %}
+                    <div style="text-align:center; margin-top: 10px;">
+                    <form method="post" action="{% url 'resend_verification' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="email" value="{{ request.POST.email }}">
+                        <button type="submit" class="button-resend" action="{% url 'resend_verification' %}">Resend Verification Email</button>
+                    </form>
+                    </div>
+                    {% endif %}
+                {% endif %}
+                <div class="foot-lnk">
+                    <a href="{% url 'login' %}">Already Registered? </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/static/js/script.js"></script>
+</body>
+</html>

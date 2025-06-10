@@ -1,0 +1,1219 @@
+/* General Body and Background */
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', sans-serif;
+    /* Updated gradient for a deeper, more atmospheric feel */
+    background: linear-gradient(-45deg, #100f2b, #1e1d3d, #14234d, #300f40);
+    background-size: 400% 400%;
+    animation: gradient 15s ease infinite;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Ensures footer sticks to bottom */
+    overflow-x: hidden; /* Prevents horizontal scroll from animations */
+}
+
+@keyframes gradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Section Separators */
+section {
+    padding: 80px 0; /* Consistent vertical padding for all sections */
+    position: relative; /* For background SVGs */
+    overflow: hidden; /* Hide overflowing SVG parts */
+    border-top: 1px solid rgba(255, 255, 255, 0.08); /* More subtle border */
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 700;
+}
+
+/* Navbar Enhancements */
+.navbar {
+    background-color: rgba(10, 10, 20, 0.85); /* Slightly less transparent */
+    backdrop-filter: blur(12px); /* Stronger Glassmorphism for navbar */
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.navbar-brand {
+    font-size: 1.8rem;
+    letter-spacing: 1px;
+    color: #a855f7 !important; /* Emphasize brand color */
+    text-shadow: 0 0 10px #a855f7, 0 0 20px rgba(168, 85, 247, 0.5); /* More prominent glow */
+}
+
+.navbar-nav .nav-link {
+    color: rgba(255, 255, 255, 0.9) !important;
+    font-weight: 500;
+    transition: color 0.3s ease, text-shadow 0.3s ease, transform 0.3s ease;
+    position: relative;
+    padding: 10px 15px; /* Adjust padding */
+}
+
+.navbar-nav .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%) scaleX(0);
+    width: 0%; /* Start with 0 width */
+    height: 2px;
+    background-color: #a855f7;
+    transition: all 0.3s ease-out;
+}
+
+.navbar-nav .nav-link:hover::after {
+    width: 80%; /* Expand on hover */
+    transform: translateX(-50%) scaleX(1);
+}
+
+.navbar-nav .nav-link:hover {
+    color: #fff !important;
+    text-shadow: 0 0 8px #a855f7; /* Stronger text shadow on hover */
+    transform: translateY(-2px); /* Slight lift on hover */
+}
+
+.btn-outline-light {
+    color: #fff;
+    border-color: #a855f7;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 8px rgba(168, 85, 247, 0.6); /* More prominent shadow */
+    font-weight: 600;
+}
+
+.btn-outline-light:hover {
+    background-color: #a855f7;
+    color: #fff;
+    box-shadow: 0 0 20px #a855f7; /* Stronger hover shadow */
+    transform: translateY(-1px);
+}
+
+/* Hero Section */
+.hero-section {
+    min-height: 100vh; /* Full viewport height */
+    padding-top: 80px; /* Adjust for navbar height */
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.hero-section .container {
+    z-index: 2; /* Ensure content is above background elements */
+}
+
+.hero-section .lead {
+    color: #93c5fd; /* Light blue for lead text */
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+.glitch {
+    position: relative;
+    color: white;
+    font-size: 4.5rem; /* Larger font size */
+    text-shadow: 2px 2px #ff00c8, -2px -2px #00f0ff; /* More pronounced shadow */
+    /*animation: glitch-anim 2.5s infinite alternate ease-in-out; /* Adjusted animation speed */
+    line-height: 1.1; /* Tighter line height */
+}
+
+@keyframes glitch-anim {
+    0% {
+        text-shadow: 3px 3px #ff00c8, -3px -3px #00f0ff;
+        transform: translate(0);
+    }
+    20% {
+        text-shadow: -3px -3px #ff00c8, 3px 3px #00f0ff;
+        transform: translate(-3px, 3px);
+    }
+    40% {
+        text-shadow: 3px -3px #ff00c8, -3px 3px #00f0ff;
+        transform: translate(3px, -3px);
+    }
+    60% {
+        text-shadow: -3px 3px #ff00c8, 3px -3px #00f0ff;
+        transform: translate(-3px, -3px);
+    }
+    80% {
+        text-shadow: 3px 3px #ff00c8, -3px -3px #00f0ff;
+        transform: translate(3px, 3px);
+    }
+    100% {
+        text-shadow: -3px -3px #ff00c8, 3px 3px #00f0ff;
+        transform: translate(0);
+    }
+}
+
+.btn-glow {
+    background: linear-gradient(90deg, #a855f7, #6b21a8);
+    border: none;
+    color: white;
+    padding: 14px 35px; /* Slightly larger padding */
+    border-radius: 50px;
+    font-weight: bold;
+    text-transform: uppercase;
+    box-shadow: 0 0 15px rgba(168, 85, 247, 0.7), 0 0 30px rgba(107, 33, 168, 0.5); /* Stronger shadow */
+    transition: all 0.4s ease;
+    background-size: 200% auto;
+    letter-spacing: 0.5px;
+}
+
+.btn-glow:hover {
+    background-position: right center;
+    box-shadow: 0 0 25px rgba(168, 85, 247, 0.9), 0 0 50px rgba(107, 33, 168, 0.7); /* Stronger hover shadow */
+    transform: translateY(-5px) scale(1.02); /* More prominent lift and slight scale */
+    color: white; /* Ensure text color remains white */
+}
+
+/* Hero Section Background Shapes (SVGs) */
+.hero-bg-shapes {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    pointer-events: none; /* Allows clicks to pass through */
+    z-index: 0;
+}
+
+.hero-bg-shapes svg {
+    position: absolute;
+    opacity: 0.1; /* Very subtle */
+    filter: blur(5px); /* Soften the edges */
+}
+
+.hero-bg-shapes .shape-1 {
+    width: 400px;
+    height: 400px;
+    top: 10%;
+    left: -5%;
+    animation: moveShape1 20s infinite alternate ease-in-out;
+}
+
+.hero-bg-shapes .shape-2 {
+    width: 350px;
+    height: 350px;
+    bottom: 5%;
+    right: -5%;
+    animation: moveShape2 25s infinite alternate ease-in-out;
+}
+
+@keyframes moveShape1 {
+    0% { transform: translate(0, 0) rotate(0deg); opacity: 0.1; }
+    50% { transform: translate(20px, 20px) rotate(45deg); opacity: 0.15; }
+    100% { transform: translate(0, 0) rotate(0deg); opacity: 0.1; }
+}
+
+@keyframes moveShape2 {
+    0% { transform: translate(0, 0) rotate(0deg); opacity: 0.1; }
+    50% { transform: translate(-30px, -15px) rotate(-30deg); opacity: 0.15; }
+    100% { transform: translate(0, 0) rotate(0deg); opacity: 0.1; }
+}
+
+
+/* Robot Graphic */
+.robot-container {
+    position: relative;
+    display: inline-block; /* Adjust to content size */
+    padding: 30px; /* More spacing around robot */
+    background: rgba(40, 10, 70, 0.5); /* Stronger background for robot container */
+    border-radius: 25px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(168, 85, 247, 0.2); /* Enhanced shadow */
+    backdrop-filter: blur(10px); /* Stronger blur */
+    -webkit-backdrop-filter: blur(10px);
+    margin-top: 5%; /* Adjusted margin to prevent overlap with text on smaller screens */
+    animation: float 3.5s ease-in-out infinite; /* Floating effect for container */
+}
+
+/* Robot parts styles */
+.robot {
+    display: inline-block;
+    position: relative;
+    width: 250px; /* Slightly larger robot */
+    height: 350px;
+    margin-top:6rem;
+    background: #6b21a8;
+    border-radius: 35px;
+    box-shadow: 0 15px 40px rgba(105, 34, 255, 0.4), inset 0 0 15px rgba(255, 255, 255, 0.3); /* Enhanced shadow */
+    border: 3px solid #7e22ce;
+}
+
+/* HEAD */
+.head {
+    width: 130px; /* Slightly larger */
+    height: 120px;
+    background: linear-gradient(145deg, #9333ea, #7c27b9);
+    border-radius: 30px 30px 20px 20px;
+    position: relative;
+    margin: 0 auto;
+    box-shadow: inset 0 6px 12px rgba(255, 255, 255, 0.3),
+                inset 0 -6px 12px rgba(0, 0, 0, 0.3);
+    border: 3px solid #7e22ce;
+}
+
+.eye {
+    width: 32px; /* Slightly larger */
+    height: 32px;
+    background: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 40px; /* Adjusted position */
+    border: 2px solid #6b21a8;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+    animation: blink 5s infinite;
+    overflow: hidden;
+}
+
+.eye.left {
+    left: 28px; /* Adjusted position */
+}
+
+.eye.right {
+    right: 28px; /* Adjusted position */
+}
+
+.pupil {
+    width: 14px; /* Slightly larger */
+    height: 14px;
+    background: #4c1d95;
+    border-radius: 50%;
+    position: absolute;
+    top: 9px; /* Adjusted position */
+    left: 9px; /* Adjusted position */
+    box-shadow: 0 0 8px #6b21a8;
+    animation: pupil-move 6s infinite alternate ease-in-out;
+}
+
+@keyframes pupil-move {
+    0% { left: 9px; top: 9px; }
+    50% { left: 14px; top: 14px; } /* More movement */
+    100% { left: 9px; top: 9px; }
+}
+
+.mouth {
+    width: 70px; /* Slightly larger */
+    height: 16px;
+    background: linear-gradient(90deg, #d8b4fe, #9333ea);
+    border-radius: 10px;
+    position: absolute;
+    bottom: 25px; /* Adjusted position */
+    left: 50%;
+    transform: translateX(-50%);
+    box-shadow: inset 0 3px 6px rgba(255,255,255,0.6); /* More prominent shadow */
+    border: 1.5px solid #7e22ce;
+}
+
+/* ANTENNA */
+.antenna {
+    width: 10px; /* Slightly thicker */
+    height: 50px; /* Slightly longer */
+    background: linear-gradient(to bottom, #a855f7, #6b21a8);
+    position: absolute;
+    top: -55px; /* Adjusted position */
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 5px;
+    animation: sway 3.5s ease-in-out infinite; /* Adjusted speed */
+    box-shadow: 0 0 8px #a855f7, 0 0 15px rgba(168, 85, 247, 0.5); /* Stronger glow */
+}
+
+@keyframes sway {
+    0%, 100% { transform: translateX(-50%) rotate(0deg); }
+    50% { transform: translateX(-50%) rotate(25deg); } /* More sway */
+}
+
+/* NECK */
+.neck {
+    width: 45px; /* Slightly larger */
+    height: 22px;
+    background: #7e22ce;
+    border-radius: 12px;
+    margin: 6px auto 0;
+    box-shadow: inset 0 3px 6px rgba(255, 255, 255, 0.4);
+}
+
+/* BODY */
+.body {
+    width: 180px; /* Slightly larger */
+    height: 190px;
+    background: linear-gradient(145deg, #a855f7, #7c27b9);
+    border-radius: 45px 45px 25px 25px;
+    margin: 18px auto 0; /* Adjusted margin */
+    position: relative;
+    box-shadow: inset 0 12px 25px rgba(255, 255, 255, 0.3),
+                inset 0 -12px 25px rgba(0, 0, 0, 0.4);
+    border: 4px solid #7e22ce;
+}
+
+/* BODY PANEL */
+.panel {
+    position: absolute;
+    top: 25px; /* Adjusted position */
+    left: 50%;
+    width: 110px; /* Slightly larger */
+    height: 110px;
+    background: linear-gradient(135deg, #7c3aed, #9d4edd);
+    border-radius: 30px;
+    border: 2.5px solid #6b21a8;
+    box-shadow: 0 0 20px #9333ea, inset 0 0 10px rgba(255, 255, 255, 0.4); /* Stronger glow */
+    transform: translateX(-50%);
+}
+
+/* BUTTONS */
+.buttons {
+    position: absolute;
+    bottom: 35px; /* Adjusted position */
+    left: 50%;
+    display: flex;
+    justify-content: space-between;
+    width: 100px; /* Wider spacing */
+    transform: translateX(-50%);
+}
+
+.button {
+    width: 22px; /* Slightly larger */
+    height: 22px;
+    background: #c084fc;
+    border-radius: 50%;
+    border: 2px solid #7e22ce;
+    box-shadow: 0 0 10px #c084fc;
+    transition: background 0.3s, box-shadow 0.3s, transform 0.2s;
+}
+
+.button:hover {
+    background: #f9a8d4;
+    box-shadow: 0 0 15px #f472b6, 0 0 25px rgba(244, 114, 182, 0.5); /* Stronger glow */
+    transform: scale(1.1);
+}
+
+/* LIGHT */
+.light {
+    position: absolute;
+    top: 12px; /* Adjusted position */
+    right: 18px; /* Adjusted position */
+    width: 18px; /* Slightly larger */
+    height: 18px;
+    background: #facc15;
+    border-radius: 50%;
+    box-shadow: 0 0 12px #fbbf24, 0 0 25px rgba(251, 191, 36, 0.7); /* Stronger glow */
+    border: 2px solid #b45309;
+    animation: pulse-light 1.5s infinite alternate;
+}
+
+@keyframes pulse-light {
+    0% { transform: scale(1); opacity: 1; }
+    100% { transform: scale(1.1); opacity: 0.8; }
+}
+
+/* ARMS */
+.arms {
+    position: absolute;
+    top: 170px; /* Adjusted position */
+    width: 250px; /* Wider spacing */
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px; /* Increased padding */
+    z-index: 10;
+}
+
+.arm {
+    width: 40px; /* Slightly larger */
+    height: 100px; /* Slightly longer */
+    background: linear-gradient(145deg, #9333ea, #6b21a8);
+    border-radius: 30px;
+    position: relative;
+    box-shadow: inset 0 4px 8px rgba(255,255,255,0.3),
+                inset 0 -4px 8px rgba(0,0,0,0.5);
+    border: 2px solid #7e22ce;
+}
+
+/* Elbow Joint */
+.elbow {
+    width: 28px; /* Slightly larger */
+    height: 28px;
+    background: #7e22ce;
+    border-radius: 50%;
+    position: absolute;
+    bottom: -18px; /* Adjusted position */
+    left: 50%;
+    transform: translateX(-50%);
+    box-shadow: 0 0 12px #9333ea inset;
+    border: 2.5px solid #4c1d95;
+}
+
+/* Fingers */
+.fingers {
+    position: absolute;
+    bottom: -50px; /* Adjusted position */
+    left: 50%;
+    display: flex;
+    gap: 6px; /* Wider gap */
+    transform: translateX(-50%);
+}
+
+.finger {
+    width: 10px; /* Slightly larger */
+    height: 22px; /* Slightly longer */
+    background: #7e22ce;
+    border-radius: 12px;
+    box-shadow: inset 0 2.5px 6px rgba(255,255,255,0.4),
+                inset 0 -2.5px 6px rgba(0,0,0,0.4);
+    border: 1.5px solid #4c1d95;
+}
+
+/* LEGS */
+.legs {
+    position: absolute;
+    bottom: 0;
+    width: 250px; /* Wider spacing */
+    display: flex;
+    justify-content: space-between;
+    padding: 0 50px; /* Increased padding */
+    z-index: 5;
+}
+
+.leg {
+    width: 55px; /* Slightly larger */
+    height: 120px; /* Slightly longer */
+    background: linear-gradient(145deg, #a855f7, #7c27b9);
+    border-radius: 35px;
+    position: relative;
+    box-shadow: inset 0 12px 25px rgba(255,255,255,0.3),
+                inset 0 -12px 25px rgba(0,0,0,0.4);
+    border: 3px solid #7e22ce;
+}
+
+/* Knee Joint */
+.knee {
+    width: 35px; /* Slightly larger */
+    height: 35px;
+    background: #7e22ce;
+    border-radius: 50%;
+    position: absolute;
+    top: 45px; /* Adjusted position */
+    left: 50%;
+    transform: translateX(-50%);
+    box-shadow: 0 0 18px #9333ea inset; /* Stronger glow */
+    border: 2.5px solid #4c1d95;
+}
+
+/* Foot */
+.foot {
+    width: 70px; /* Wider */
+    height: 25px; /* Taller */
+    background: #7c27b9;
+    border-radius: 18px 18px 7px 7px;
+    position: absolute;
+    bottom: -25px; /* Adjusted position */
+    left: 50%;
+    transform: translateX(-50%);
+    box-shadow: inset 0 4px 8px rgba(255,255,255,0.4),
+                inset 0 -4px 8px rgba(0,0,0,0.5);
+    border: 2.5px solid #4c1d95;
+}
+
+/* Eye blinking animation */
+@keyframes blink {
+    0%, 20%, 40%, 100% {
+        height: 32px;
+    }
+    30% {
+        height: 8px; /* More pronounced blink */
+    }
+}
+
+/* Waving Hand Animation for right arm */
+.waving-hand {
+    transform-origin: top center;
+    animation: wave 2s ease-in-out infinite;
+}
+
+@keyframes wave {
+    0%, 100% {
+        transform: rotate(180deg);
+    }
+    50% {
+        transform: rotate(210deg); /* More pronounced wave */
+    }
+}
+
+/* Speech bubble */
+.speech-bubble {
+    position: absolute;
+    width: auto;
+    top: -130px; /* Adjusted position */
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(40, 10, 70, 0.95); /* Slightly less transparent */
+    border-radius: 18px; /* Slightly more rounded */
+    padding: 18px 25px; /* More padding */
+    box-shadow: 0 0 15px #a855f7, 0 0 30px rgba(168, 85, 247, 0.5); /* Stronger glow */
+    color: #eee;
+    font-weight: 600;
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 1.05rem; /* Slightly larger font */
+    z-index: 20;
+    user-select: none;
+    white-space: nowrap; /* Keep text on one line */
+    animation: bubble-pop 0.5s ease-out forwards; /* Added pop animation */
+    /* Add a pseudo-element for the pointer */
+    &::after {
+        content: '';
+        position: absolute;
+        bottom: -15px; /* Position below the bubble */
+        left: 50%;
+        transform: translateX(-50%) rotate(45deg);
+        width: 25px; /* Size of the pointer base */
+        height: 25px; /* Size of the pointer height */
+        background: rgba(40, 10, 70, 0.95);
+        border-bottom-right-radius: 5px; /* Slightly rounded tip */
+        box-shadow: 2px 2px 5px rgba(0,0,0,0.3); /* Shadow for the pointer */
+        z-index: -1; /* Behind the bubble */
+    }
+}
+
+@keyframes bubble-pop {
+    0% { transform: translateX(-50%) scale(0.8); opacity: 0; }
+    80% { transform: translateX(-50%) scale(1.05); opacity: 1; }
+    100% { transform: translateX(-50%) scale(1); opacity: 1; }
+}
+
+/* Typewriter effect */
+.typewriter-text {
+    overflow: hidden; /* Hide overflow */
+    white-space: nowrap;
+    border-right: 3px solid #a855f7;
+    width: 0; /* Start at 0 */
+    animation:
+        typing 4s steps(40, end) forwards,
+        blink-caret 0.75s infinite;
+}
+
+@keyframes typing {
+    from { width: 0; }
+    to { width: 100%; }
+}
+
+@keyframes blink-caret {
+    0%, 100% { border-color: transparent; }
+    50% { border-color: #a855f7; }
+}
+
+/* Schedule Timeline */
+.schedule-section {
+    background-color: rgba(255, 255, 255, 0.04); /* Slightly more visible background */
+}
+
+.timeline {
+    position: relative;
+    padding-left: 40px; /* Increased padding */
+    border-left: 4px solid #a855f7; /* Thicker border */
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 50px; /* More spacing */
+    padding-left: 25px; /* Increased padding */
+}
+
+.timeline-item::before {
+    content: "";
+    position: absolute;
+    left: -14px; /* Adjusted position */
+    top: 8px; /* Adjusted position */
+    width: 25px; /* Larger dot */
+    height: 25px;
+    background: #a855f7;
+    border-radius: 50%;
+    border: 3px solid #fff; /* Thicker border */
+    box-shadow: 0 0 12px #a855f7, 0 0 20px rgba(168, 85, 247, 0.5); /* Stronger glow */
+}
+
+.timeline-date {
+    font-weight: 700; /* Bolder date */
+    color: #93c5fd;
+    margin-bottom: 8px; /* More spacing */
+    font-size: 1.1rem;
+}
+
+.timeline-content {
+    background: rgba(255, 255, 255, 0.07); /* More prominent background */
+    padding: 20px 25px; /* More padding */
+    border-radius: 10px; /* More rounded corners */
+    border-left: 5px solid #9333ea; /* Thicker border */
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3); /* Stronger shadow */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.timeline-content:hover {
+    transform: translateY(-5px); /* Lift on hover */
+    box-shadow: 0 12px 25px rgba(0,0,0,0.4);
+}
+
+.timeline-content h5 {
+    margin-top: 0;
+    color: #ffffff;
+    font-size: 1.4rem; /* Larger heading */
+}
+
+.timeline-content p {
+    margin-bottom: 0;
+    color: #dddddd;
+    font-size: 1rem;
+}
+
+/* Prizes Section */
+#prizes {
+    background-color: rgba(255, 255, 255, 0.04);
+}
+
+.prize-card {
+    background: rgba(41, 41, 77, 0.7); /* Similar to testimonials */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.prize-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+}
+
+.prize-card i {
+    font-size: 4rem; /* Larger icons */
+    margin-bottom: 20px;
+    text-shadow: 0 0 15px rgba(255, 255, 0, 0.7); /* Glow for trophies */
+}
+
+.text-silver { color: #c0c0c0; text-shadow: 0 0 10px rgba(192, 192, 192, 0.7); }
+.text-bronze { color: #cd7f32; text-shadow: 0 0 10px rgba(205, 127, 50, 0.7); }
+
+
+/* Brochure Section */
+#brochure {
+    background-color: rgba(255, 255, 255, 0.04);
+}
+
+/* FAQ Section */
+#faq {
+    background-color: rgba(255, 255, 255, 0.04);
+}
+
+.accordion-item {
+    background-color: transparent; /* Makes accordion blend with section background */
+    border: 1px solid rgba(255, 255, 255, 0.12); /* Slightly thicker border */
+    border-radius: 10px; /* More rounded corners for accordion items */
+    margin-bottom: 18px; /* More spacing between items */
+    overflow: hidden; /* Ensures border-radius is applied */
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2); /* Added subtle shadow */
+    transition: all 0.3s ease;
+}
+
+.accordion-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+}
+
+.accordion-button {
+    background-color: #29294d;
+    color: #fff;
+    font-weight: 600;
+    padding: 20px 25px; /* More padding */
+    transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+    font-size: 1.15rem; /* Larger font size */
+}
+
+.accordion-button:not(.collapsed) {
+    background-color: #1a1a40; /* Darker when open */
+    color: #a855f7; /* Primary color when open */
+    box-shadow: inset 0 -2px 0 rgba(168, 85, 247, 0.5); /* Glowing bottom border when open */
+}
+
+.accordion-body {
+    background-color: #1a1a40;
+    color: #ccc;
+    padding: 20px 25px; /* More padding */
+    border-top: 1px solid rgba(255, 255, 255, 0.08); /* More visible border */
+    line-height: 1.6;
+}
+
+/* Queries Section - Integrated Form Styling */
+#queries {
+    background-color: rgba(255, 255, 255, 0.04);
+}
+
+#queries form {
+    background: rgba(26, 26, 40, 0.85); /* Darker, less transparent background */
+    padding: 40px; /* More padding */
+    border-radius: 20px; /* More rounded corners */
+    border: 1px solid rgba(255, 255, 255, 0.15); /* Stronger border */
+    backdrop-filter: blur(10px); /* Stronger blur */
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5); /* Stronger shadow */
+}
+
+#queries .form-label {
+    color: #fff;
+    font-weight: 600;
+    margin-bottom: 10px; /* More spacing */
+    font-size: 1.05rem;
+}
+
+#queries .form-control {
+    background-color: rgba(0, 0, 0, 0.5); /* Darker input background */
+    border: 1px solid rgba(255, 255, 255, 0.25); /* Stronger border */
+    color: #fff;
+    padding: 14px 18px; /* More padding */
+    border-radius: 10px; /* More rounded corners */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+}
+
+#queries .form-control::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+#queries .form-control:focus {
+    border-color: #a855f7;
+    box-shadow: 0 0 0 4px rgba(168, 85, 247, 0.5); /* Stronger glow */
+    background-color: rgba(0, 0, 0, 0.7); /* Darker on focus */
+}
+
+/* Testimonials Section */
+#testimonials {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.testimonials h2 {
+    font-size: 2.8rem; /* Larger heading */
+    margin-bottom: 60px;
+    color: #a855f7;
+    font-weight: 700;
+    text-shadow: 0 0 10px #a855f7;
+}
+
+.testimonial-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 40px; /* Tighter gap */
+    align-items: center;
+}
+
+.testimonial {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    max-width: 900px; /* Wider testimonials */
+    background: rgba(41, 41, 77, 0.8); /* Less transparent background */
+    color: #eee;
+    padding: 35px 50px; /* More padding */
+    border-radius: 18px; /* More rounded corners */
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4); /* Stronger shadow */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.18); /* Stronger border */
+    backdrop-filter: blur(10px); /* Stronger blur */
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.testimonial:nth-child(even) {
+    flex-direction: row-reverse;
+}
+
+.testimonial:hover {
+    transform: translateY(-8px); /* More lift on hover */
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+}
+
+.testimonial p.quote {
+    font-size: 1.2rem; /* Larger quote text */
+    color: #ddd;
+    font-style: italic;
+    line-height: 1.7;
+    margin: 0;
+}
+
+.testimonial h4.author {
+    font-size: 1.1rem; /* Larger author name */
+    font-weight: 600;
+    color: #a855f7;
+    margin-top: 20px; /* More spacing */
+    text-shadow: 0 0 5px rgba(168, 85, 247, 0.5);
+}
+
+.testimonial-content {
+    flex: 1;
+    text-align: left;
+}
+
+.testimonial:nth-child(even) .testimonial-content {
+    text-align: right;
+}
+
+/* Map Section */
+#map {
+    background-color: rgba(255, 255, 255, 0.04);
+}
+
+.ratio.ratio-16x9.map-container {
+    border-radius: 20px; /* More rounded corners */
+    overflow: hidden; /* Ensures border-radius applies to iframe */
+    box-shadow: 0 15px 40px rgba(0,0,0,0.5); /* Stronger shadow */
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* Footer */
+.footer-section {
+    background-color: rgba(0, 0, 0, 0.6); /* Slightly more opaque */
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    padding-top: 60px; /* More padding */
+    padding-bottom: 20px;
+}
+
+.footer-section h5, .footer-section h6 {
+    color: #a855f7; /* Accent color for footer headings */
+    text-shadow: 0 0 5px rgba(168, 85, 247, 0.5);
+}
+
+.footer-section p, .footer-section a {
+    color: rgba(255, 255, 255, 0.85);
+    transition: color 0.3s ease;
+}
+
+.footer-section a:hover {
+    color: #fff;
+    text-decoration: underline;
+}
+
+.social-icons a {
+    font-size: 1.5rem; /* Larger social icons */
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.social-icons a:hover {
+    color: #a855f7; /* Glow on hover */
+    transform: translateY(-3px);
+}
+
+/* Django Messages Styling */
+.messages {
+    list-style: none;
+    padding: 20px; /* More padding */
+    margin: 25px auto; /* More margin */
+    border-radius: 10px; /* More rounded */
+    max-width: 650px; /* Slightly wider */
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.messages li {
+    padding: 12px 18px; /* More padding */
+    margin-bottom: 12px; /* More spacing */
+    border-radius: 7px;
+    font-weight: bold;
+    color: #fff;
+    animation: fadeIn 0.5s ease-out; /* Fade in animation */
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.messages .success {
+    background-color: rgba(40, 167, 69, 0.9); /* More opaque */
+    border: 1px solid #28a745;
+}
+
+.messages .error {
+    background-color: rgba(220, 53, 69, 0.9); /* More opaque */
+    border: 1px solid #dc3545;
+}
+
+.messages .info {
+    background-color: rgba(23, 162, 184, 0.9); /* More opaque */
+    border: 1px solid #17a2b8;
+}
+
+/* Robot container animation */
+@keyframes float {
+    0%, 100% { transform: translateY(0) translateX(-50%); }
+    50% { transform: translateY(-15px) translateX(-50%); } /* More pronounced float */
+}
+/* Re-applying float for robot container to center it */
+.robot-container {
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* Scroll-to-Top Button */
+#scrollToTopBtn {
+    display: none; /* Hidden by default */
+    position: fixed; /* Fixed position */
+    bottom: 30px; /* Distance from bottom */
+    right: 30px; /* Distance from right */
+    z-index: 99; /* High z-index to be on top */
+    border-radius: 50%; /* Make it round */
+    /*width: 55px; /* Size */
+    /*height: 55px; /* Size */
+    font-size: 1.4rem; /* Icon size */
+    box-shadow: 0 5px 15px rgba(168, 85, 247, 0.7); /* Glow */
+    transition: all 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#scrollToTopBtn:hover {
+    background-position: center; /* Center the glow */
+    box-shadow: 0 0 25px rgba(168, 85, 247, 0.9); /* Stronger glow */
+    transform: translateY(-5px) scale(1.05);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 991.98px) {
+    .navbar-collapse {
+        background-color: rgba(10, 10, 20, 0.95);
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 15px;
+        border-radius: 0 0 10px 10px;
+    }
+    .navbar-nav {
+        margin-right: 0 !important;
+    }
+    .navbar-nav .nav-link {
+        padding: 10px 0;
+        text-align: center;
+    }
+    .navbar-nav .nav-link::after {
+        left: 0;
+        transform: none;
+        width: 100%;
+    }
+    .d-flex {
+        justify-content: center;
+        margin-top: 15px;
+    }
+    .hero-section {
+        text-align: center;
+        padding-top: 120px; /* More padding for mobile */
+    }
+    .hero-section .glitch {
+        font-size: 3rem; /* Smaller on mobile */
+    }
+    .hero-section p {
+        font-size: 1rem !important;
+    }
+    .robot-container {
+        margin-top: 50px;
+        padding: 20px;
+        left: 20%;
+    }
+    .robot {
+        width: 200px; /* Smaller robot on mobile */
+        height: 300px;
+    }
+    .speech-bubble {
+        width: 15rem; /* Adjust width for smaller screens */
+        font-size: 0.9rem;
+        padding: 12px 15px;
+        top: -10px;
+    }
+    .speech-bubble a {
+        display: block; /* Make register now link break line if needed */
+        margin-top: 5px;
+    }
+    .timeline {
+        padding-left: 20px;
+        border-left: 2px solid #a855f7;
+    }
+    .timeline-item::before {
+        left: -8px;
+        width: 15px;
+        height: 15px;
+        border: 2px solid #fff;
+    }
+    .timeline-date {
+        font-size: 1rem;
+    }
+    .timeline-content {
+        padding: 12px 15px;
+        font-size: 0.9rem;
+    }
+    .timeline-content h5 {
+        font-size: 1.2rem;
+    }
+    .testimonial {
+        flex-direction: column !important;
+        text-align: center;
+        padding: 25px 20px;
+    }
+    .testimonial-content {
+        text-align: center !important;
+    }
+    .testimonials h2 {
+        font-size: 2.2rem;
+    }
+    #queries form {
+        padding: 25px;
+    }
+    #queries .form-label {
+        font-size: 0.95rem;
+    }
+    #queries .form-control {
+        padding: 10px 12px;
+    }
+    .footer-section {
+        padding-top: 40px;
+    }
+    .footer-section h5, .footer-section h6 {
+        font-size: 1.3rem;
+    }
+    .footer-section p, .footer-section a {
+        font-size: 0.9rem;
+    }
+    .social-icons a {
+        font-size: 1.2rem;
+    }
+    #scrollToTopBtn {
+        bottom: 20px;
+        right: 20px;
+        /*width: 45px;*/
+        /*height: 45px;*/
+        font-size: 1.2rem;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .hero-section .glitch {
+        font-size: 2.5rem;
+    }
+    .btn-glow {
+        padding: 10px 25px;
+        font-size: 0.9rem;
+    }
+    .robot-container {
+        padding: 15px;
+        left:30%;
+    }
+    .robot {
+        width: 180px;
+        height: 270px;
+    }
+    .head {
+        width: 100px;
+        height: 90px;
+    }
+    .eye {
+        width: 25px;
+        height: 25px;
+        top: 30px;
+    }
+    .eye.left { left: 15px; }
+    .eye.right { right: 15px; }
+    .pupil {
+        width: 10px;
+        height: 10px;
+        top: 6px;
+        left: 6px;
+    }
+    .mouth {
+        width: 50px;
+        height: 12px;
+        bottom: 15px;
+    }
+    .antenna {
+        width: 8px;
+        height: 40px;
+        top: -45px;
+    }
+    .neck {
+        width: 30px;
+        height: 15px;
+    }
+    .body {
+        width: 140px;
+        height: 150px;
+    }
+    .panel {
+        width: 80px;
+        height: 80px;
+    }
+    .buttons {
+        width: 70px;
+        bottom: 25px;
+    }
+    .button {
+        width: 16px;
+        height: 16px;
+    }
+    .light {
+        width: 12px;
+        height: 12px;
+        top: 8px;
+        right: 10px;
+    }
+    .arms {
+        width: 180px;
+        top: 130px;
+        padding: 0 10px;
+    }
+    .arm {
+        width: 30px;
+        height: 70px;
+    }
+    .elbow {
+        width: 20px;
+        height: 20px;
+        bottom: -10px;
+    }
+    .fingers {
+        bottom: -35px;
+        gap: 3px;
+    }
+    .finger {
+        width: 6px;
+        height: 15px;
+    }
+    .legs {
+        width: 180px;
+        padding: 0 30px;
+    }
+    .leg {
+        width: 40px;
+        height: 90px;
+    }
+    .knee {
+        width: 25px;
+        height: 25px;
+        top: 30px;
+    }
+    .foot {
+        width: 50px;
+        height: 18px;
+        bottom: -15px;
+    }
+    .speech-bubble {
+        font-size: 0.85rem;
+        top: -80px;
+        padding: 10px 12px;
+    }
+}

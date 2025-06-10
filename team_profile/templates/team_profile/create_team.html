@@ -1,0 +1,130 @@
+{% extends 'team_profile/team_base.html' %}
+{% block title %}Create Team{% endblock %}
+
+{% block extra_styles %}
+<style>
+    h2, h3, p, li {
+        color: white;
+    }
+
+    .container {
+        background-color: rgba(31, 32, 35, 0.85);
+        padding: 25px;
+        border-radius: 20px;
+        margin-bottom: 25px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    }
+
+    .container.secondary {
+        background-color: rgba(50, 50, 50, 0.7);
+    }
+
+    .create {
+        background-color: #0057e7;
+        color: #fff;
+        padding: 10px 20px;
+        border: 0;
+        border-radius: 5px;
+        margin-top: 15px;
+        width: 100%;
+        max-width: 200px;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        transition: background-color 0.3s, box-shadow 0.3s;
+    }
+
+    .create:hover {
+        background-color:hsl(118, 87.50%, 12.50%);
+        box-shadow: 0 3px 5px rgba(0, 146, 231, 0.3);
+    }
+
+    input[type="text"], input[type="email"], select {
+        background-color: rgba(128, 128, 128, 0.3);
+        border: none;
+        border-radius: 25px;
+        padding: 10px;
+        color: #fff;
+        width: 100%;
+        margin-bottom: 15px;
+    }
+
+    input:focus {
+        background-color: rgba(118, 112, 112, 0.5);
+        outline: none;
+    }
+
+    ul {
+        list-style-type: none;
+        padding-left: 0;
+    }
+
+    li {
+        margin-bottom: 8px;
+        font-size: 16px;
+    }
+
+    .highlight {
+        font-weight: bold;
+        color: #58a6ff;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- TEAM CREATION / JOIN CODE BOX -->
+<div class="container">
+    {% if show_join_code %}
+        <h2>Team Name : <span class="highlight">{{ team.name }}</span></h2>
+        <p>Your Join Code: <strong>{{ team.join_code }}</strong></p>
+
+        {% if pending_requests %}
+            <p>You have <span class="highlight">{{ pending_requests.count }}</span> pending join request{{ pending_requests.count|pluralize }}. 
+            <a href="{% url 'manage_requests' %}">Manage Requests</a></p>
+        {% elif team_locked %}
+        <p style="color: yellow;">✅ Your team is registered. You cannot modify the team now.</p>
+        {% else %}
+            <p>No pending join requests at the moment.</p>
+        {% endif %}
+    {% else %}
+        <h2>Create a New Team</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button class="create" type="submit">Create Team</button>
+        </form>
+    {% endif %}
+</div>
+
+<!-- TEAM MEMBERS LIST BOX -->
+{% if members %}
+<div class="container secondary">
+    <h3>Current Team Members:</h3>
+    <ul>
+        {% for member in members %}
+             {% if member == team.leader %}
+            <li>
+                <span class="highlight">{{ member.username }}</span>  - Leader
+                {% endif %}
+            </li>
+        {% endfor %}
+        {% for member in members%}
+        {% if member != team.leader%}
+        <li>
+                <span class="highlight">{{ member.username }}</span>  - Member
+                {% endif %}
+            </li>
+            {% endfor %}
+    </ul>
+    <section >
+        {%if registered%}
+    <p>Team Registration status: <span style="color:lightgreen;font-weight:bold">Registered</span></p>
+    {%else%}
+    <p>Team Registration status: <span style="color:red;font-weight:bold">Not Registered</span></p>
+    </section>
+    {%endif%}
+</div>
+{% endif %}
+
+{% endblock %}

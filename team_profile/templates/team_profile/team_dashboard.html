@@ -1,0 +1,152 @@
+{% extends 'team_profile/team_base.html' %}
+
+{% block title %}Team Dashboard{% endblock %}
+
+{% block extra_styles %}
+<style>
+     h2, h3, p, li {
+        color: white;
+    }
+
+    .container {
+        background-color: rgba(31, 32, 35, 0.85);
+        padding: 25px;
+        border-radius: 20px;
+        margin-bottom: 25px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    }
+
+    .container.secondary {
+        background-color: rgba(50, 50, 50, 0.7);
+    }
+
+    .create {
+        background-color: #0057e7;
+        color: #fff;
+        padding: 10px 20px;
+        border: 0;
+        border-radius: 5px;
+        margin-top: 15px;
+        width: 100%;
+        max-width: 200px;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        transition: background-color 0.3s, box-shadow 0.3s;
+    }
+
+    .create:hover {
+        background-color: #0047c0;
+        box-shadow: 0 3px 5px rgba(0, 146, 231, 0.3);
+    }
+
+    input[type="text"], input[type="email"], select {
+        background-color: rgba(128, 128, 128, 0.3);
+        border: none;
+        border-radius: 25px;
+        padding: 10px;
+        color: #fff;
+        width: 100%;
+        margin-bottom: 15px;
+    }
+
+    input:focus {
+        background-color: rgba(118, 112, 112, 0.5);
+        outline: none;
+    }
+
+    ul {
+        list-style-type: none;
+        padding-left: 0;
+    }
+
+    li {
+        margin-bottom: 8px;
+        font-size: 16px;
+    }
+
+    .highlight {
+        font-weight: bold;
+        color: #58a6ff;
+    }
+  /* Your styles here - keep or extend your existing ones */
+  h2 { color: white; margin-bottom: 15px; }
+  ul { list-style: none; padding-left: 0; }
+  li { color: #ddd; padding: 5px 0; }
+  button {
+    background-color: #0057e7;
+    color: white;
+    border: none;
+    padding: 7px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 10px;
+  }
+  button:hover {
+    box-shadow: 0px 3px 5px #0092e7 inset;
+  }
+  form div { margin-bottom: 10px; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  {% if is_leader %}
+    <h2>Your Team: {{ team.name }}</h2>
+    <p>Join Code: <strong>{{ team.join_code }}</strong></p>
+
+    <h3>Team Members:</h3>
+    <ul>
+      {% for member in members %}
+        <li>{{ member.username }} {% if member == team.leader %} (Leader) {% endif %}</li>
+      {% endfor %}
+    </ul>
+
+    <h3>Pending Join Requests</h3>
+    {% if pending_requests %}
+      <form method="post">
+        {% csrf_token %}
+        {% for req in pending_requests %}
+          <div>
+            <strong>{{ req.user.username }}</strong>
+            <button type="submit" name="action" value="accept" formaction="?manage_request_action=1" formmethod="post" onclick="return confirm('Accept this request?');">Accept</button>
+            <button type="submit" name="action" value="decline" formaction="?manage_request_action=1" formmethod="post" onclick="return confirm('Decline this request?');">Decline</button>
+            <input type="hidden" name="request_id" value="{{ req.id }}">
+          </div>
+        {% endfor %}
+      </form>
+    {% else %}
+      <p>No pending requests.</p>
+    {% endif %}
+
+  {% elif already_in_team %}
+    <h2>You are a member of team: <strong>{{ team.name }}</strong></h2>
+    <h3>Members:</h3>
+    <ul>
+      {% for member in members %}
+        <li>{{ member.username }}</li>
+      {% endfor %}
+    </ul>
+
+  {% elif pending %}
+    <h2>Your join request to <strong>{{ pending_team_name }}</strong> is pending approval.</h2>
+
+  {% else %}
+    <h2>Create a New Team</h2>
+    <form method="post">
+      {% csrf_token %}
+      {{ create_team_form.as_p }}
+      <button type="submit" name="create_team">Create Team</button>
+    </form>
+
+    <hr>
+
+    <h2>Join a Team</h2>
+    <form method="post">
+      {% csrf_token %}
+      {{ join_team_form.as_p }}
+      <button type="submit" name="join_team">Send Join Request</button>
+    </form>
+  {% endif %}
+</div>
+{% endblock %}
