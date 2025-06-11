@@ -1,0 +1,566 @@
+{% extends 'staff_home/base.html' %}  <!-- Replace with your base template -->
+{%block extra_styles%}
+<style>
+   /* announcements/create_announcement.css - Themed for Sim2Real Create Announcement Page */
+
+/* Define CSS Variables for consistent theming */
+:root {
+    --primary-blue: #007bff;
+    --accent-purple: #7b1fa2; /* Slightly brighter, more accessible purple */
+    --light-purple: #9c27b0; /* More vibrant purple for accents and glows */
+    --dark-bg-color-1: #0d0d21; /* Darker base for deeper contrast */
+    --dark-bg-color-2: #1a1538; /* Slightly lighter dark for gradient */
+    --header-bg: rgba(18, 15, 36, 0.98); /* Near opaque for clear header */
+    --card-bg: rgba(28, 22, 50, 0.96); /* Near opaque for solid content cards */
+    --border-color: rgba(255, 255, 255, 0.18); /* Clearer border for definition */
+    --input-bg: rgba(255, 255, 255, 0.06); /* Slightly more visible input background */
+    --input-focus-bg: rgba(255, 255, 255, 0.12); /* Brighter on focus */
+    --text-color: #f8f9fa; /* High contrast off-white for main text */
+    --text-light: #e0e0e0; /* Brighter dimmer text for labels/secondary text */
+    --text-disabled: #8b8b8b; /* Clear color for disabled text */
+    --glow-color: #9c27b0; /* Main glow color (using the slightly brighter accent) */
+    --dropdown-bg: rgba(20, 18, 38, 0.98); /* Dropdown background */
+    --dropdown-item-hover: rgba(156, 39, 176, 0.25); /* More distinct purple tint on dropdown item hover */
+    --success-color: #28a745;
+    --error-color: #dc3545;
+    --info-color: #17a2b8;
+    --warning-color: #ffc107;
+}
+
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+    /* Animated gradient background - Consistent with other themed pages */
+    background: linear-gradient(-45deg, var(--dark-bg-color-1), var(--dark-bg-color-2), var(--dark-bg-color-1), var(--dark-bg-color-2));
+    background-size: 400% 400%;
+    animation: gradientAnimation 20s ease infinite;
+    color: var(--text-color); /* Default text color for body */
+    min-height: 100vh; /* Ensure body takes full viewport height */
+    display: flex;
+    flex-direction: column; /* Use column to center the content vertically */
+    justify-content: flex-start; /* Align content to top, allowing header to dictate top space */
+    align-items: center; /* Center content horizontally */
+    overflow-x: hidden; /* Prevent horizontal scroll */
+    position: relative; /* Needed for geometric shapes */
+    text-rendering: optimizeLegibility; /* Improve text rendering */
+    -webkit-font-smoothing: antialiased; /* Smoother fonts */
+    -moz-osx-font-smoothing: grayscale; /* Smoother fonts */
+}
+
+/* Animated gradient background animation */
+@keyframes gradientAnimation {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Geometric background elements - Consistent with other pages */
+body::before,
+body::after {
+    content: '';
+    position: fixed;
+    pointer-events: none;
+    background-repeat: no-repeat;
+    opacity: 0.28; /* Opacity for visibility */
+    z-index: -1;
+    animation: geometricMovement 30s ease-in-out infinite alternate;
+    will-change: transform, opacity;
+}
+
+/* Large abstract blueish circle */
+body::before {
+    width: 80vmax;
+    height: 80vmax;
+    background-image: radial-gradient(circle at center, rgba(20, 20, 80, 0.7) 0%, rgba(20, 20, 80, 0) 60%); 
+    top: -30vmax;
+    left: -30vmax;
+    transform: rotate(0deg) translate(0, 0);
+    animation-delay: 0s;
+    box-shadow: 0 0 70px rgba(20, 20, 80, 0.4);
+}
+
+/* Smaller abstract purple triangle */
+body::after {
+    width: 60vmax;
+    height: 60vmax;
+    background-image: linear-gradient(135deg, var(--light-purple) 0%, rgba(168, 85, 247, 0) 50%); 
+    bottom: -25vmax;
+    right: -25vmax;
+    transform: rotate(45deg) translate(0, 0);
+    animation-delay: 10s;
+    box-shadow: 0 0 60px rgba(168, 85, 247, 0.4);
+}
+
+@keyframes geometricMovement {
+    0% { 
+        transform: translate(0, 0) rotate(0deg); 
+        opacity: 0.28; 
+    }
+    25% { 
+        transform: translate(12%, 12%) rotate(25deg);
+        opacity: 0.35; 
+    }
+    50% { 
+        transform: translate(-12%, -12%) rotate(0deg);
+        opacity: 0.4; 
+    }
+    75% { 
+        transform: translate(10%, -10%) rotate(-25deg);
+        opacity: 0.35;
+    }
+    100% { 
+        transform: translate(0, 0) rotate(0deg); 
+        opacity: 0.28; 
+    }
+}
+
+/* Header Styling - Consistent with other themed pages */
+header {
+    width: 100%; /* Take full width */
+    background: var(--header-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    padding: 15px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--text-color);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.back a {
+    color: var(--text-light);
+    font-size: 1.6rem;
+    text-decoration: none;
+    transition: color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+    padding: 8px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    outline: none;
+}
+
+.back a:hover {
+    color: var(--light-purple);
+    transform: scale(1.15);
+    box-shadow: 0 0 12px rgba(156, 39, 176, 0.7);
+}
+
+.back a:focus-visible {
+    outline: 2px solid var(--light-purple);
+    outline-offset: 2px;
+}
+
+/* Profile Image in Header - Consistent with other themed pages */
+.profile-img {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 10px;
+    border: 2px solid var(--light-purple);
+    box-shadow: 0 0 8px rgba(156, 39, 176, 0.5);
+    transition: all 0.3s ease;
+}
+
+.profile-img:hover {
+    box-shadow: 0 0 15px rgba(156, 39, 176, 0.8);
+    transform: scale(1.05);
+}
+
+/* Dropdown Menu Styling - Synchronized with Home & User Profile Pages */
+.dropdown-menu {
+    background-color: var(--dropdown-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.4), 0 0 10px rgba(156, 39, 176, 0.2);
+    padding: 8px 0;
+}
+
+.dropdown-menu .dropdown-item {
+    color: var(--text-color);
+    padding: 10px 20px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    display: flex;
+    align-items: center;
+    outline: none;
+}
+
+.dropdown-menu .dropdown-item:hover {
+    background-color: var(--dropdown-item-hover);
+    color: white;
+}
+
+.dropdown-menu .dropdown-item:focus-visible {
+    outline: 2px solid var(--light-purple);
+    outline-offset: -2px;
+    background-color: var(--dropdown-item-hover);
+}
+
+.dropdown-menu .dropdown-item i {
+    color: var(--light-purple);
+    width: 20px;
+    text-align: center;
+    margin-right: 10px;
+}
+
+.dropdown-menu .dropdown-divider {
+    background-color: rgba(255, 255, 255, 0.1);
+    margin: 8px 0;
+}
+
+/* Main container for the form (class="container mt-5" from template) */
+.container.mt-5 { /* Targeting specifically to avoid conflicts with other .container uses */
+    background: var(--card-bg); /* Dark, slightly transparent card background */
+    border-radius: 16px; /* Consistent rounded corners */
+    backdrop-filter: blur(20px); /* Strong glassmorphism */
+    -webkit-backdrop-filter: blur(20px);
+    /*border: 1px solid var(--border-color);*/
+    /*box-shadow: 0 12px 40px rgba(0,0,0,0.5), 0 0 25px rgba(156, 39, 176, 0.3); /* Enhanced shadow and glow */
+    padding: 40px; /* Generous internal padding */
+    max-width: 700px; /* Max width for readability */
+    width: 90%; /* Responsive width */
+    text-align: center; /* Center content within the card */
+    z-index: 1; /* Ensure it's above background elements */
+    margin: 50px auto; /* Margin to vertically center on a laptop screen */
+    box-sizing: border-box; /* Include padding in width calculation */
+}
+
+h2 {
+    color: var(--text-color);
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: 30px;
+    letter-spacing: 1.5px;
+    text-shadow: 0 0 10px rgba(156, 39, 176, 0.4);
+}
+
+/* Django Form Field Styling */
+.form-label { /* Targeting Bootstrap's form-label */
+    display: block;
+    color: var(--text-light);
+    font-size: 0.95rem;
+    margin-bottom: 8px;
+    font-weight: 600;
+    opacity: 0.98;
+    text-align: left; /* Align labels to the left */
+}
+
+/* Input fields and textarea */
+/* Targeting Bootstrap's form-control implicitly if it's used or setting directly */
+input[type="text"],
+input[type="email"],
+input[type="number"],
+input[type="date"],
+input[type="time"],
+textarea,
+.form-control { /* Add .form-control if Bootstrap applies it */
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    font-size: 1rem;
+    font-weight: 500;
+    outline: none;
+    transition: all 0.3s ease;
+    box-shadow: inset 0 1px 4px rgba(0,0,0,0.25);
+    box-sizing: border-box;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="number"]:focus,
+input[type="date"]:focus,
+input[type="time"]:focus,
+textarea:focus,
+.form-control:focus { /* Add .form-control:focus */
+    border-color: var(--light-purple);
+    box-shadow: 0 0 0 3px rgba(156, 39, 176, 0.4), inset 0 1px 5px rgba(0,0,0,0.3);
+    background-color: var(--input-focus-bg);
+}
+
+/* Textarea specific height */
+textarea#id_message {
+    min-height: 120px;
+    resize: vertical;
+}
+
+/* Checkbox styling */
+.form-check {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-bottom: 15px;
+    gap: 10px;
+}
+
+.form-check-input[type="checkbox"] { /* Targeting Bootstrap's form-check-input */
+    width: 20px;
+    height: 20px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background-color: var(--input-bg);
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    position: relative;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+}
+
+.form-check-input[type="checkbox"]:checked {
+    background-color: var(--light-purple);
+    border-color: var(--light-purple);
+    box-shadow: 0 0 0 2px rgba(156, 39, 176, 0.4);
+}
+
+.form-check-input[type="checkbox"]:checked::before {
+    content: '\2713';
+    display: block;
+    color: white;
+    font-size: 14px;
+    line-height: 1;
+    text-align: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.form-check-input[type="checkbox"]:focus-visible {
+    outline: 2px solid var(--light-purple);
+    outline-offset: 3px;
+}
+
+.form-check-label { /* Targeting Bootstrap's form-check-label */
+    color: var(--text-light);
+    font-size: 0.95rem;
+    cursor: pointer;
+    opacity: 0.98;
+}
+
+/* Submit Button - Reusing btn-glow style */
+.btn-primary { /* Targeting Bootstrap's btn-primary */
+    background: linear-gradient(90deg, var(--accent-purple), var(--light-purple));
+    border: none;
+    color: white;
+    padding: 14px 30px;
+    border-radius: 50px;
+    font-weight: bold;
+    text-transform: uppercase;
+    box-shadow: 0 0 15px rgba(156, 39, 176, 0.7), 0 0 30px rgba(123, 31, 162, 0.5);
+    transition: all 0.4s ease;
+    background-size: 200% auto;
+    letter-spacing: 1.5px;
+    cursor: pointer;
+    display: block;
+    margin: 30px auto 0 auto;
+    max-width: 250px;
+    outline: none;
+}
+
+.btn-primary:hover {
+    background-position: right center;
+    box-shadow: 0 0 30px rgba(156, 39, 176, 1), 0 0 60px rgba(123, 31, 162, 0.8);
+    transform: translateY(-5px);
+    color: white; /* Ensure text color remains white on hover */
+}
+
+.btn-primary:focus-visible {
+    outline: 3px solid var(--light-purple);
+    outline-offset: 3px;
+}
+
+/* Django Error messages from forms */
+.errorlist {
+    list-style: none;
+    padding: 0;
+    margin: -10px 0 15px 0; /* Adjust margin to be closer to the field */
+    color: var(--error-color);
+    font-size: 0.85rem;
+    text-align: left;
+    margin-left: 5px; /* Indent errors slightly */
+}
+
+/* Styling for non-field errors */
+form .nonfield ul {
+    margin-bottom: 25px;
+    background-color: rgba(var(--error-color), 0.1);
+    border: 1px solid var(--error-color);
+    padding: 10px 20px;
+    border-radius: 8px;
+}
+
+
+/* Media Queries for Responsiveness */
+@media (max-width: 991.98px) { /* Changed from 768px for broader tablet adjustment */
+    header {
+        padding: 15px 20px;
+    }
+    .back a {
+        font-size: 1.4rem;
+        padding: 6px;
+    }
+    .profile-img {
+        width: 38px;
+        height: 38px;
+    }
+    .container.mt-5 {
+        padding: 30px;
+        width: 95%;
+        margin: 30px auto; /* Adjust margin for mobile */
+    }
+    h2 {
+        font-size: 1.8rem;
+        margin-bottom: 25px;
+    }
+    .form-label {
+        font-size: 0.9rem;
+        margin-bottom: 6px;
+    }
+    input[type="text"],
+    input[type="email"],
+    input[type="number"],
+    input[type="date"],
+    input[type="time"],
+    textarea,
+    .form-control {
+        padding: 10px 12px;
+        font-size: 0.95rem;
+    }
+    textarea#id_message {
+        min-height: 100px;
+    }
+    .form-check-input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+    }
+    .form-check-input[type="checkbox"]:checked::before {
+        font-size: 12px;
+    }
+    .form-check-label {
+        font-size: 0.9rem;
+    }
+    .btn-primary {
+        padding: 12px 25px;
+        font-size: 1rem;
+        max-width: 200px;
+        margin-top: 25px;
+    }
+    body::before, body::after {
+        animation: none; /* Disable animations on smaller screens for performance */
+        opacity: 0.2;
+    }
+}
+
+@media (max-width: 480px) {
+    header {
+        padding: 10px 15px;
+    }
+    .back a {
+        font-size: 1.1rem;
+        padding: 5px;
+    }
+    .profile-img {
+        width: 32px;
+        height: 32px;
+    }
+    .container.mt-5 {
+        padding: 20px;
+        border-radius: 12px;
+        margin: 20px auto;
+    }
+    h2 {
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+    }
+    .form-label {
+        font-size: 0.85rem;
+        margin-bottom: 5px;
+    }
+    input[type="text"],
+    input[type="email"],
+    input[type="number"],
+    input[type="date"],
+    input[type="time"],
+    textarea {
+        padding: 8px 10px;
+        font-size: 0.9rem;
+    }
+    textarea#id_message {
+        min-height: 80px;
+    }
+    .form-check-input[type="checkbox"] {
+        width: 16px;
+        height: 16px;
+    }
+    .form-check-input[type="checkbox"]:checked::before {
+        font-size: 10px;
+    }
+    .form-check-label {
+        font-size: 0.85rem;
+    }
+    .btn-primary {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+        max-width: 170px;
+        margin-top: 20px;
+    }
+    .errorlist {
+        font-size: 0.75rem;
+    }
+}
+
+</style>
+{%endblock%}
+{% block content %}
+  <div class="container mt-5">
+    <h2>Create Announcement</h2>
+    
+    <form method="post">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+      
+      <div class="mb-3">
+        <label for="id_message" class="form-label">Message</label>
+        {{ form.message }}
+        {{ form.message.errors }}
+      </div>
+
+      <div class="mb-3">
+        <label for="id_schedule_for_later" class="form-label">Schedule For</label>
+        {{ form.schedule_for_later }}
+        {{ form.schedule_for_later.errors }}
+      </div>
+
+      <div class="mb-3">
+        <label for="id_valid_till" class="form-label">Valid Till</label>
+        {{ form.valid_till }}
+        {{ form.valid_till.errors }}
+      </div>
+<!--
+      <div class="form-check mb-3">
+        {{ form.manual_visibility }}
+        <label for="id_manual_visibility" class="form-check-label">Override Visibility</label>
+        {{ form.manual_visibility.errors }}
+      </div>
+
+      <div class="form-check mb-3">
+        {{ form.manual_validity }}
+        <label for="id_manual_validity" class="form-check-label">Override Validity</label>
+        {{ form.manual_validity.errors }}
+      </div>
+    -->
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+  </div>
+{% endblock %}

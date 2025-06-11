@@ -5,6 +5,8 @@ from .decorator import organiser_only,profile_updated
 from queries.models import Query
 from user_profile.models import UserProfile
 from django.http import JsonResponse
+from .forms import AnnouncmentForm
+from .models import Announcments
 
 @login_required
 @organiser_only
@@ -15,6 +17,8 @@ def staff_dashboard(request):
 @login_required
 @organiser_only
 def checkregistration(request):
+    user=UserProfile.objects.all().order_by('-created_at')
+    print(user)
     return render(request,'staff_home/registration.html')
 
 @login_required
@@ -52,6 +56,16 @@ def resolve_query(request, ticket):
 
 @login_required
 @organiser_only
-def makereannouncments(request):
-    return render(request,'staff_home/announcment.html')
+def create_announcement(request):
+    if request.method == 'POST':
+        form = AnnouncmentForm(request.POST)
+        if form.is_valid():
+            announcement = form.save(commit=False)
+            announcement.created_by = request.user
+            announcement.save()
+            return redirect('make_announcments')  # Replace with your actual redirect
+    else:
+        form = AnnouncmentForm()
+    return render(request, 'staff_home/announcment.html', {'form': form})
+
 
