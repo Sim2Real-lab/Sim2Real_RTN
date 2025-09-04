@@ -27,7 +27,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get("SECRET_KEY", "unsafe-default-key")
 
-DEBUG = os.environ.get("DEBUG", "True") == "True"
+DEBUG = os.environ.get("DEBUG", "True") == "False"
 
 ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "sim2real.nitk.ac.in").split(",")
 
