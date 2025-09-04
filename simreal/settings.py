@@ -27,7 +27,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get("SECRET_KEY", "unsafe-default-key")
 
-DEBUG = os.environ.get("DEBUG", "True") == "False"
+DEBUG = os.environ.get("DEBUG", "False") == "False"
 
 ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "sim2real.nitk.ac.in").split(",")
 
@@ -92,6 +92,11 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+# settings.py
+MAINTENANCE_MODE = False 
+
+MIDDLEWARE.insert(0, "simreal.middleware.MaintenanceModeMiddleware")
 
 
 # Password validation
