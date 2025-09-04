@@ -94,7 +94,7 @@ DATABASES = {
 }
 
 # settings.py
-MAINTENANCE_MODE = False 
+MAINTENANCE_MODE = True 
 
 MIDDLEWARE.insert(0, "simreal.middleware.MaintenanceModeMiddleware")
 
