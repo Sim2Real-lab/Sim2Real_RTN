@@ -7,6 +7,6 @@ class MaintenanceModeMiddleware:
 
     def __call__(self, request):
         # Skip maintenance for superusers/admins
-        if getattr(settings, "MAINTENANCE_MODE", False) and not request.user.is_staff:
+        if getattr(settings, "MAINTENANCE_MODE", False) and not request.user.is_organiser:
             return render(request, "maintenance.html")
         return self.get_response(request)
