@@ -8,7 +8,7 @@
 
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link rel="stylesheet" href="{%static "home/style.css" %}">
 </head>
 <body>
@@ -68,7 +68,16 @@
                 <div class="card-body">
                     <h5 class="card-title"><i class="fa fa-address-card" aria-hidden="true"></i>Check Users</h5>
                     <p class="card-text">Check Members Registeration of the event.</p>
-                    <a href="{% url 'teamprofile' %}" class="btn btn-sm btn-outline-light">Check</a>
+                    <a href="{% url 'check_registration' %}" class="btn btn-sm btn-outline-light">Check</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="card feature-card">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fa fa-users" aria-hidden="true"></i>Check Team</h5>
+                    <p class="card-text">Check Members Registeration of the event.</p>
+                    <a href="{% url 'check_registration' %}" class="btn btn-sm btn-outline-light">Check</a>
                 </div>
             </div>
         </div>
@@ -84,9 +93,9 @@
         <div class="col-md-6 mb-4">
             <div class="card feature-card">
                 <div class="card-body">
-                    <h5 class="card-title"><i class="fas fa-file-upload me-2"></i> Check Submission</h5>
+                    <h5 class="card-title"><i class="fas fa-file-upload me-2"></i> Manage Submission</h5>
                     <p class="card-text">Submit your project, view guidelines, and track your submission status.</p>
-                    <a href="{% url 'teamprofile' %}" class="btn btn-sm btn-outline-light">Check</a> {# Placeholder URL #}
+                    <a href="{% url 'make_announcments' %}" class="btn btn-sm btn-outline-light">Check</a> {# Placeholder URL #}
                 </div>
             </div>
         </div>

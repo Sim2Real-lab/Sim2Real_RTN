@@ -11,6 +11,7 @@ class AnnouncmentForm(forms.ModelForm):
             'valid_till',
             'manual_visibility',
             'manual_validity',
+            'category',
         ]
 
         widgets={

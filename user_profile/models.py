@@ -4,7 +4,6 @@ from django.contrib.auth.models import User
 
 class UserProfile(models.Model):
     user= models.OneToOneField(User,on_delete=models.CASCADE)
-
     first_name=models.CharField(max_length=100)
     last_name=models.CharField(max_length=100)
     contact=models.CharField(max_length=10)
@@ -13,7 +12,8 @@ class UserProfile(models.Model):
     year = models.CharField(max_length=10)
     dob = models.DateField()
     photo = models.ImageField(upload_to='profile_photos/')
-
+    event_year=models.IntegerField(default=2025)
+    user_state = models.CharField(max_length=10, choices=[('Archived', 'archived'), ('Active', 'active')], default='active')
     def is_nitk_user(self):
         email_domain_check = self.user.email.lower().endswith('.nitk.edu.in')
         college_check = self.college.strip().lower() == "nitk"

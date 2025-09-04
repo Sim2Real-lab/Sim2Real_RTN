@@ -29,7 +29,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY", "unsafe-default-key")
 
 DEBUG = os.environ.get("DEBUG", "True") == "True"
 
-ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "sim2real.nitk.ac.in").split(",")
 
 
 

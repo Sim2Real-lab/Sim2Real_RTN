@@ -1,0 +1,15 @@
+<h2>Submissions for "{{ submission_definition.title }}"</h2>
+<table>
+  <tr>
+    <th>Team</th>
+    <th>Link</th>
+    <th>Submitted At</th>
+  </tr>
+  {% for submission in submissions %}
+    <tr>
+      <td>{{ submission.team }}</td>
+      <td><a href="{{ submission.link }}" target="_blank">View Link</a></td>
+      <td>{{ submission.submitted_at }}</td>
+    </tr>
+  {% endfor %}
+</table>

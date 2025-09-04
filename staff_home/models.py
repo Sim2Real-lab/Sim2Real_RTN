@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 import datetime
+from team_profile.models import Team
+from django.utils import timezone
 # Create your models here.
 
 class Announcments(models.Model):
@@ -12,6 +14,12 @@ class Announcments(models.Model):
      # Manual override flags
     manual_visibility = models.BooleanField(null=True, blank=True, help_text="Set visibility manually")
     manual_validity = models.BooleanField(null=True, blank=True, help_text="Set validity manually")
+    CATEGORY_CHOICES = [
+        ('GENERAL', 'General'),
+        ('REGISTERED', 'Registered'),
+        ('NOT_REGISTERED', 'Not Registered'),
+    ]
+    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES)
 
     def is_visible(self):
         today = datetime.date.today()

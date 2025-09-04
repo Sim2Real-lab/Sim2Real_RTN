@@ -1,7 +1,21 @@
 {% extends "home/index.html" %}
-{% block title %}Schedule | SIM2REAL{% endblock %}
-
+{% block title %}Announcements | SIM2REAL{% endblock %}
 {% block content %}
-  <h2>Announcements</h2>
-  <p>No Announcements...</p>
+  {% if Announcments %}
+  <h5 class="card-title"><i class="fas fa-bullhorn me-2"></i> Announcements</h5>
+  {% for announcement in Announcments %}
+  <div class="card announcements-card mb-4">
+        <div class="card-body">
+            <ul class="list-unstyled">
+                <li><p class="mb-1"><strong>Date:</strong>       {{announcement.created_at}}</p></li>
+                <li><p class="mb-1"><strong>Message:</strong>        {{announcement.message}}</p></li>
+               <li></li>
+            </ul>
+        </div>
+      </div>
+        {% endfor %}
+        
+  {% else %}
+    <p>No announcements found.</p>
+  {% endif %}
 {% endblock %}

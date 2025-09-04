@@ -14,7 +14,17 @@
   <link rel="stylesheet" href="{%static "home/style.css" %}">
 </head>
 <body>
+{% if show_welcome %}
+<div id="welcome-overlay">
+    Welcome to <strong style="margin-left: 10px;">Sim2Real</strong>
+</div>
+<div class="gear"></div>
+{% endif %}
 
+<!-- Main dashboard content here -->
+<div id="main-content" {% if show_welcome %}style="visibility: hidden;"{% endif %}>
+    <!-- Your actual dashboard content -->
+</div>
 <!-- Main body background for the Sim2Real theme -->
 <div class="body-background"></div> 
 
@@ -60,8 +70,10 @@
 </header>
 
 <nav class="main-nav">
+    <a href="{%url 'home'%}" class="nav-link-item">Dashboard</a><hr class="vertical">
   {%if not registered%}
-  <a href="{%url 'user_query'%}" class="nav-link-item">Register</a>
+  <a href="{%url 'manage_requests'%}" class="nav-link-item">Register</a>
+  <a href="#" class="nav-link-item">Download Brochure</a>
   {%endif%}
   {% if registered%}
   <a href="{%url 'user_query'%}" class="nav-link-item">Problem Statement</a><hr class="vertical">
@@ -69,6 +81,7 @@
   <a href="{%url 'user_query'%}" class="nav-link-item">leaderboard</a><hr class="vertical">
   <a href="{%url 'user_query'%}" class="nav-link-item">Test</a><hr class="vertical">
   {%endif%}
+  <a href="{%url 'announcements'%}" class="nav-link-item">Announcements</a><hr class="vertical">
   <a href="{%url 'user_query'%}" class="nav-link-item">Queries-Ask Us</a>
 </nav>
 </div>
@@ -83,7 +96,7 @@
     <div class="card registration-card mb-4">
         <div class="card-body text-center">
             <h3 class="card-title">🚀 Ready to Simulate to Real?</h3>
-            <p class="card-text">Complete your registration to unlock full event features and team management.</p>
+            <p class="card-text">Registration Closes on 01 August 2025.</br>Complete your registration to unlock full event features and team management.</p>
             <a href="{% url 'manage_requests' %}" class="btn btn-glow">Register Now!</a> {# Placeholder URL #}
         </div>
     </div>
@@ -140,17 +153,17 @@
     </div>
     {%endif%}
     <div class="card announcements-card mb-4">
-        <div class="card-body">
-            <h5 class="card-title"><i class="fas fa-bullhorn me-2"></i> Latest Announcements</h5>
+         <h5 class="card-title"><i class="fas fa-bullhorn me-2" style="margin-top:20px;"></i> Latest Announcements</h5>
+            {%for announcment in Announcments%}
+        <div class="card-body" style="padding:0px;">
             <ul class="list-unstyled">
-                <li><p class="mb-1"><strong>New:</strong> Workshop on Advanced Robot Simulation added. <small class="text-muted float-end">June 8, 2025</small></p></li>
-                <li><p class="mb-1"><strong>Reminder:</strong> Team formation deadline is June 10, 2025. <small class="text-muted float-end">June 7, 2025</small></p></li>
-                <li><p class="mb-1">Event guidelines updated, check the <a href="{% url 'brochure' %}" class="text-info">Brochure</a> for details. <small class="text-muted float-end">June 6, 2025</small></p></li>
+                <li><p class="mb-1"><strong>{{announcment.created_at}}  :   </strong>      {{announcment.message}}</p></li>
+            <li></li>
             </ul>
-            <a href="{% url 'announcements' %}" class="btn btn-sm btn-outline-light mt-3">View All Announcements</a>
         </div>
+    {%endfor%}
+    <a href="{% url 'announcements' %}" class="btn btn-sm btn-outline-light mt-3" style="margin-bottom:20px;max-width:300px;">View All Announcements</a>
     </div>
-
   </section>
   {% endblock %}
 </div>
@@ -168,6 +181,17 @@
             dropdownMenu.classList.add('show');
         }
     }
+    {% if show_welcome %}
+    document.addEventListener("DOMContentLoaded", function () {
+        setTimeout(() => {
+            const overlay = document.getElementById("welcome-overlay");
+            const content = document.getElementById("main-content");
+
+            overlay.classList.add("fade-out");
+            content.classList.add("show");
+        }, 2500); // Show overlay for 2.5 seconds
+    });
+    {% endif %}
 </script>
 </body>
 </html>

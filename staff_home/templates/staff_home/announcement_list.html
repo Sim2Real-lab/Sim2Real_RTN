@@ -1,0 +1,1026 @@
+{% extends 'staff_home/base.html' %}
+{%block extra_styles%}
+<style>
+   /* staff_home/style.css - Themed for Sim2Real Staff Home Page */
+
+/* Define CSS Variables for consistent theming (copied from previous themed CSS) */
+:root {
+    --primary-blue: #007bff;
+    --accent-purple: #7b1fa2; /* Slightly brighter, more accessible purple */
+    --light-purple: #9c27b0; /* More vibrant purple for accents and glows */
+    --dark-bg-color-1: #0d0d21; /* Darker base for deeper contrast */
+    --dark-bg-color-2: #1a1538; /* Slightly lighter dark for gradient */
+    --header-bg: rgba(18, 15, 36, 0.98); /* Near opaque for clear header */
+    --card-bg: rgba(28, 22, 50, 0.96); /* Near opaque for solid content cards */
+    --border-color: rgba(255, 255, 255, 0.18); /* Clearer border for definition */
+    --input-bg: rgba(255, 255, 255, 0.06); /* Slightly more visible input background */
+    --input-focus-bg: rgba(255, 255, 255, 0.12); /* Brighter on focus */
+    --text-color: #f8f9fa; /* High contrast off-white for main text */
+    --text-light: #e0e0e0; /* Brighter dimmer text for labels/secondary text */
+    --text-disabled: #8b8b8b; /* Clear color for disabled text */
+    --glow-color: #9c27b0; /* Main glow color (using the slightly brighter accent) */
+    --dropdown-bg: rgba(20, 18, 38, 0.98); /* Dropdown background */
+    --dropdown-item-hover: rgba(156, 39, 176, 0.4); /* Increased opacity for more distinct hover */
+    --dropdown-item-glow: rgba(156, 39, 176, 0.5); /* New variable for item glow */
+    --success-color: #28a745;
+    --error-color: #dc3545;
+    --info-color: #17a2b8;
+    --warning-color: #ffc107;
+}
+
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+    /* Animated gradient background - Consistent with other themed pages */
+    background: linear-gradient(-45deg, var(--dark-bg-color-1), var(--dark-bg-color-2), var(--dark-bg-color-1), var(--dark-bg-color-2));
+    background-size: 400% 400%;
+    animation: gradientAnimation 20s ease infinite;
+    color: var(--text-color); /* Default text color for body */
+    min-height: 100vh; /* Ensure body takes full viewport height */
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden; /* Prevent horizontal scroll */
+    position: relative; /* Needed for geometric shapes */
+    text-rendering: optimizeLegibility; /* Improve text rendering */
+    -webkit-font-smoothing: antialiased; /* Smoother fonts */
+    -moz-osx-font-smoothing: grayscale; /* Smoother fonts */
+}
+
+/* Animated gradient background animation */
+@keyframes gradientAnimation {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Geometric background elements - Animation-rich and visible */
+body::before,
+body::after {
+    content: '';
+    position: fixed;
+    pointer-events: none;
+    background-repeat: no-repeat;
+    opacity: 0.28; /* Increased opacity for better visibility */
+    z-index: -1;
+    animation: geometricMovement 30s ease-in-out infinite alternate;
+    will-change: transform, opacity;
+}
+
+/* Large abstract blueish circle */
+body::before {
+    width: 80vmax;
+    height: 80vmax;
+    background-image: radial-gradient(circle at center, rgba(20, 20, 80, 0.7) 0%, rgba(20, 20, 80, 0) 60%); 
+    top: -30vmax;
+    left: -30vmax;
+    transform: rotate(0deg) translate(0, 0);
+    animation-delay: 0s;
+    box-shadow: 0 0 70px rgba(20, 20, 80, 0.4);
+}
+
+/* Smaller abstract purple triangle */
+body::after {
+    width: 60vmax;
+    height: 60vmax;
+    background-image: linear-gradient(135deg, var(--light-purple) 0%, rgba(168, 85, 247, 0) 50%); 
+    bottom: -25vmax;
+    right: -25vmax;
+    transform: rotate(45deg) translate(0, 0);
+    animation-delay: 10s;
+    box-shadow: 0 0 60px rgba(168, 85, 247, 0.4);
+}
+
+@keyframes geometricMovement {
+    0% { 
+        transform: translate(0, 0) rotate(0deg); 
+        opacity: 0.28; 
+    }
+    25% { 
+        transform: translate(12%, 12%) rotate(25deg);
+        opacity: 0.35; 
+    }
+    50% { 
+        transform: translate(-12%, -12%) rotate(0deg);
+        opacity: 0.4; 
+    }
+    75% { 
+        transform: translate(10%, -10%) rotate(-25deg);
+        opacity: 0.35;
+    }
+    100% { 
+        transform: translate(0, 0) rotate(0deg); 
+        opacity: 0.28; 
+    }
+}
+
+
+/* Top Panel (Header & Nav Container) */
+.top-panel {
+    background: var(--header-bg); /* Dark, slightly transparent background */
+    backdrop-filter: blur(12px); /* Strong blur for glassmorphism */
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-color); /* Subtle border */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3); /* Stronger shadow for depth */
+    position: sticky;
+    top: 0;
+    z-index: 1000; /* Ensure it's above other content */
+    width: 100%; /* Take full width */
+}
+
+/* Header Styling (inside top-panel) */
+header {
+    padding: 15px 40px; /* Consistent padding */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--text-color);
+}
+
+.site-branding h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: white;
+    margin-bottom: 5px;
+    letter-spacing: 2px;
+    text-shadow: 0 0 10px rgba(156, 39, 176, 0.4); /* Consistent glow */
+}
+
+.site-branding strong {
+    font-size: 1.2rem;
+    color: var(--light-purple);
+    letter-spacing: 1px;
+    display: block;
+    margin-bottom: 3px;
+}
+
+.site-branding p { /* Tagline */
+    font-size: 1rem;
+    color: var(--text-light);
+    margin-top: 5px;
+    font-style: italic;
+}
+
+/* User Info Section (Header) */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-toggle {
+    color: white !important; /* Override Bootstrap default */
+    text-decoration: none !important; /* Override Bootstrap default */
+    display: flex !important; /* Ensure flex for column layout inside */
+    align-items: center;
+    gap: 10px; /* Space between profile image and text */
+    transition: color 0.3s ease, text-shadow 0.3s ease;
+    outline: none; /* Remove default outline */
+}
+
+.dropdown-toggle:hover {
+    color: var(--light-purple) !important;
+    text-shadow: 0 0 8px rgba(156, 39, 176, 0.5);
+}
+
+.dropdown-toggle:focus-visible {
+    outline: 2px solid var(--light-purple);
+    outline-offset: 2px;
+}
+
+.profile-img {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--light-purple);
+    box-shadow: 0 0 8px rgba(156, 39, 176, 0.5);
+    transition: all 0.3s ease;
+}
+
+.profile-img:hover {
+    box-shadow: 0 0 15px rgba(156, 39, 176, 0.8);
+    transform: scale(1.05);
+}
+
+.dropdown-toggle div {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    margin: 0;
+    text-align: right;
+}
+
+.dropdown-toggle span { /* Welcome text */
+    font-size: 0.9rem;
+    color: var(--text-light);
+    line-height: 1;
+}
+
+.username {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: var(--text-color);
+    line-height: 1.2;
+}
+
+/* Menu Toggle for small screens */
+.menu-toggle {
+    background: none;
+    border: none;
+    font-size: 28px;
+    color: white;
+    cursor: pointer;
+    margin-left: 15px;
+    display: none; /* Hidden by default on larger screens */
+    outline: none;
+}
+.menu-toggle:focus-visible {
+    outline: 2px solid var(--light-purple);
+    outline-offset: 2px;
+}
+
+
+/* Dropdown Menu Styling - Enhanced for visibility and animation */
+.dropdown-menu {
+    background-color: var(--dropdown-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    /* Stronger, more visible box-shadow */
+    box-shadow: 0 8px 25px rgba(0,0,0,0.5), 0 0 15px var(--dropdown-item-glow); 
+    padding: 8px 0;
+}
+
+.dropdown-menu .dropdown-item {
+    color: var(--text-color);
+    padding: 10px 20px;
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease; /* Added transform */
+    display: flex;
+    align-items: center;
+    outline: none;
+}
+
+.dropdown-menu .dropdown-item:hover {
+    background-color: var(--dropdown-item-hover);
+    color: white;
+    transform: translateX(5px); /* Subtle slide animation on hover */
+}
+
+.dropdown-menu .dropdown-item:focus-visible {
+    outline: 2px solid var(--light-purple);
+    outline-offset: -2px;
+    background-color: var(--dropdown-item-hover);
+}
+
+.dropdown-menu .dropdown-item i { /* For Font Awesome icons within dropdown items */
+    color: var(--light-purple);
+    width: 20px;
+    text-align: center;
+    margin-right: 10px;
+}
+
+.dropdown-menu .dropdown-divider {
+    background-color: rgba(255, 255, 255, 0.15); /* Slightly more visible divider */
+    margin: 8px 0;
+}
+
+
+/* Main Navigation */
+.main-nav {
+    background-color: rgba(0, 0, 0, 0.6); /* Slightly more opaque for clear separation */
+    display: flex;
+    padding: 12px 40px; /* Consistent padding */
+    justify-content: center; /* Center items for wider screens */
+    border-top: 1px solid rgba(255, 255, 255, 0.1); /* More visible top border */
+    flex-wrap: wrap; /* Allow items to wrap */
+    gap: 20px; /* Increased gap for better spacing */
+}
+
+.nav-link-item {
+    color: var(--text-light);
+    text-decoration: none;
+    font-weight: 600;
+    padding: 5px 0;
+    position: relative;
+    transition: color 0.3s ease, text-shadow 0.3s ease, transform 0.3s ease;
+    outline: none;
+}
+
+.nav-link-item::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%) scaleX(0);
+    width: 0%;
+    height: 2px;
+    background-color: var(--light-purple);
+    transition: all 0.3s ease-out;
+}
+
+.nav-link-item:hover {
+    color: white;
+    text-shadow: 0 0 5px var(--light-purple);
+    transform: translateY(-2px);
+}
+.nav-link-item:hover::after {
+    width: 100%;
+    transform: translateX(-50%) scaleX(1);
+}
+.nav-link-item:focus-visible {
+    color: white;
+    text-shadow: 0 0 5px var(--light-purple);
+    outline: 2px solid var(--light-purple);
+    outline-offset: 2px;
+}
+
+.vertical { /* Vertical divider for navigation */
+    width: 1px;
+    height: 20px; /* Shorter divider */
+    background-color: rgba(255, 255, 255, 0.3); /* More visible white */
+    margin: 0 10px;
+    align-self: center; /* Vertically align with nav items */
+}
+
+
+/* Main Content Area */
+.main-content-area {
+    flex-grow: 1; /* Allows content to take available vertical space */
+    padding: 40px 20px; /* Generous padding */
+    max-width: 1200px; /* Adjusted max width for dashboard layout */
+    margin: 30px auto; /* Center the content card */
+    position: relative;
+    z-index: 1;
+    min-height: calc(100vh - 150px); /* Adjust based on header/footer height */
+    box-sizing: border-box; /* Include padding in width calculation */
+}
+
+/* Dashboard Section (main card container) */
+.dashboard-section {
+    background: var(--card-bg); /* Dark, slightly transparent card background */
+    border-radius: 16px;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.5), 0 0 25px rgba(156, 39, 176, 0.3);
+    padding: 40px; /* Generous padding inside the main section */
+    margin-bottom: 30px; /* Space below if other content follows */
+}
+
+h2 {
+    color: var(--text-color);
+    font-size: 2.8rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 35px;
+    letter-spacing: 1.5px;
+    text-shadow: 0 0 12px rgba(156, 39, 176, 0.4);
+}
+
+/* Feature Card Styling */
+.card.feature-card {
+    background: rgba(30, 25, 60, 0.75); /* Slightly more opaque card background */
+    border: 1px solid rgba(255, 255, 255, 0.12); /* Slightly more visible border */
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3), 0 0 10px rgba(156, 39, 176, 0.18); /* Stronger shadow/glow */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%; /* Ensure cards in a row have equal height */
+}
+
+.card.feature-card:hover {
+    transform: translateY(-7px); /* More pronounced lift on hover */
+    box-shadow: 0 10px 25px rgba(0,0,0,0.4), 0 0 20px rgba(156, 39, 176, 0.4); /* More intense shadow/glow on hover */
+}
+
+.card-body {
+    padding: 25px; /* Padding inside card body */
+    color: var(--text-light);
+}
+
+.card-title {
+    color: white;
+    font-size: 1.45rem;
+    margin-bottom: 15px;
+    font-weight: 600;
+    display: flex; /* Use flex to align icon and text */
+    align-items: center;
+    justify-content: center; /* Center the title content */
+    text-align: center;
+}
+.card-title i {
+    color: var(--light-purple);
+    margin-right: 10px;
+    font-size: 1.5rem; /* Larger icon in title */
+}
+
+.card-text {
+    font-size: 0.95rem;
+    margin-bottom: 20px;
+}
+
+/* Button Styling (btn-sm btn-outline-light) */
+.btn-sm.btn-outline-light {
+    color: var(--light-purple);
+    border-color: var(--light-purple);
+    transition: all 0.3s ease;
+    box-shadow: 0 0 6px rgba(156, 39, 176, 0.6);
+    font-weight: 600;
+    padding: 8px 18px; /* Adjusted padding for button */
+    font-size: 0.9rem; /* Adjusted font size */
+    border-radius: 25px; /* More rounded */
+    outline: none;
+}
+
+.btn-sm.btn-outline-light:hover {
+    background-color: var(--light-purple);
+    color: #fff;
+    box-shadow: 0 0 20px var(--light-purple);
+    transform: translateY(-2px);
+}
+.btn-sm.btn-outline-light:focus-visible {
+    outline: 2px solid var(--light-purple);
+    outline-offset: 2px;
+    background-color: var(--light-purple); /* Keep highlighted on focus */
+    color: #fff;
+}
+
+
+/* General Input/Button/Textarea Reset (important for forms within blocks) */
+input, textarea, select, button {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    box-sizing: border-box;
+}
+
+/* Styles for forms like "Create Announcement" */
+/* Main container for the form (class="container mt-5" from template) */
+.container.mt-5 {
+    background: var(--card-bg);
+    border-radius: 16px;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    /*border: 1px solid var(--border-color); /* Kept border for definition */
+   /* box-shadow: 0 12px 40px rgba(0,0,0,0.5), 0 0 25px rgba(156, 39, 176, 0.3);*/
+    /*padding: 40px;*/
+    max-width: 700px;
+    width: 90%;
+    text-align: center;
+    z-index: 1;
+    margin: 50px auto; /* Margin to vertically center on a laptop screen */
+    box-sizing: border-box;
+}
+
+/* Django Form Field Styling */
+.form-label {
+    display: block;
+    color: var(--text-light);
+    font-size: 0.95rem;
+    margin-bottom: 8px;
+    font-weight: 600;
+    opacity: 0.98;
+    text-align: left;
+}
+
+/* Input fields and textarea */
+input[type="text"],
+input[type="email"],
+input[type="number"],
+input[type="date"],
+input[type="time"],
+select, /* Added select for the category dropdown */
+textarea,
+.form-control {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    font-size: 1rem;
+    font-weight: 500;
+    outline: none;
+    transition: all 0.3s ease;
+    box-shadow: inset 0 1px 4px rgba(0,0,0,0.25);
+    box-sizing: border-box;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="number"]:focus,
+input[type="date"]:focus,
+input[type="time"]:focus,
+select:focus, /* Added select:focus */
+textarea:focus,
+.form-control:focus {
+    border-color: var(--light-purple);
+    box-shadow: 0 0 0 3px rgba(156, 39, 176, 0.4), inset 0 1px 5px rgba(0,0,0,0.3);
+    background-color: var(--input-focus-bg);
+}
+
+/* Textarea specific height */
+textarea#id_message {
+    min-height: 120px;
+    resize: vertical;
+}
+
+/* Checkbox styling */
+.form-check {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-bottom: 15px;
+    gap: 10px;
+}
+
+.form-check-input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background-color: var(--input-bg);
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    position: relative;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+}
+
+.form-check-input[type="checkbox"]:checked {
+    background-color: var(--light-purple);
+    border-color: var(--light-purple);
+    box-shadow: 0 0 0 2px rgba(156, 39, 176, 0.4);
+}
+
+.form-check-input[type="checkbox"]:checked::before {
+    content: '\2713';
+    display: block;
+    color: white;
+    font-size: 14px;
+    line-height: 1;
+    text-align: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.form-check-input[type="checkbox"]:focus-visible {
+    outline: 2px solid var(--light-purple);
+    outline-offset: 3px;
+}
+
+.form-check-label {
+    color: var(--text-light);
+    font-size: 0.95rem;
+    cursor: pointer;
+    opacity: 0.98;
+}
+
+/* Submit Button - Reusing btn-glow style */
+.btn-primary {
+    background: linear-gradient(90deg, var(--accent-purple), var(--light-purple));
+    border: none;
+    color: white;
+    padding: 14px 30px;
+    border-radius: 50px;
+    font-weight: bold;
+    text-transform: uppercase;
+    box-shadow: 0 0 15px rgba(156, 39, 176, 0.7), 0 0 30px rgba(123, 31, 162, 0.5);
+    transition: all 0.4s ease;
+    background-size: 200% auto;
+    letter-spacing: 1.5px;
+    cursor: pointer;
+    display: block;
+    margin: 30px auto 0 auto;
+    max-width: 250px;
+    outline: none;
+}
+
+.btn-primary:hover {
+    background-position: right center;
+    box-shadow: 0 0 30px rgba(156, 39, 176, 1), 0 0 60px rgba(123, 31, 162, 0.8);
+    transform: translateY(-5px);
+    color: white;
+}
+
+.btn-primary:focus-visible {
+    outline: 3px solid var(--light-purple);
+    outline-offset: 3px;
+}
+
+/* Django Error messages from forms */
+.errorlist {
+    list-style: none;
+    padding: 0;
+    margin: -10px 0 15px 0;
+    color: var(--error-color);
+    font-size: 0.85rem;
+    text-align: left;
+    margin-left: 5px;
+}
+
+/* Styling for non-field errors */
+form .nonfield ul {
+    margin-bottom: 25px;
+    background-color: rgba(var(--error-color), 0.1);
+    border: 1px solid var(--error-color);
+    padding: 10px 20px;
+    border-radius: 8px;
+}
+
+/* Media Queries for Responsiveness */
+
+/* Tablets and smaller desktops */
+@media (max-width: 991.98px) {
+    .top-panel {
+        padding: 10px 0;
+    }
+    header {
+        padding: 15px 20px;
+    }
+    .site-branding h1 {
+        font-size: 2rem;
+    }
+    .site-branding strong {
+        font-size: 1rem;
+    }
+    .site-branding p {
+        font-size: 0.85rem;
+    }
+    .dropdown-toggle div {
+        text-align: left;
+    }
+    .dropdown-toggle span {
+        font-size: 0.8rem;
+    }
+    .username {
+        font-size: 1rem;
+    }
+
+    .main-nav {
+        padding: 10px 20px;
+        gap: 10px;
+        justify-content: center;
+    }
+    .nav-link-item {
+        font-size: 0.95rem;
+        padding: 5px 10px;
+    }
+    .vertical {
+        height: 15px;
+        margin: 0 5px;
+    }
+
+    .main-content-area {
+        padding: 30px 15px;
+        margin: 20px auto;
+        min-height: calc(100vh - 120px);
+    }
+    .dashboard-section {
+        padding: 30px;
+    }
+    h2 {
+        font-size: 2.2rem;
+        margin-bottom: 30px;
+    }
+    .card.feature-card {
+        padding: 0;
+    }
+    .card-title {
+        font-size: 1.25rem;
+        margin-bottom: 12px;
+    }
+    .card-title i {
+        font-size: 1.3rem;
+    }
+    .card-text {
+        font-size: 0.9rem;
+        margin-bottom: 15px;
+    }
+    .btn-sm.btn-outline-light {
+        padding: 7px 15px;
+        font-size: 0.85rem;
+    }
+
+    /* Form specific adjustments for tablets */
+    .container.mt-5 {
+        padding: 30px;
+        width: 95%;
+        margin: 30px auto;
+    }
+    .form-label {
+        font-size: 0.9rem;
+        margin-bottom: 6px;
+    }
+    input[type="text"],
+    input[type="email"],
+    input[type="number"],
+    input[type="date"],
+    input[type="time"],
+    select,
+    textarea,
+    .form-control {
+        padding: 10px 12px;
+        font-size: 0.95rem;
+    }
+    textarea#id_message {
+        min-height: 100px;
+    }
+    .form-check-input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+    }
+    .form-check-input[type="checkbox"]:checked::before {
+        font-size: 12px;
+    }
+    .form-check-label {
+        font-size: 0.9rem;
+    }
+    .btn-primary {
+        padding: 12px 25px;
+        font-size: 1rem;
+        max-width: 200px;
+        margin-top: 25px;
+    }
+    body::before, body::after {
+        animation: none; /* Disable animations on smaller screens for performance */
+        opacity: 0.2;
+    }
+}
+
+/* Mobile devices (larger phones) */
+@media (max-width: 767.98px) {
+    body {
+        animation: none;
+    }
+    body::before, body::after {
+        animation: none;
+        filter: none;
+        opacity: 0.2;
+        background-size: 90vmax;
+    }
+    body::after {
+        background-size: 70vmax;
+    }
+
+    .top-panel {
+        padding: 0;
+    }
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 10px 15px;
+    }
+    header .d-flex {
+        width: 100%;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .site-branding {
+        text-align: left;
+        width: 100%;
+        margin-bottom: 10px;
+    }
+    .site-branding h1 {
+        font-size: 1.8rem;
+    }
+    .site-branding strong {
+        font-size: 0.9rem;
+    }
+    .site-branding p {
+        font-size: 0.75rem;
+    }
+    .dropdown {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .dropdown-toggle {
+        justify-content: flex-start;
+        flex-grow: 1;
+    }
+    .dropdown-toggle div {
+        align-items: flex-start;
+    }
+    .profile-img {
+        width: 38px;
+        height: 38px;
+    }
+    .menu-toggle {
+        display: block;
+    }
+
+    .main-nav {
+        flex-direction: column;
+        padding: 10px 0;
+        align-items: center;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        border-top: 1px solid rgba(255,255,255,0.05);
+        z-index: 999;
+        display: none;
+    }
+    .main-nav.active {
+        display: flex;
+    }
+    .nav-link-item {
+        margin: 5px 0;
+        padding: 8px 15px;
+        width: 90%;
+        text-align: center;
+        border-radius: 5px;
+    }
+    .nav-link-item::after {
+        left: 0;
+        transform: none;
+        width: 100%;
+        bottom: 0;
+        height: 1px;
+    }
+    .vertical {
+        display: none;
+    }
+
+    .main-content-area {
+        padding: 25px 15px;
+        margin: 15px auto;
+        min-height: calc(100vh - 100px);
+    }
+    .dashboard-section {
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.4), 0 0 15px rgba(156, 39, 176, 0.2);
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
+    }
+    h2 {
+        font-size: 2rem;
+        margin-bottom: 25px;
+    }
+    .col-md-6.mb-4 {
+        margin-bottom: 20px !important;
+    }
+    .card-title {
+        font-size: 1.15rem;
+    }
+    .card-title i {
+        font-size: 1.2rem;
+    }
+    .card-text {
+        font-size: 0.85rem;
+    }
+    .btn-sm.btn-outline-light {
+        padding: 6px 12px;
+        font-size: 0.8rem;
+    }
+
+    /* Form specific adjustments for mobile */
+    .container.mt-5 {
+        padding: 20px;
+        border-radius: 12px;
+        margin: 20px auto;
+    }
+    .form-label {
+        font-size: 0.85rem;
+        margin-bottom: 5px;
+    }
+    input[type="text"],
+    input[type="email"],
+    input[type="number"],
+    input[type="date"],
+    input[type="time"],
+    select,
+    textarea {
+        padding: 8px 10px;
+        font-size: 0.9rem;
+    }
+    textarea#id_message {
+        min-height: 80px;
+    }
+    .form-check-input[type="checkbox"] {
+        width: 16px;
+        height: 16px;
+    }
+    .form-check-input[type="checkbox"]:checked::before {
+        font-size: 10px;
+    }
+    .form-check-label {
+        font-size: 0.85rem;
+    }
+    .btn-primary {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+        max-width: 170px;
+        margin-top: 20px;
+    }
+    .errorlist {
+        font-size: 0.75rem;
+    }
+}
+
+/* Smaller mobile phones */
+@media (max-width: 479.98px) {
+    header {
+        padding: 8px 10px;
+    }
+    .site-branding h1 {
+        font-size: 1.5rem;
+    }
+    .site-branding strong {
+        font-size: 0.8rem;
+    }
+    .site-branding p {
+        font-size: 0.7rem;
+    }
+    .dropdown-toggle span {
+        font-size: 0.75rem;
+    }
+    .username {
+        font-size: 0.9rem;
+    }
+    .profile-img {
+        width: 32px;
+        height: 32px;
+    }
+    .menu-toggle {
+        font-size: 24px;
+    }
+    .main-nav {
+        padding: 8px 0;
+    }
+    .nav-link-item {
+        font-size: 0.85rem;
+        padding: 6px 10px;
+    }
+    .main-content-area {
+        padding: 20px 10px;
+        margin: 10px auto;
+    }
+    .dashboard-section {
+        padding: 20px;
+    }
+    h2 {
+        font-size: 1.6rem;
+        margin-bottom: 20px;
+    }
+    .card-title {
+        font-size: 1rem;
+    }
+    .card-title i {
+        font-size: 1.1rem;
+    }
+    .card-text {
+        font-size: 0.8rem;
+    }
+    .btn-sm.btn-outline-light {
+        padding: 5px 10px;
+        font-size: 0.75rem;
+    }
+}
+
+</style>
+{%endblock%}
+{% block content %}
+  <h2>Modify Previous Announcements</h2>
+
+  <a href="{% url 'make_announcments' %}" class="btn btn-primary mb-3">Create New Announcement</a>
+{% if messages %}
+       <ul class="messages">
+           {% for message in messages %}
+               <li class="{{ message.tags }}">{{ message }}</li>
+           {% endfor %}
+       </ul>
+   {% endif %}
+  {% if Announcments %}
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Message</th>
+          <th>Category</th>
+          <th>Created by</th>
+          <th>Valid Till</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for announcement in Announcments %}
+          <tr>
+            <td>{{ announcement.message|truncatechars:50 }}</td>
+            <td>{{ announcement.get_category_display }}</td>
+            <td>{{ announcement.created_by |truncatechars:10}}</td>
+            <td>{{ announcement.valid_till }}</td>
+            <td>
+              <a href="{% url 'announcement_edit' announcement.pk %}" class="btn btn-sm btn-warning">Edit</a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>No announcements found.</p>
+  {% endif %}
+{% endblock %}

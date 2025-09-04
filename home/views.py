@@ -5,18 +5,39 @@ from django.http import HttpResponseForbidden
 from .decorator import user_view,organiser_only,profile_updated
 from user_profile.models import UserProfile
 from team_profile.models import Team
+from staff_home.models import Announcments
+from itertools import chain
+from operator import attrgetter
+
 
 @login_required
 @user_view
 @profile_updated
 def home_view(request):
-    team = request.user.team.first()  # Gets the team user is a member of
+    team = request.user.team.first()
     registered = team.is_registered() if team else False
-    nitk=UserProfile.is_nitk_user
-    context={
-        'registered':registered,
+
+    if registered:
+        queryset1 = Announcments.objects.filter(category="GENERAL")
+        queryset2 = Announcments.objects.filter(category="REGISTERED")
+    else:
+        queryset1 = Announcments.objects.filter(category="GENERAL")
+        queryset2 = Announcments.objects.filter(category="NOT_REGISTERED")
+
+    # Combine and sort in Python
+    combined = sorted(
+        chain(queryset1, queryset2),
+        key=attrgetter('created_at'),
+        reverse=True
+    )[:3]  # Limit to the latest 3
+    show_welcome = not request.session.get('welcome_shown', False)
+    request.session['welcome_shown'] = True  # Set flag to avoid showing again
+    context = {
+        'registered': registered,
+        'Announcments': combined,
+        'show_welcome': show_welcome
     }
-    return render(request,'home/index.html',context)
+    return render(request, 'home/index.html', context)
 
 
 @login_required
@@ -47,8 +68,16 @@ def resources_view(request):
 @login_required
 @user_view
 def announce_view(request):
-    return render(request,'home/announcements.html')
-
+    announcments = Announcments.objects.order_by('-created_at')
+    team = request.user.team.first()  # Gets the team user is a member of
+    registered = team.is_registered() if team else False
+    if registered:
+        announcments = Announcments.objects.filter(category='REGISTERED').order_by('-created_at')|Announcments.objects.filter(category='GENERAL').order_by('-created_at')
+        return render(request,'home/announcements.html',{'Announcments':announcments})
+    if not registered:
+        announcments = Announcments.objects.filter(category='NOT_REGISTERED').order_by('-created_at')|Announcments.objects.filter(category='GENERAL').order_by('-created_at')
+        return render(request,'home/announcements.html',{'Announcments':announcments})
+    return redirect('home')
 @login_required
 @user_view
 def faq_view(request):

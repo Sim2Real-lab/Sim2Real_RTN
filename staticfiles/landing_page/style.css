@@ -1,0 +1,750 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+
+:root {
+    --primary-color: #9b59b6;
+    --secondary-color: #8e44ad;
+    --background-color: #1a1a2e;
+    --card-background: rgba(22, 36, 71, 0.6); /* Semi-transparent for glassmorphism */
+    --text-color: #e0e0e0;
+    --gradient: linear-gradient(90deg, #8e2de2, #4a00e0);
+    --gradient-text: linear-gradient(90deg, #9b59b6, #8e44ad);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    /* Body's animated gradient background */
+    background: linear-gradient(-45deg, #1a1a40, #29294d, #1a2a6c, #3c1053);
+    background-size: 400% 400%;
+    animation: gradient 15s ease infinite;
+    color: var(--text-color);
+    line-height: 1.6;
+    overflow-x: hidden; /* Prevents horizontal scrollbar from AOS animations */
+    margin-top: 6rem; /* Ensures content clears the fixed navbar */
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100vh - 6rem); /* Adjusts body height to account for navbar */
+}
+
+@keyframes gradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* --- START: Navbar Enhancements for Sponsor Page --- */
+.navbar {
+    background-color: rgba(26, 26, 46, 0.9); /* Dark, semi-transparent background for navbar */
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    position: fixed;
+    z-index: 1030; /* Ensures it stays on top */
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+    top: 0; /* Fixed to the very top */
+    width: 100%; /* Spans full width */
+    background: rgba(26, 26, 46, 0.6);
+    display: flex;
+  border-radius: 0 0 15px 15px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.navbar-brand {
+    font-size: 1.8rem;
+    letter-spacing: 1px;
+    color: var(--primary-color) !important; /* Brand color with glow */
+    text-shadow: 0 0 8px var(--primary-color);
+    font-weight: bold;
+    display: flex; /* Make brand a flex container */
+    align-items: center; /* Vertically center brand text/logo if needed */
+    text-decoration: none;
+}
+
+.navbar .navbar-nav {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.navbar-nav .nav-link {
+    color: rgba(255, 255, 255, 0.8) !important;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease, text-shadow 0.3s ease;
+    padding: 0.5rem 1rem; /* Adjust padding for links */
+}
+
+.navbar-nav .nav-link:hover {
+    color: #fff !important;
+    text-shadow: 0 0 5px var(--primary-color);
+}
+
+.navbar-toggler {
+    border-color: rgba(255, 255, 255, 0.3);
+    display: none;
+}
+
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.75%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+/* Ensure navbar links are horizontal and spaced properly on larger screens */
+@media (max-width: 992px) {
+  .navbar-nav {
+    position: fixed;
+    top: 6rem;
+    right: -100%;
+    width: 70%;
+    height: calc(100% - 6rem);
+    background: rgba(26,26,46,0.9);
+    flex-direction: column;
+    align-items: center;
+    transition: transform 0.3s ease;
+  }
+  .navbar-nav.show {
+    transform: translateX(-100%);
+  }
+}
+
+@media (min-width: 992px) { /* Corresponds to Bootstrap's 'lg' breakpoint */
+    .navbar-collapse {
+        display: flex !important; /* Force flex display */
+        flex-grow: 1; /* Allow it to grow and take available space */
+        justify-content: flex-end; /* Push content to the right */
+        align-items: center; /* Vertically align content within the collapse div */
+    }
+    .navbar-nav {
+        flex-direction: row !important; /* Force horizontal layout for ul */
+        list-style: none !important; /* Remove bullet points */
+        margin-left: auto !important; /* Ensure it's pushed to the right, overriding Bootstrap's ms-auto */
+        padding-left: 0 !important; /* Remove default padding */
+        display: flex !important; /* Ensure it's a flex container */
+        align-items: center !important; /* Vertically center items within the nav ul */
+        height: 100%; /* Ensure it takes full height of the nav-collapse if needed */
+    }
+    .navbar-nav .nav-item {
+        display: flex !important; /* Make nav-items flex containers */
+        align-items: center !important; /* Vertically center content in nav-items */
+        margin-left: 2rem; /* Increased spacing between navigation items */
+    }
+    .navbar-nav .nav-item:first-child {
+        margin-left: 0; /* No left margin for the first item */
+    }
+}
+/* --- END: Navbar Enhancements for Sponsor Page --- */
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+h2 {
+    font-size: 2.8rem;
+    margin-bottom: 3rem;
+    background: var(--gradient-text);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-align: center;
+}
+
+/* Hero Section */
+.hero {
+    background: var(--gradient);
+    color: #fff;
+    padding: 6rem 0; /* Adjusted padding as body margin handles navbar offset */
+    text-align: center;
+    border-bottom: 5px solid var(--primary-color);
+    min-height: calc(100vh - 6rem); /* Fill remaining viewport height */
+    display: flex;
+    align-items: center; /* Vertically center content */
+}
+
+.hero h1 {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+    font-weight: 700;
+}
+
+.hero .subtitle {
+    font-size: 1.2rem;
+    max-width: 700px;
+    margin: 0 auto 2.5rem;
+    font-weight: 300;
+}
+
+.cta-button {
+    display: inline-block;
+    background-image: var(--gradient);
+    color: #fff;
+    padding: 1rem 2.5rem;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    border: none;
+    background-size: 200% auto;
+}
+
+.cta-button:hover {
+    background-position: right center;
+    transform: scale(1.05);
+    box-shadow: 0px 10px 20px rgba(142, 45, 226, 0.3);
+}
+
+/* Why Sponsor Section */
+.why-sponsor {
+    padding: 5rem 0;
+    text-align: center;
+}
+
+.benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.benefit-card {
+    background: var(--card-background);
+    padding: 2.5rem 2rem;
+    border-radius: 15px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.benefit-card:hover {
+    transform: translateY(-15px);
+    box-shadow: 0px 20px 30px rgba(0, 0, 0, 0.2);
+}
+
+.icon-wrapper {
+    background: var(--gradient);
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2.5rem;
+    color: #fff;
+    transition: transform 0.3s ease;
+}
+
+.benefit-card:hover .icon-wrapper {
+    transform: rotate(15deg) scale(1.1);
+}
+
+.benefit-card h3 {
+    font-size: 1.6rem;
+    margin-bottom: 0.5rem;
+    color: #fff;
+}
+
+/* Sponsorship Tiers Section */
+.sponsorship-tiers {
+    padding: 5rem 0;
+    background-color: #162447;
+}
+
+.tiers-container {
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 2rem;
+}
+
+.tier-card {
+    background: var(--background-color);
+    border-radius: 15px;
+    overflow: hidden;
+    width: 340px;
+    display: flex;
+    flex-direction: column;
+    border: 2px solid transparent;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+}
+
+.tier-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+}
+
+.tier-card.featured {
+    order: -1;
+    transform: scale(1.05);
+    border: 2px solid var(--primary-color);
+    box-shadow: 0px 0px 30px rgba(155, 89, 182, 0.5);
+}
+
+.tier-card.featured:hover {
+    transform: scale(1.1) translateY(-10px);
+}
+
+.featured-ribbon {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    overflow: hidden;
+    width: 150px;
+    height: 150px;
+}
+.featured-ribbon span {
+    position: absolute;
+    display: block;
+    width: 225px;
+    padding: 10px 0;
+    background-image: var(--gradient);
+    box-shadow: 0 5px 10px rgba(0,0,0,.1);
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 700;
+    text-shadow: 0 1px 1px rgba(0,0,0,.2);
+    text-transform: uppercase;
+    text-align: center;
+    right: -35px;
+    top: 30px;
+    transform: rotate(45deg);
+}
+
+.tier-header {
+    background: var(--gradient);
+    padding: 1.5rem;
+    color: #fff;
+}
+
+.tier-header h3 {
+    font-size: 1.8rem;
+}
+
+.tier-header .price {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.tier-body {
+    padding: 2rem;
+    flex-grow: 1;
+}
+
+.tier-body ul {
+    list-style: none;
+    text-align: left;
+}
+
+.tier-body ul li {
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+}
+
+.tier-body ul li i {
+    color: var(--primary-color);
+    margin-right: 0.75rem;
+    font-size: 1.2rem;
+}
+
+.tier-footer {
+    padding: 2rem;
+    border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+/* Past Sponsors Section */
+.past-sponsors {
+    padding: 5rem 0;
+    text-align: center;
+}
+
+.logos {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 3rem;
+}
+
+.logos img {
+    max-height: 60px;
+    filter: grayscale(100%) opacity(0.7);
+    transition: all 0.3s ease;
+}
+
+.logos img:hover {
+    filter: none;
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+/* Contact Section */
+.contact {
+    padding: 5rem 0;
+    /* This section now uses the same animated gradient background as the body */
+    background: linear-gradient(-45deg, #1a1a40, #29294d, #1a2a6c, #3c1053);
+    background-size: 400% 400%;
+    animation: gradient 15s ease infinite; /* Re-apply gradient animation for this section */
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    text-align: center;
+    color: #fff;
+}
+
+.contact p {
+    max-width: 600px;
+    margin: 0 auto 2rem;
+}
+
+.cta-button-secondary {
+    display: inline-block;
+    background: #fff;
+    color: var(--primary-color);
+    padding: 1rem 2.5rem;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.cta-button-secondary:hover {
+    background: var(--background-color);
+    color: #fff;
+    transform: scale(1.05);
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Footer */
+footer {
+    padding: 2rem 0;
+    text-align: center;
+    background-color: #10101d;
+    border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+/* Responsive Design */
+
+/* Testimonials Section */
+.testimonials {
+    padding: 5rem 0;
+    background-color: #162447;
+}
+
+.testimonial-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+}
+
+.testimonial-card {
+    background: var(--card-background);
+    padding: 2.5rem;
+    border-radius: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.testimonial-card .quote {
+    font-size: 1.1rem;
+    font-style: italic;
+    line-height: 1.7;
+    flex-grow: 1;
+    margin-bottom: 1.5rem;
+    position: relative;
+    padding-left: 2.5rem;
+}
+
+.testimonial-card .quote::before {
+    content: '\f10d'; /* Font Awesome quote-left icon */
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    color: var(--primary-color);
+    font-size: 2rem;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.author {
+    text-align: right;
+}
+
+.author .name {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #fff;
+}
+
+.author .title {
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+/* Gallery Section */
+.gallery {
+    padding: 5rem 0;
+}
+
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.gallery-item {
+    overflow: hidden;
+    border-radius: 15px;
+    position: relative;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+
+.gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s ease;
+}
+
+.gallery-item:hover img {
+    transform: scale(1.1);
+}
+
+.gallery-item::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to top, rgba(142, 45, 226, 0.5), transparent);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.gallery-item:hover::after {
+    opacity: 1;
+}
+
+/* Contact Form Specific Styling for this page */
+.contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    max-width: 600px;
+    margin: 2rem auto 3rem;
+    padding: 2.5rem;
+    background: var(--card-background); /* Use the semi-transparent card background */
+    border-radius: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+
+.contact-form .form-group {
+    text-align: left;
+    margin-bottom: 1rem;
+}
+
+.contact-form label {
+    display: block;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: #fff;
+}
+
+.contact-form input[type="text"],
+.contact-form input[type="email"],
+.contact-form textarea {
+    width: 100%;
+    padding: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    background-color: rgba(0, 0, 0, 0.3);
+    color: var(--text-color);
+    font-family: 'Roboto', sans-serif;
+    font-size: 1rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    outline: none;
+}
+
+.contact-form input[type="text"]::placeholder,
+.contact-form input[type="email"]::placeholder,
+.contact-form textarea::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.contact-form input[type="text"]:focus,
+.contact-form input[type="email"]:focus,
+.contact-form textarea:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(155, 89, 182, 0.4);
+}
+
+.contact-form button[type="submit"] {
+    width: auto;
+    margin: 0 auto;
+    padding: 1rem 3rem;
+    font-size: 1.1rem;
+    border-radius: 50px;
+    cursor: pointer;
+}
+
+/* Static Contact Details */
+.static-contact-details {
+    margin-top: 4rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: center;
+}
+
+.static-contact-details h3 {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    background: var(--gradient-text);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: #fff;
+}
+
+.static-contact-details p {
+    font-size: 1.1rem;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+}
+
+.static-contact-details p i {
+    color: var(--primary-color);
+    font-size: 1.3rem;
+}
+
+.static-contact-details a {
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.static-contact-details a:hover {
+    color: #fff;
+    text-decoration: underline;
+}
+
+.social-links {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+}
+
+.social-icon {
+    font-size: 2.2rem;
+    color: var(--text-color);
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.social-icon:hover {
+    color: var(--primary-color);
+    transform: translateY(-5px);
+}
+
+/* Django Messages Styling */
+.messages {
+    list-style: none;
+    padding: 15px;
+    margin: 20px auto;
+    border-radius: 8px;
+    max-width: 600px;
+    text-align: center;
+}
+
+.messages li {
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    font-weight: bold;
+    color: #fff;
+}
+
+.messages .success {
+    background-color: rgba(40, 167, 69, 0.8);
+    border: 1px solid #28a745;
+}
+
+.messages .error {
+    background-color: rgba(220, 53, 69, 0.8);
+    border: 1px solid #dc3545;
+}
+
+.messages .info {
+    background-color: rgba(23, 162, 184, 0.8);
+    border: 1px solid #17a2b8;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+    .tier-card.featured {
+        order: 0; /* Reset order for stacking */
+    }
+}
+@media (max-width: 768px) {
+    h2 {
+        font-size: 2.2rem;
+    }
+    .hero h1 {
+        font-size: 2.8rem;
+    }
+    .benefits-grid {
+        grid-template-columns: 1fr;
+    }
+    .tiers-container {
+        flex-direction: column;
+        align-items: center;
+    }
+    .tier-card {
+        width: 100%;
+        max-width: 400px;
+    }
+    .tier-card.featured {
+        transform: scale(1);
+    }
+    .tier-card.featured:hover {
+        transform: translateY(-10px);
+    }
+    .testimonial-grid {
+        grid-template-columns: 1fr;
+    }
+    .contact-form {
+        padding: 1.5rem;
+        margin: 1.5rem auto 2.5rem;
+    }
+    .static-contact-details h3 {
+        font-size: 1.6rem;
+    }
+    .static-contact-details p {
+        font-size: 1rem;
+    }
+}
