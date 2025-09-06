@@ -43,6 +43,7 @@ def login_view(request):
 
     return render(request, 'accounts/login.html')
 @never_cache
+@never_cache
 def signup_view(request):
     if request.method == 'POST':
         email = request.POST.get('email')
@@ -50,26 +51,20 @@ def signup_view(request):
         password2 = request.POST.get('password2')
 
         if password1 != password2:
-            return render(request, 'accounts/signup.html', {
-                'signup_error': 'Passwords do not match'
-            })
+            return render(request, 'accounts/signup.html', {'signup_error': 'Passwords do not match'})
 
         if User.objects.filter(username=email).exists():
-            return render(request, 'accounts/signup.html', {
-                'signup_error': 'Email already registered'
-            })
+            return render(request, 'accounts/signup.html', {'signup_error': 'Email already registered'})
+
         try:
             validate_password(password1)
         except ValidationError as e:
-            return render(request, 'accounts/signup.html', {
-                'signup_error': e.messages  # this is a list of errors
-            })
-        
-        # Create the user
+            return render(request, 'accounts/signup.html', {'signup_error': e.messages})
+
         user = User.objects.create_user(username=email, email=email, password=password1)
         user.is_active = False
         user.save()
-        
+
         uid = urlsafe_base64_encode(force_bytes(user.pk))
         token = account_activation_token.make_token(user)
         verification_link = request.build_absolute_uri(
@@ -77,14 +72,17 @@ def signup_view(request):
         )
 
         subject = 'Verify your SIM2REAL account'
-        message = f'Hi! Please click the link below to verify your email and activate your account:\n\n{verification_link}'
+        message = f'Hi! Click the link below to verify your email:\n\n{verification_link}'
         from_email = settings.DEFAULT_FROM_EMAIL
         recipient_list = [email]
 
-        send_mail(subject, message, from_email, recipient_list, fail_silently=False)
+        try:
+            send_mail(subject, message, from_email, recipient_list, fail_silently=False)
+        except Exception as e:
+            user.delete()
+            return render(request, 'accounts/signup.html', {'signup_error': f"Error sending email: {e}"})
 
-        messages.success(request, 'Please check your email to verify your account.')
-        return redirect('login')
+        return render(request, 'accounts/check_email.html', {'email': email})  # dedicated page
     return render(request, 'accounts/signup.html')
 
 from django.utils.http import urlsafe_base64_decode
