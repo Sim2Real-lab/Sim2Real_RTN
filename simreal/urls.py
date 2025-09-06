@@ -16,6 +16,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.contrib.sitemaps.views import sitemap
+from landing_page.views import robots_txt
+from landing_page.sitemaps import LandingPageSitemap
+
+sitemaps = {
+    "landing": LandingPageSitemap(),
+    # later you can add more sitemaps here from other apps
+}
 
 
 urlpatterns = [
@@ -26,4 +34,7 @@ urlpatterns = [
     path('user/team/',include('team_profile.urls'),name='profile'),
     path('user/query/',include('queries.urls'),name='query'),
     path('staff/',include('staff_home.urls')),
+     # 👇 SEO-related
+    path("robots.txt", robots_txt),
+    path("sitemap.xml", sitemap, {"sitemaps": sitemaps}, name="sitemap"),
 ]

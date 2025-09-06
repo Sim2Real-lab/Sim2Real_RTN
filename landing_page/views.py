@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.contrib import messages
 from .models import Sponsor, Query, GeneralQuery
+from django.http import HttpResponse
 
 def main_landing_page_view(request):
     """
@@ -97,3 +98,10 @@ def sponsor_contact_submit_view(request):
             return redirect(reverse('landing_page:sponsor_page') + '#contact')
 
     return redirect('landing_page:sponsor_page') # Redirect to sponsor page if not a POST request
+
+def robots_txt(request):
+    content = """User-agent: *
+Allow: /
+Sitemap: https://sim2real.nitk.ac.in/sitemap.xml
+"""
+    return HttpResponse(content, content_type="text/plain")
