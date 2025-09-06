@@ -21,8 +21,7 @@ from landing_page.views import robots_txt
 from landing_page.sitemaps import LandingPageSitemap
 
 sitemaps = {
-    "landing": LandingPageSitemap(),
-    # later you can add more sitemaps here from other apps
+    "landing": LandingPageSitemap,
 }
 
 
