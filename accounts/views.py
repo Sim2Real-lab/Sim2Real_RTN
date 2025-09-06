@@ -17,6 +17,7 @@ from django.views.decorators.cache import never_cache
 from django.utils import timezone
 from .models import PasswordResetOTP
 from .forms import OTPRequestForm, OTPVerifyForm
+from django.db import transaction
 import random
 @never_cache
 def login_view(request):
@@ -43,6 +44,7 @@ def login_view(request):
 
     return render(request, 'accounts/login.html')
 @never_cache
+
 @never_cache
 def signup_view(request):
     if request.method == 'POST':
@@ -61,30 +63,36 @@ def signup_view(request):
         except ValidationError as e:
             return render(request, 'accounts/signup.html', {'signup_error': e.messages})
 
-        user = User.objects.create_user(username=email, email=email, password=password1)
-        user.is_active = False
-        user.save()
-
-        uid = urlsafe_base64_encode(force_bytes(user.pk))
-        token = account_activation_token.make_token(user)
-        verification_link = request.build_absolute_uri(
-            reverse('activate', kwargs={'uidb64': uid, 'token': token})
-        )
-
-        subject = 'Verify your SIM2REAL account'
-        message = f'Hi! Click the link below to verify your email:\n\n{verification_link}'
-        from_email = settings.DEFAULT_FROM_EMAIL
-        recipient_list = [email]
-
         try:
-            send_mail(subject, message, from_email, recipient_list, fail_silently=False)
+            with transaction.atomic():  # ensures atomicity
+                user = User.objects.create_user(username=email, email=email, password=password1)
+                user.is_active = False  # inactive until email verification
+                user.save()
+
+                # Prepare email
+                uid = urlsafe_base64_encode(force_bytes(user.pk))
+                token = account_activation_token.make_token(user)
+                verification_link = request.build_absolute_uri(
+                    reverse('activate', kwargs={'uidb64': uid, 'token': token})
+                )
+
+                subject = 'Verify your SIM2REAL account'
+                message = f'Hi! Click the link below to verify your email:\n\n{verification_link}'
+                from_email = settings.DEFAULT_FROM_EMAIL
+                recipient_list = [email]
+
+                # Send email
+                send_mail(subject, message, from_email, recipient_list, fail_silently=False)
+
         except Exception as e:
-            user.delete()
+            # If email fails, rollback user creation automatically
             return render(request, 'accounts/signup.html', {'signup_error': f"Error sending email: {e}"})
 
-        return render(request, 'accounts/check_email.html', {'email': email})  # dedicated page
-    return render(request, 'accounts/signup.html')
+        # If successful, redirect to login with a success message
+        messages.success(request, "Signup successful! Check your email to activate your account.")
+        return redirect('login')
 
+    return render(request, 'accounts/signup.html')
 from django.utils.http import urlsafe_base64_decode
 from django.utils.encoding import force_str  # for Django 3.1+, use force_text for older versions
 from django.http import HttpResponse
