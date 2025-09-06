@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'accounts.apps.AccountsConfig',
+    'django.contrib.sitemaps',
     'home.apps.HomeConfig',
     'user_profile.apps.UserProfileConfig',
     'sponsors.apps.SponsorsConfig',
