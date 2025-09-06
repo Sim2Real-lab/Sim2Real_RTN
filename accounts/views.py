@@ -43,7 +43,6 @@ def login_view(request):
             })
 
     return render(request, 'accounts/login.html')
-@never_cache
 
 @never_cache
 def signup_view(request):
@@ -55,44 +54,86 @@ def signup_view(request):
         if password1 != password2:
             return render(request, 'accounts/signup.html', {'signup_error': 'Passwords do not match'})
 
-        if User.objects.filter(username=email).exists():
-            return render(request, 'accounts/signup.html', {'signup_error': 'Email already registered'})
-
         try:
             validate_password(password1)
         except ValidationError as e:
             return render(request, 'accounts/signup.html', {'signup_error': e.messages})
 
+        # Delete any previous inactive users with this email
+        User.objects.filter(username=email, is_active=False).delete()
+
+        if User.objects.filter(username=email, is_active=True).exists():
+            return render(request, 'accounts/signup.html', {'signup_error': 'Email already registered and verified'})
+
         try:
-            with transaction.atomic():  # ensures atomicity
+            with transaction.atomic():
                 user = User.objects.create_user(username=email, email=email, password=password1)
-                user.is_active = False  # inactive until email verification
+                user.is_active = False
                 user.save()
 
-                # Prepare email
+        # Prepare email
                 uid = urlsafe_base64_encode(force_bytes(user.pk))
                 token = account_activation_token.make_token(user)
                 verification_link = request.build_absolute_uri(
-                    reverse('activate', kwargs={'uidb64': uid, 'token': token})
-                )
+                reverse('activate', kwargs={'uidb64': uid, 'token': token})
+            )
 
                 subject = 'Verify your SIM2REAL account'
-                message = f'Hi! Click the link below to verify your email:\n\n{verification_link}'
                 from_email = settings.DEFAULT_FROM_EMAIL
                 recipient_list = [email]
 
+
                 # Send email
-                send_mail(subject, message, from_email, recipient_list, fail_silently=False)
+                from django.core.mail import EmailMultiAlternatives
+
+# ... after generating `verification_link`
+
+                html_content = f"""
+<html>
+<head>
+<style>
+.btn {{
+    display: inline-block;
+    padding: 12px 24px;
+    font-size: 16px;
+    color: white;
+    background-color: #007BFF;
+    text-decoration: none;
+    border-radius: 5px;
+}}
+.container {{
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
+}}
+</style>
+</head>
+<body>
+<div class="container">
+<h2>Welcome to SIM2REAL!</h2>
+<p>Thank you for signing up. Please verify your email to activate your account.</p>
+<p><a href="{verification_link}" class="btn">Verify Email</a></p>
+<p>If the button doesn’t work, copy and paste this link into your browser:</p>
+<p>{verification_link}</p>
+<p>Regards,<br>SIM2REAL Team</p>
+</div>
+</body>
+</html>
+"""
+
+                email_message = EmailMultiAlternatives(subject, "Please view this email in HTML", from_email, recipient_list)
+                email_message.attach_alternative(html_content, "text/html")
+                email_message.send(fail_silently=False)
 
         except Exception as e:
             # If email fails, rollback user creation automatically
             return render(request, 'accounts/signup.html', {'signup_error': f"Error sending email: {e}"})
 
-        # If successful, redirect to login with a success message
         messages.success(request, "Signup successful! Check your email to activate your account.")
         return redirect('login')
 
     return render(request, 'accounts/signup.html')
+
 from django.utils.http import urlsafe_base64_decode
 from django.utils.encoding import force_str  # for Django 3.1+, use force_text for older versions
 from django.http import HttpResponse
