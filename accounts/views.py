@@ -19,6 +19,8 @@ from .models import PasswordResetOTP
 from .forms import OTPRequestForm, OTPVerifyForm
 from django.db import transaction
 import random
+from django.core.mail import EmailMultiAlternatives
+
 @never_cache
 def login_view(request):
     if request.method == 'POST':
@@ -84,7 +86,7 @@ def signup_view(request):
 
 
                 # Send email
-                from django.core.mail import EmailMultiAlternatives
+                
 
 # ... after generating `verification_link`
 
