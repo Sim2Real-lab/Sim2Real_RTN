@@ -5,7 +5,7 @@ from django.http import HttpResponseForbidden
 from .decorator import user_view,organiser_only,profile_updated
 from user_profile.models import UserProfile
 from team_profile.models import Team
-from staff_home.models import Announcments
+from staff_home.models import Announcments,ProblemStatementConfig
 from itertools import chain
 from operator import attrgetter
 
@@ -33,10 +33,10 @@ def home_view(request):
     show_welcome = not request.session.get('welcome_shown', False)
     request.session['welcome_shown'] = True  # Set flag to avoid showing again
     context = {
-        'registered': registered,
-        'Announcments': combined,
-        'show_welcome': show_welcome
-    }
+    'registered': registered,
+    'announcements': combined,
+    'show_welcome': show_welcome
+}
     return render(request, 'home/index.html', context)
 
 
@@ -82,3 +82,20 @@ def announce_view(request):
 @user_view
 def faq_view(request):
     return render(request,'home/faq_pre_registration.html')
+
+@login_required
+@user_view
+def problem_statement_view(request):
+    team = request.user.team.first()
+    registered = team.is_registered() if team else False
+
+    config = ProblemStatementConfig.objects.first()  # Single row config
+
+    if not registered or not (config and config.enabled):
+        # Show a blank page (template with nothing)
+        return render(request, "home/problem_statement.html", {"visible": False})
+
+    return render(request, "home/problem_statement.html", {
+        "visible": True,
+        "file": config.file if config else None
+    })
