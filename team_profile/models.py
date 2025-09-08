@@ -16,7 +16,7 @@ class Team(models.Model):
         return any(member.profile.college.lower() != "NITK" for member in self.members.all())
 
     def is_full(self):
-        return self.members.count()>=4
+        return self.members.count()>=3
     
     def __str__(self):
         return self.name

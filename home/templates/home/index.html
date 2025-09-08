@@ -78,8 +78,8 @@
   {% if registered%}
   <a href="{%url 'user_query'%}" class="nav-link-item">Problem Statement</a><hr class="vertical">
   <a href="{%url 'user_query'%}" class="nav-link-item">Resources</a><hr class="vertical">
-  <a href="{%url 'user_query'%}" class="nav-link-item">leaderboard</a><hr class="vertical">
-  <a href="{%url 'user_query'%}" class="nav-link-item">Test</a><hr class="vertical">
+  <!--<a href="{%url 'user_query'%}" class="nav-link-item">leaderboard</a><hr class="vertical">-->
+  <!--<a href="{%url 'user_query'%}" class="nav-link-item">Test</a><hr class="vertical">-->
   {%endif%}
   <a href="{%url 'announcements'%}" class="nav-link-item">Announcements</a><hr class="vertical">
   <a href="{%url 'user_query'%}" class="nav-link-item">Queries-Ask Us</a>
@@ -96,7 +96,7 @@
     <div class="card registration-card mb-4">
         <div class="card-body text-center">
             <h3 class="card-title">🚀 Ready to Simulate to Real?</h3>
-            <p class="card-text">Registration Closes on 01 August 2025.</br>Complete your registration to unlock full event features and team management.</p>
+            <p class="card-text">Registration Closes on 14 September 2025.</br>Complete your registration to unlock full event features and team management.</p>
             <a href="{% url 'manage_requests' %}" class="btn btn-glow">Register Now!</a> {# Placeholder URL #}
         </div>
     </div>
@@ -137,7 +137,7 @@
                 <div class="card-body">
                     <h5 class="card-title"><i class="fas fa-question-circle-o"></i> Scripting Quiz</h5>
                     <p class="card-text">Attempt Scripting Quiz</p>
-                    <a href="{% url 'teamprofile' %}" class="btn btn-sm btn-outline-light">Attempt Now</a>
+                    <a href="#" class="btn btn-sm btn-outline-light">Attempt Now</a>
                 </div>
             </div>
         </div>
@@ -146,7 +146,7 @@
                 <div class="card-body">
                     <h5 class="card-title"><i class="fas fa-file-upload me-2"></i> Project Submission</h5>
                     <p class="card-text">Submit your project, view guidelines, and track your submission status.</p>
-                    <a href="{% url 'teamprofile' %}" class="btn btn-sm btn-outline-light">Submit Project</a> {# Placeholder URL #}
+                    <a href="#" class="btn btn-sm btn-outline-light">Submit Project</a> 
                 </div>
             </div>
         </div>
