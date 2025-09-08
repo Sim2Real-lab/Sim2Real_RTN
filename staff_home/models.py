@@ -50,3 +50,13 @@ class Announcments(models.Model):
     # These are just to store the final evaluated values
     visibility = models.BooleanField(default=False)
     validity = models.BooleanField(default=False)
+
+    # staff_home/models.py
+
+
+class ProblemStatementConfig(models.Model):
+    enabled = models.BooleanField(default=False)  # Control visibility
+    file = models.FileField(upload_to="problem_statements/", null=True, blank=True)
+
+    def __str__(self):
+        return "Problem Statement Config"

@@ -1,0 +1,44 @@
+{% extends "home/index.html" %}
+{% block title %}Problem Statement | SIM2REAL{% endblock %}
+
+{% block content %}
+  {% if visible %}
+    <h2>Problem Statement</h2>
+
+    <section>
+      <h3>Section 1</h3>
+      <p>Write your Section 1 description here...</p>
+    </section>
+
+    <section>
+      <h3>Section 2</h3>
+      <p>Details for section 2...</p>
+    </section>
+
+    <section>
+      <h3>Section 3</h3>
+      <p>Details for section 3...</p>
+    </section>
+
+    <section>
+      <h3>Section 4</h3>
+      <p>Details for section 4...</p>
+    </section>
+
+    <section>
+      <h3>Section 5</h3>
+      <p>Details for section 5...</p>
+    </section>
+
+    {% if file %}
+      <div style="margin-top:20px;">
+        <a href="{{ file.url }}" class="btn btn-primary" download>
+          📄 Download Full Problem Statement
+        </a>
+      </div>
+    {% endif %}
+
+  {% else %}
+    {# Show nothing (blank page) #}
+  {% endif %}
+{% endblock %}
