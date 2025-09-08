@@ -78,8 +78,8 @@
   {% if registered%}
   <a href="{%url 'user_query'%}" class="nav-link-item">Problem Statement</a><hr class="vertical">
   <a href="{%url 'user_query'%}" class="nav-link-item">Resources</a><hr class="vertical">
-  <!--<a href="{%url 'user_query'%}" class="nav-link-item">leaderboard</a><hr class="vertical">-->
-  <!--<a href="{%url 'user_query'%}" class="nav-link-item">Test</a><hr class="vertical">-->
+  <!--<a href="#" class="nav-link-item">leaderboard</a><hr class="vertical">-->
+  <!--<a href="#" class="nav-link-item">Test</a><hr class="vertical">-->
   {%endif%}
   <a href="{%url 'announcements'%}" class="nav-link-item">Announcements</a><hr class="vertical">
   <a href="{%url 'user_query'%}" class="nav-link-item">Queries-Ask Us</a>
@@ -154,10 +154,10 @@
     {%endif%}
     <div class="card announcements-card mb-4">
          <h5 class="card-title"><i class="fas fa-bullhorn me-2" style="margin-top:20px;"></i> Latest Announcements</h5>
-            {%for announcment in Announcments%}
+            {% for announcement in announcements %}
         <div class="card-body" style="padding:0px;">
             <ul class="list-unstyled">
-                <li><p class="mb-1"><strong>{{announcment.created_at}}  :   </strong>      {{announcment.message}}</p></li>
+                <li><p class="mb-1"><strong>{{announcement.created_at}}  :   </strong>      {{announcement.message}}</p></li>
             <li></li>
             </ul>
         </div>
