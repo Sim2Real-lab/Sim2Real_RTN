@@ -29,7 +29,9 @@
       <h3>Section 5</h3>
       <p>Details for section 5...</p>
     </section>
-
+    {% if not visible%}
+    
+    {% endif %}
     {% if file %}
       <div style="margin-top:20px;">
         <a href="{{ file.url }}" class="btn btn-primary" download>
@@ -39,6 +41,8 @@
     {% endif %}
 
   {% else %}
-    {# Show nothing (blank page) #}
+  <div>
+    <strong> No Problem Statement Available </strong>
+  </div>
   {% endif %}
 {% endblock %}
