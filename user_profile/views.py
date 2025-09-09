@@ -28,6 +28,9 @@ def userprofile_view(request):
         dob = request.POST.get('dob')
         photo = request.FILES.get('photo')
 
+        if user.email.endswith(".nitk.edu.in"):
+            college = "National Institute of Technology Karnataka"
+
         if profile:
             # Update existing profile
             profile.first_name = first_name
@@ -60,7 +63,7 @@ def userprofile_view(request):
             )
             messages.success(request,'Profile Saved Successfully')
             if not user_role.is_organiser:
-                return redirect(dashboard)
+                return redirect('dashboard')
 
     return render(request, 'user_profile/profile.html', {
         'user_email': user.email,
