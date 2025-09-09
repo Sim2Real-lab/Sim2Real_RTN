@@ -83,13 +83,13 @@
 
     <div class="container-register">
         <h4>Register:</h4>
-        {% if members_count >= 2 and members_count <= 4 %}
+        {% if members_count >= 2 and members_count <= 3 %}
             <form method="post" action="{% url 'register_pay' %}">
                 {% csrf_token %}
                 <button type="submit" class="button">Register Team</button>
             </form>
         {% else %}
-            <p>You need 2 to 4 members to register your team for the event.</p>
+            <p>You need 2 to 3 members to register your team for the event.</p>
         {% endif %}
     </div>
 {% else %}

@@ -13,7 +13,7 @@ class Team(models.Model):
     def is_registered(self):
         return self.is_paid
     def is_outsider(self):
-        return any(member.profile.college.lower() != "NITK" for member in self.members.all())
+        return any(member.profile.college() != "National Institute of Technology Karnataka" for member in self.members.all())
 
     def is_full(self):
         return self.members.count()>=3
