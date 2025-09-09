@@ -18,6 +18,12 @@ def userprofile_view(request):
     except up.DoesNotExist:
         profile=None
 
+    is_nitk = user.email.endswith(".nitk.edu.in")
+    if is_nitk:
+        college_value = "National Institute of Technology Karnataka" 
+    else:
+        college_value = profile.college if profile else ""
+
     if request.method == 'POST':
         first_name = request.POST.get('first_name')
         last_name = request.POST.get('last_name')
@@ -27,12 +33,8 @@ def userprofile_view(request):
         year = request.POST.get('year')
         dob = request.POST.get('dob')
         photo = request.FILES.get('photo')
-
-        is_nitk = user.email.endswith(".nitk.edu.in")
         if is_nitk:
-            college_value = "National Institute of Technology Karnataka"
-        else:
-            college_value = profile.college if profile else ""
+            college = "National Institute of Technology Karnataka"
 
 
         if profile:
