@@ -131,7 +131,7 @@ def signup_view(request):
             # If email fails, rollback user creation automatically
             return render(request, 'accounts/signup.html', {'signup_error': f"Error sending email: {e}"})
 
-        messages.success(request, "Signup successful! Check your email to activate your account.")
+        messages.success(request, "Signup successful! Check your email to activate your account. If mail not found in Inbox please check Spam")
         return redirect('login')
 
     return render(request, 'accounts/signup.html')
