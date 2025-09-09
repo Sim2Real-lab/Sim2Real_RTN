@@ -138,7 +138,7 @@
                     <div class="timeline-date">September 07, 2025, IST: 9:00</div>
                     <div class="timeline-content">
                         <h5>Registration</h5>
-                        <p>Event Registration Starts</p>
+                        <p>Event Registration Starts. Click here to <a href="{% url 'signup' %}">Register </a></p>
                     </div>
                 </div>
 
@@ -239,20 +239,14 @@
             <div class="testimonial-wrapper">
                 <div class="testimonial" data-aos="fade-up" data-aos-delay="100">
                     <div class="testimonial-content">
-                        <p class="quote">"Sim2Real provided an unparalleled platform to test our algorithms in a dynamic environment. The transition from simulation to real hardware was seamless thanks to the expert mentorship!"</p>
-                        <h4 class="author">- Hari Hara, Team RosLeeLa </h4>
+                        <p class="quote">"Sim2Real provided an unparalleled platform to test our algorithms in a dynamic environment."</p>
+                        <h4 class="author">- Team RosLeeLa </h4>
                     </div>
                 </div>
                 <div class="testimonial" data-aos="fade-up" data-aos-delay="200">
                     <div class="testimonial-content">
-                        <p class="quote">"The workshops were incredibly insightful, bridging the gap between theoretical AI and practical robotics. This competition truly pushes the boundaries of innovation."</p>
+                        <p class="quote">"The workshops were incredibly insightful, bridging the gap between theoretical and practical robotics. This competition truly pushes the boundaries of innovation."</p>
                         <h4 class="author">- Dr. Mervin Joe Thomas, Faculty Advisor Department of Mechanical Engineering NITK</h4>
-                    </div>
-                </div>
-                <div class="testimonial" data-aos="fade-up" data-aos-delay="300">
-                    <div class="testimonial-content">
-                        <p class="quote">"Being able to deploy our AI model on physical robots was a game-changer. Sim2Real is a must-attend event for anyone serious about robotics."</p>
-                        <h4 class="author">- Karthik Rao, Student Participant</h4>
                     </div>
                 </div>
             </div>
@@ -316,7 +310,7 @@
 
     <section id="queries" class="py-5">
         <div class="container">
-            <h2 class="text-white text-center mb-4 animate__animated animate__fadeInUp">📬 Have Questions? Reach Out!</h2>
+            <h2 class="text-white text-center mb-4 animate__animated animate__fadeInUp"> Have Questions? Reach Out!</h2>
 
             {# Django Messages for feedback #}
             {% if messages %}
