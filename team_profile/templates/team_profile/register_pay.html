@@ -60,7 +60,7 @@
 <div class="container">
   <h2>Payment for Team: {{ team.name }}</h2>
   <p>Total members: {{ team.members.count }}</p>
-  <p>Amount to pay: ₹2000</p>
+  <p>Amount to pay: Rs.500/-</p>
   <form method="post">
     {% csrf_token %}
     <button class="pay" type="submit">Pay and Register</button>

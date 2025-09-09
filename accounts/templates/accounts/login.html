@@ -17,13 +17,11 @@
             <form class="sign-in-htm" method="post" action="{% url 'login' %}">
                 {% csrf_token %}
                 <div class="group">
-                    <!--label for="email" class="label">Email Id</label-->
-                    <input name="email" id="email" type="text" class="input" required, placeholder="Email Id">
+                    <label for="email" class="label">Email Id</label>
+                    <input name="email" id="email" type="text" class="input" required>
                 </div>
                 <div class="group">
                     <label for="password" class="label">Password</label>
-                    <div class="password-field">
-                        <input name="password" id="password" class="input" type="password" required>
                         <span class="toggle-password" data-toggle="#password"><i class="fa fa-eye"></i></span>
                     </div>
                 </div>
