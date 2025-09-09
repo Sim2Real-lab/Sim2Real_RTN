@@ -59,6 +59,8 @@ def userprofile_view(request):
                 photo=photo
             )
             messages.success(request,'Profile Saved Successfully')
+            if not user_role.is_organiser:
+                return redirect(dashboard)
 
     return render(request, 'user_profile/profile.html', {
         'user_email': user.email,
