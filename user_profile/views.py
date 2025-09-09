@@ -28,8 +28,12 @@ def userprofile_view(request):
         dob = request.POST.get('dob')
         photo = request.FILES.get('photo')
 
-        if user.email.endswith(".nitk.edu.in"):
-            college = "National Institute of Technology Karnataka"
+        is_nitk = user.email.endswith(".nitk.edu.in")
+        if is_nitk:
+            college_value = "National Institute of Technology Karnataka"
+        else:
+            college_value = profile.college if profile else ""
+
 
         if profile:
             # Update existing profile
@@ -68,5 +72,7 @@ def userprofile_view(request):
     return render(request, 'user_profile/profile.html', {
         'user_email': user.email,
         'profile': profile,
-        'user_role':user_role
+        'user_role':user_role,
+        'is_nitk': is_nitk,
+    'college_value': college_value
     })

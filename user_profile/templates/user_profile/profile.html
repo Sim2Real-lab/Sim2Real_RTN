@@ -84,9 +84,16 @@
     </div>
 
     <div class="form-group">
-      <label for="college">College Name</label>
-      <input type="text" name="college" value="{{ profile.college}}" required />
-    </div>
+  <label for="college">College Name</label>
+  <input type="text" name="college"
+         value="{{ college_value }}"
+         {% if is_nitk %} disabled {% endif %}
+         required />
+  {% if is_nitk %}
+    <!-- Hidden field ensures value is submitted even if disabled -->
+    <input type="hidden" name="college" value="{{ college_value }}">
+  {% endif %}
+</div>
 
     <div class="form-group autocomplete">
     <label for="year">Year</label>
