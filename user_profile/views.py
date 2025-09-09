@@ -18,7 +18,7 @@ def userprofile_view(request):
     except up.DoesNotExist:
         profile=None
 
-    is_nitk = user.email.endswith(".nitk.edu.in")
+    is_nitk = user.email.endswith("@nitk.edu.in")
     if is_nitk:
         college_value = "National Institute of Technology Karnataka" 
     else:
