@@ -51,7 +51,6 @@ INSTALLED_APPS = [
     'django.contrib.sitemaps',
     'home.apps.HomeConfig',
     'user_profile.apps.UserProfileConfig',
-    'sponsors.apps.SponsorsConfig',
     'queries.apps.QueriesConfig',
     'staff_home.apps.StaffHomeConfig',
 ]
