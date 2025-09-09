@@ -69,7 +69,7 @@ def userprofile_view(request):
             )
             messages.success(request,'Profile Saved Successfully')
             if not user_role.is_organiser:
-                return redirect('dashboard')
+                return redirect('home')
 
     return render(request, 'user_profile/profile.html', {
         'user_email': user.email,
