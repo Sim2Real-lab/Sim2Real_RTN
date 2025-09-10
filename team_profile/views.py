@@ -245,11 +245,9 @@ def payment_view(request):
     if not hasattr(request.user, 'led_team'):
         messages.error(request, "You don't lead any team.")
         return redirect('teamprofile')
-
-
+    team = request.user.led_team
     if team.is_paid(request):
         return redirect('teamprofile')
-    team = request.user.led_team
 
     if request.method == 'POST':
         form = PaymentProofForm(request.POST, request.FILES, instance=team)
