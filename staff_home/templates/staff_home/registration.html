@@ -523,48 +523,36 @@ table td ul li {
   </select>
   <button type="submit">Apply</button>
 </form>
-
 <table>
   <thead>
     <tr>
-      <th><a href="?sort=first_name&direction={% if sort == 'first_name' and direction == 'asc' %}desc{% else %}asc{% endif %}">Name</a></th>
-      <th><a href="?sort=contact&direction={% if sort == 'contact' and direction == 'asc' %}desc{% else %}asc{% endif %}">Contact</a></th>
-      <th><a href="?sort=branch&direction={% if sort == 'branch' and direction == 'asc' %}desc{% else %}asc{% endif %}">Branch</a></th>
-      <th><a href="?sort=college&direction={% if sort == 'college' and direction == 'asc' %}desc{% else %}asc{% endif %}">College</a></th>
-      <th><a href="?sort=year&direction={% if sort == 'year' and direction == 'asc' %}desc{% else %}asc{% endif %}">Year</a></th>
+      <th>Name</th>
+      <th>Contact</th>
+      <th>Branch</th>
+      <th>College</th>
+      <th>Year</th>
       <th>DOB</th>
       <th>Team Name</th>
       <th>Registered</th>
     </tr>
   </thead>
   <tbody>
-    {% for profile in user_profiles %}
-      {% with profile.user.team.all as teams %}
-        {% if teams %}
-          {% for team in teams %}
-            <tr>
-              <td>{{ profile.first_name }} {{ profile.last_name }}</td>
-              <td>{{ profile.contact }}</td>
-              <td>{{ profile.branch }}</td>
-              <td>{{ profile.college }}</td>
-              <td>{{ profile.year }}</td>
-              <td>{{ profile.dob }}</td>
-              <td>{{ team.name }}</td>
-              <td>{% if team.is_registered %}Yes{% else %}No{% endif %}</td>
-            </tr>
-          {% endfor %}
-        {% else %}
-          <tr>
-            <td>{{ profile.first_name }} {{ profile.last_name }}</td>
-            <td>{{ profile.contact }}</td>
-            <td>{{ profile.branch }}</td>
-            <td>{{ profile.college }}</td>
-            <td>{{ profile.year }}</td>
-            <td>{{ profile.dob }}</td>
-            <td colspan="4">Not part of any team</td>
-          </tr>
-        {% endif %}
-      {% endwith %}
+    {% for team_name, profiles in grouped_users.items %}
+      <tr>
+        <td colspan="8" style="text-align:center;font-weight:bold;background-color:#222">{{ team_name }}</td>
+      </tr>
+      {% for profile in profiles %}
+        <tr>
+          <td>{{ profile.user.first_name }} {{ profile.user.last_name }}</td>
+          <td>{{ profile.contact }}</td>
+          <td>{{ profile.branch }}</td>
+          <td>{{ profile.college }}</td>
+          <td>{{ profile.year }}</td>
+          <td>{{ profile.dob }}</td>
+          <td>{{ team_name }}</td>
+          <td>{% if profile.user.team.exists %}Yes{% else %}No{% endif %}</td>
+        </tr>
+      {% endfor %}
     {% endfor %}
   </tbody>
 </table>
