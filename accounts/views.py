@@ -35,10 +35,12 @@ def login_view(request):
                     return redirect('staff_dashboard')
                 else:
                     return redirect('home')  # or redirect to dashboard
-            else:
+            elif not user.is_active:
+                resend_url = reverse('resend_verification') + f'?email={email}'
                 return render(request, 'accounts/login.html', {
-                    'login_error': 'Please verify your email before logging in.'
-                })
+        'login_error': f'Your account is not active. '
+                       f'Please <a href="{resend_url}">resend verification</a> to activate it.'
+    })
         else:
             return render(request, 'accounts/login.html', {
                 'login_error': 'Invalid email or password'
@@ -62,10 +64,15 @@ def signup_view(request):
             return render(request, 'accounts/signup.html', {'signup_error': e.messages})
 
         # Delete any previous inactive users with this email
-        User.objects.filter(username=email, is_active=False).delete()
-
-        if User.objects.filter(username=email, is_active=True).exists():
-            return render(request, 'accounts/signup.html', {'signup_error': 'Email already registered and verified'})
+        existing_user = User.objects.filter(username=email).first()
+        if existing_user:
+            if existing_user.is_active:
+                return render(request, 'accounts/signup.html', {
+            'signup_error': 'Email already registered and verified'
+        })
+            else:
+                # Remove stale inactive user
+                existing_user.delete()
 
         try:
             with transaction.atomic():
@@ -129,7 +136,7 @@ def signup_view(request):
 
         except Exception as e:
             # If email fails, rollback user creation automatically
-            return render(request, 'accounts/signup.html', {'signup_error': f"Error sending email: {e}"})
+            return render(request, 'accounts/signup.html', {'signup_error': f"Error sending email: Plese check your email or contact organisers"})
 
         messages.success(request, "Signup successful! Check your email to activate your account. If mail not found in Inbox please check Spam")
         return redirect('login')
