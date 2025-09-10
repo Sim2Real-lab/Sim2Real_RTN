@@ -186,10 +186,11 @@ def resend_verification_view(request):
             send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [email], fail_silently=False)
 
             messages.success(request, 'Verification email resent. Please check your inbox.')
+            return redirect('login')
         except user_model.DoesNotExist:
             messages.error(request, 'No account found with that email.')
             return render(request, 'accounts/signup.html')
-    return render(request, 'accounts/signup.html')
+    return render(request, 'accounts/login.html')
 
 def request_otp_view(request):
     if request.method == "POST":
