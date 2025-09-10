@@ -20,7 +20,6 @@ from collections import defaultdict
 @profile_updated
 def staff_dashboard(request):
     return render(request, 'staff_home/dashboard.html')
-
 @login_required
 @organiser_only
 def checkregistration(request):
@@ -55,14 +54,9 @@ def checkregistration(request):
         sort = f'-{sort}'
     user_profiles = user_profiles.order_by(sort)
 
-    # Pagination
-    paginator = Paginator(user_profiles, 20)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-
-    # Group by team
+    # Group by team (no pagination)
     grouped_users = defaultdict(list)
-    for profile in page_obj:
+    for profile in user_profiles:
         teams = profile.user.team.all()
         if teams.exists():
             for team in teams:
@@ -70,24 +64,22 @@ def checkregistration(request):
         else:
             grouped_users['No Team'].append(profile)
 
-    # **Prepare distinct years here for dropdown**
-    distinct_years = (
-        UserProfile.objects.annotate(
-            reg_year=ExtractYear('user__date_joined')
-        )
+    # Available years for dropdown
+    available_years = (
+        UserProfile.objects
+        .annotate(reg_year=ExtractYear('user__date_joined'))
         .values_list('reg_year', flat=True)
         .distinct()
-        .order_by('reg_year')
+        .order_by('-reg_year')
     )
 
     return render(request, 'staff_home/registration.html', {
         'grouped_users': grouped_users,
-        'page_obj': page_obj,
         'query': query,
         'sort': request.GET.get('sort', ''),
         'direction': direction,
         'event_year': year,
-        'distinct_years': distinct_years,  # pass this to template
+        'available_years': available_years,
     })
 
 

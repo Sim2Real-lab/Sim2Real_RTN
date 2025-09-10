@@ -7,74 +7,49 @@
     <h2>Registration Data</h2>
 
     <!-- Search and Filters -->
-    <form method="get" class="search-filter-form">
-        <input type="text" name="q" placeholder="Search..." value="{{ query }}">
-        
-        <select name="event_year">
-    <option value="">All Years</option>
-    {% for y in distinct_years %}
-        <option value="{{ y }}" {% if event_year|stringformat:"s" == y|stringformat:"s" %}selected{% endif %}>{{ y }}</option>
-    {% endfor %}
-</select>
+    <form method="get" class="filter-form">
+    <input type="text" name="q" placeholder="Search..." value="{{ query }}" />
 
+    <select name="event_year" class="filter-dropdown" onchange="this.form.submit()">
+        <option value="">All Years</option>
+        {% for y in available_years %}
+            <option value="{{ y }}" {% if event_year|stringformat:"s" == y|stringformat:"s" %}selected{% endif %}>{{ y }}</option>
+        {% endfor %}
+    </select>
 
+    <button type="submit">Filter</button>
+</form>
 
-        <button type="submit">Apply</button>
-    </form>
-
-    <!-- Data Table -->
-    <table class="styled-table">
-        <thead>
-            <tr>
-                <th>
-                    <a href="?sort=user__first_name&direction={% if sort == 'user__first_name' and direction == 'asc' %}desc{% else %}asc{% endif %}{% if query %}&q={{ query }}{% endif %}{% if event_year %}&event_year={{ event_year }}{% endif %}">
-                        First Name
-                        {% if sort == "user__first_name" %}
-                            {% if direction == "asc" %} ▲ {% else %} ▼ {% endif %}
-                        {% endif %}
-                    </a>
-                </th>
-                <th>
-                    <a href="?sort=user__last_name&direction={% if sort == 'user__last_name' and direction == 'asc' %}desc{% else %}asc{% endif %}{% if query %}&q={{ query }}{% endif %}{% if event_year %}&event_year={{ event_year }}{% endif %}">
-                        Last Name
-                        {% if sort == "user__last_name" %}
-                            {% if direction == "asc" %} ▲ {% else %} ▼ {% endif %}
-                        {% endif %}
-                    </a>
-                </th>
-                <th>College</th>
-                <th>Branch</th>
-                <th>Team</th>
+<table class="data-table">
+    <thead>
+        <tr>
+            <th><a href="?sort=user__first_name&direction={% if sort == 'user__first_name' and direction == 'asc' %}desc{% else %}asc{% endif %}">First Name</a></th>
+            <th><a href="?sort=user__last_name&direction={% if sort == 'user__last_name' and direction == 'asc' %}desc{% else %}asc{% endif %}">Last Name</a></th>
+            <th>College</th>
+            <th>Branch</th>
+            <th>Team</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for team_name, members in grouped_users.items %}
+            <tr class="team-row">
+                <td colspan="5"><strong>Team: {{ team_name }}</strong></td>
             </tr>
-        </thead>
-        <tbody>
-            {% for team, profiles in grouped_users.items %}
-                {% for profile in profiles %}
+            {% for profile in members %}
                 <tr>
                     <td>{{ profile.user.first_name }}</td>
                     <td>{{ profile.user.last_name }}</td>
                     <td>{{ profile.college }}</td>
                     <td>{{ profile.branch }}</td>
-                    <td>
-                        {% with profile.user.team.all as teams %}
-                            {% if teams %}
-                                {% for t in teams %}
-                                    {{ t.name }}{% if not forloop.last %}, {% endif %}
-                                {% endfor %}
-                            {% else %}
-                                No Team
-                            {% endif %}
-                        {% endwith %}
-                    </td>
+                    <td>{{ team_name }}</td>
                 </tr>
-                {% endfor %}
-            {% empty %}
-                <tr><td colspan="5">No registrations found.</td></tr>
             {% endfor %}
-        </tbody>
-    </table>
+        {% endfor %}
+    </tbody>
+</table>
 
-    <!-- Pagination -->
+
+    <!-- Pagination 
     <div class="pagination">
         {% if page_obj.has_previous %}
             <a href="?page=1{% if query %}&q={{ query }}{% endif %}{% if sort %}&sort={{ sort }}&direction={{ direction }}{% endif %}{% if event_year %}&event_year={{ event_year }}{% endif %}">&laquo; First</a>
@@ -88,7 +63,7 @@
             <a href="?page={{ page_obj.paginator.num_pages }}{% if query %}&q={{ query }}{% endif %}{% if sort %}&sort={{ sort }}&direction={{ direction }}{% endif %}{% if event_year %}&event_year={{ event_year }}{% endif %}">Last &raquo;</a>
         {% endif %}
     </div>
-</div>
+</div>-->
 {% endblock %}
 
 {% block extra_styles %}
