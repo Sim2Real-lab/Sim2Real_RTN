@@ -26,21 +26,23 @@ def login_view(request):
     if request.method == 'POST':
         email = request.POST.get('email')
         password = request.POST.get('password')
-
+        try:
+            user_obj = User.objects.get(username=email)
+        except User.DoesNotExist:
+            user_obj = None
+        if user_obj and not user_obj.is_active:
+            resend_url = reverse('resend_verification') + f'?email={email}'
+            return render(request, 'accounts/login.html', {
+                'login_error': f'Your account is not active. '
+                               f'Please <a href="{resend_url}">resend verification</a> to activate it.'
+            })
         user = authenticate(request, username=email, password=password)
         if user is not None:
-            if user.is_active:
-                auth_login(request, user)
-                if hasattr(user, 'userrole') and user.userrole.is_organiser:
-                    return redirect('staff_dashboard')
-                else:
-                    return redirect('home')  # or redirect to dashboard
-            elif not user.is_active:
-                resend_url = reverse('resend_verification') + f'?email={email}'
-                return render(request, 'accounts/login.html', {
-        'login_error': f'Your account is not active. '
-                       f'Please <a href="{resend_url}">resend verification</a> to activate it.'
-    })
+            auth_login(request, user)
+            if hasattr(user, 'userrole') and user.userrole.is_organiser:
+                return redirect('staff_dashboard')
+            else:
+                return redirect('home')
         else:
             return render(request, 'accounts/login.html', {
                 'login_error': 'Invalid email or password'
