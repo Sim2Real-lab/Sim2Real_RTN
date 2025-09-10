@@ -36,10 +36,11 @@
                     <button id="submit" class="button" type="submit">SIGN IN</button>
                 </div>
                 {% if login_error %}
-                <div class="error-message">
-                    {{ login_error }}
-                </div>
-                {% endif %}
+<div class="error-message" style="color: red; margin-top: 10px;">
+    {{ login_error|safe }}
+</div>
+{% endif %}
+
                 <div class="hr"></div>
                 {% if messages %}
                 <ul>
