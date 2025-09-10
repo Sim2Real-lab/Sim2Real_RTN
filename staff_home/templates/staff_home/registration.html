@@ -12,9 +12,10 @@
         
         <select name="event_year">
             <option value="">All Years</option>
-            {% for y in page_obj.paginator.object_list.values_list('user__date_joined__year', flat=True).distinct %}
-                <option value="{{ y }}" {% if event_year|stringformat:"s" == y|stringformat:"s" %}selected{% endif %}>{{ y }}</option>
-            {% endfor %}
+            {% for y in available_years %}
+    <option value="{{ y }}" {% if event_year|stringformat:"s" == y|stringformat:"s" %}selected{% endif %}>{{ y }}</option>
+{% endfor %}
+
         </select>
 
         <button type="submit">Apply</button>
