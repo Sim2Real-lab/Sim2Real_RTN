@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from django.http import Http404
 from django.contrib.auth.decorators import login_required
-from .decorator import organiser_only,profile_updated
+from .decorators import organiser_only,profile_updated
 from django.contrib import messages
 from django.http import HttpResponseForbidden,HttpResponseNotFound
 from queries.models import Query
@@ -19,35 +19,39 @@ from django.core.paginator import Paginator
 def staff_dashboard(request):
     return render(request, 'staff_home/dashboard.html')
 
+from django.db.models.functions import ExtractYear
+
 @login_required
 @organiser_only
 def checkregistration(request):
     query = request.GET.get('q', '')
     filter_status = request.GET.get('filter', '')
-    sort = request.GET.get('sort', 'first_name')  # default sorting
+    sort = request.GET.get('sort', 'user__first_name')  # safer: refer to User model
     direction = request.GET.get('direction', 'asc')
-    year = request.GET.get('event_year', '2025')  # default to 2025
+    year = request.GET.get('event_year', '')  # don’t force 2025
 
-    user_profiles = UserProfile.objects.select_related('user').prefetch_related('user__team')
+    user_profiles = UserProfile.objects.select_related('user')
 
     if query:
         user_profiles = user_profiles.filter(
-            Q(first_name__icontains=query) |
-            Q(last_name__icontains=query) |
+            Q(user__first_name__icontains=query) |
+            Q(user__last_name__icontains=query) |
             Q(college__icontains=query) |
             Q(branch__icontains=query)
         )
 
     if filter_status == 'registered':
-        user_profiles = user_profiles.filter(user__team__isnull=False, user__team__is_registered=True).distinct()
+        user_profiles = user_profiles.filter(user__teams__is_registered=True).distinct()
     elif filter_status == 'not_registered':
-        user_profiles = user_profiles.filter(user__team__isnull=False, user__team__is_registered=False).distinct()
+        user_profiles = user_profiles.filter(user__teams__is_registered=False).distinct()
     elif filter_status == 'no_team':
-        user_profiles = user_profiles.filter(user__team__isnull=True).distinct()
+        user_profiles = user_profiles.filter(user__teams__isnull=True).distinct()
 
-    # Filter by event year
+    # Filter by registration year
     if year:
-        user_profiles = user_profiles.filter(event_year=year)
+        user_profiles = user_profiles.annotate(
+            reg_year=ExtractYear('user__date_joined')
+        ).filter(reg_year=year)
 
     # Sorting
     if direction == 'desc':
@@ -64,8 +68,9 @@ def checkregistration(request):
         'filter': filter_status,
         'sort': request.GET.get('sort', ''),
         'direction': direction,
-        'event_year': year
+        'event_year': year,
     })
+
 
 @login_required
 @organiser_only
