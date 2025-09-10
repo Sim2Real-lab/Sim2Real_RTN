@@ -43,9 +43,14 @@ def checkregistration(request):
 
     # Filter by registration year
     if year:
-        user_profiles = user_profiles.annotate(
-            reg_year=ExtractYear('user__date_joined')
-        ).filter(reg_year=year)
+        try:
+            year_int = int(year)
+            user_profiles = user_profiles.annotate(
+                reg_year=ExtractYear('user__date_joined')
+        ).filter(reg_year=year_int)
+        except ValueError:
+            pass
+
 
     # Sorting
     if direction == 'desc':

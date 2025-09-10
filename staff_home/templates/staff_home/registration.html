@@ -524,35 +524,37 @@ table td ul li {
   <button type="submit">Apply</button>
 </form>
 <table>
+ <table>
   <thead>
     <tr>
-      <th>Name</th>
-      <th>Contact</th>
-      <th>Branch</th>
-      <th>College</th>
-      <th>Year</th>
-      <th>DOB</th>
-      <th>Team Name</th>
-      <th>Registered</th>
+      {% for field, label in [
+        ('first_name', 'Name'),
+        ('contact', 'Contact'),
+        ('branch', 'Branch'),
+        ('college', 'College'),
+        ('year', 'Year'),
+        ('dob', 'DOB'),
+        ('team', 'Team Name'),
+        ('registered', 'Registered')
+      ] %}
+        {% comment %} Determine new sort direction {% endcomment %}
+        {% if sort == field %}
+            {% if direction == 'asc' %}
+                {% set new_dir = 'desc' %}
+            {% else %}
+                {% set new_dir = 'asc' %}
+            {% endif %}
+        {% else %}
+            {% set new_dir = 'asc' %}
+        {% endif %}
+        <th>
+          <a href="?q={{ query }}&filter={{ filter }}&event_year={{ event_year }}&sort={{ field }}&direction={{ new_dir }}">
+            {{ label }}
+            {% if sort == field %}
+                {% if direction == 'asc' %}▲{% else %}▼{% endif %}
+            {% endif %}
+          </a>
+        </th>
+      {% endfor %}
     </tr>
   </thead>
-  <tbody>
-    {% for team_name, profiles in grouped_users.items %}
-      <tr>
-        <td colspan="8" style="text-align:center;font-weight:bold;background-color:#222">{{ team_name }}</td>
-      </tr>
-      {% for profile in profiles %}
-        <tr>
-          <td>{{ profile.user.first_name }} {{ profile.user.last_name }}</td>
-          <td>{{ profile.contact }}</td>
-          <td>{{ profile.branch }}</td>
-          <td>{{ profile.college }}</td>
-          <td>{{ profile.year }}</td>
-          <td>{{ profile.dob }}</td>
-          <td>{{ team_name }}</td>
-          <td>{% if profile.user.team.exists %}Yes{% else %}No{% endif %}</td>
-        </tr>
-      {% endfor %}
-    {% endfor %}
-  </tbody>
-</table>
