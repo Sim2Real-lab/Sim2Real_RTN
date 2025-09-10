@@ -525,30 +525,70 @@ table td ul li {
 <div class="table-responsive-wrapper">
   <table>
     <thead>
-      <tr>
-        {% for field, label in [
-          ('first_name', 'Name'),
-          ('contact', 'Contact'),
-          ('branch', 'Branch'),
-          ('college', 'College'),
-          ('year', 'Year'),
-          ('dob', 'DOB'),
-          ('team', 'Team Name'),
-          ('registered', 'Registered')
-        ] %}
-          <th>
-            <a href="?q={{ query }}&filter={{ filter }}&event_year={{ event_year }}&sort={{ field }}&direction={% if sort == field and direction == 'asc' %}desc{% else %}asc{% endif %}">
-              {{ label }}
-              {% if sort == field %}
-                {% if direction == 'asc' %}▲{% else %}▼{% endif %}
-              {% endif %}
-            </a>
-          </th>
-        {% endfor %}
-      </tr>
-    </thead>
-    <tbody>
-      {# your rows here #}
-    </tbody>
-  </table>
-</div>
+  <tr>
+    <th>
+      <a href="?q={{ query }}&filter={{ filter }}&event_year={{ event_year }}&sort=first_name&direction={% if sort == 'first_name' and direction == 'asc' %}desc{% else %}asc{% endif %}">
+        Name
+        {% if sort == 'first_name' %}
+          {% if direction == 'asc' %}▲{% else %}▼{% endif %}
+        {% endif %}
+      </a>
+    </th>
+    <th>
+      <a href="?q={{ query }}&filter={{ filter }}&event_year={{ event_year }}&sort=contact&direction={% if sort == 'contact' and direction == 'asc' %}desc{% else %}asc{% endif %}">
+        Contact
+        {% if sort == 'contact' %}
+          {% if direction == 'asc' %}▲{% else %}▼{% endif %}
+        {% endif %}
+      </a>
+    </th>
+    <th>
+      <a href="?q={{ query }}&filter={{ filter }}&event_year={{ event_year }}&sort=branch&direction={% if sort == 'branch' and direction == 'asc' %}desc{% else %}asc{% endif %}">
+        Branch
+        {% if sort == 'branch' %}
+          {% if direction == 'asc' %}▲{% else %}▼{% endif %}
+        {% endif %}
+      </a>
+    </th>
+    <th>
+      <a href="?q={{ query }}&filter={{ filter }}&event_year={{ event_year }}&sort=college&direction={% if sort == 'college' and direction == 'asc' %}desc{% else %}asc{% endif %}">
+        College
+        {% if sort == 'college' %}
+          {% if direction == 'asc' %}▲{% else %}▼{% endif %}
+        {% endif %}
+      </a>
+    </th>
+    <th>
+      <a href="?q={{ query }}&filter={{ filter }}&event_year={{ event_year }}&sort=year&direction={% if sort == 'year' and direction == 'asc' %}desc{% else %}asc{% endif %}">
+        Year
+        {% if sort == 'year' %}
+          {% if direction == 'asc' %}▲{% else %}▼{% endif %}
+        {% endif %}
+      </a>
+    </th>
+    <th>
+      <a href="?q={{ query }}&filter={{ filter }}&event_year={{ event_year }}&sort=dob&direction={% if sort == 'dob' and direction == 'asc' %}desc{% else %}asc{% endif %}">
+        DOB
+        {% if sort == 'dob' %}
+          {% if direction == 'asc' %}▲{% else %}▼{% endif %}
+        {% endif %}
+      </a>
+    </th>
+    <th>
+      <a href="?q={{ query }}&filter={{ filter }}&event_year={{ event_year }}&sort=team&direction={% if sort == 'team' and direction == 'asc' %}desc{% else %}asc{% endif %}">
+        Team Name
+        {% if sort == 'team' %}
+          {% if direction == 'asc' %}▲{% else %}▼{% endif %}
+        {% endif %}
+      </a>
+    </th>
+    <th>
+      <a href="?q={{ query }}&filter={{ filter }}&event_year={{ event_year }}&sort=registered&direction={% if sort == 'registered' and direction == 'asc' %}desc{% else %}asc{% endif %}">
+        Registered
+        {% if sort == 'registered' %}
+          {% if direction == 'asc' %}▲{% else %}▼{% endif %}
+        {% endif %}
+      </a>
+    </th>
+  </tr>
+</thead>
