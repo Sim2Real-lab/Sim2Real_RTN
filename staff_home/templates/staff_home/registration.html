@@ -141,6 +141,40 @@
             pointer-events: none;
         }
     </style>
+
+    /* Fix dropdown colors */
+select {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background-color: #2a2a3c; /* dark background */
+    color: var(--text-color);  /* white text */
+    flex: 1;
+    min-width: 200px;
+    transition: border-color 0.3s ease;
+    appearance: none; /* removes default white style in some browsers */
+}
+
+select option {
+    background-color: #2a2a3c; /* dark background for options */
+    color: var(--text-color);  /* white text for dropdown options */
+}
+
+/* Ensure table text is visible */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: #1e1e2f; /* darker background instead of translucent */
+    color: var(--text-color); /* force white text */
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+td {
+    color: var(--text-color); /* force visibility inside rows */
+}
+
 </head>
 <body>
     <div class="main-content-area">
