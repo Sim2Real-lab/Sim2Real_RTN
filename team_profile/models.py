@@ -14,7 +14,7 @@ class Team(models.Model):
     payment_ref = models.CharField(max_length=50, blank=True, null=True)
 
     def is_registered(self):
-        return self.is_paid
+        return self.is_paid and self.is_verified
     def is_outsider(self):
         return any(member.profile.college() != "National Institute of Technology Karnataka" for member in self.members.all())
 
