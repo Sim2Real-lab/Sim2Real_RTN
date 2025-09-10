@@ -107,6 +107,7 @@ h1, h2, h3, h4, h5, h6 {
     position: relative;
     overflow: hidden;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
@@ -127,35 +128,7 @@ h1, h2, h3, h4, h5, h6 {
     color: white;
     font-size: 4.5rem; /* Larger font size */
     text-shadow: 2px 2px #ff00c8, -2px -2px #00f0ff; /* More pronounced shadow */
-    /*animation: glitch-anim 2.5s infinite alternate ease-in-out; /* Adjusted animation speed */
     line-height: 1.1; /* Tighter line height */
-}
-
-@keyframes glitch-anim {
-    0% {
-        text-shadow: 3px 3px #ff00c8, -3px -3px #00f0ff;
-        transform: translate(0);
-    }
-    20% {
-        text-shadow: -3px -3px #ff00c8, 3px 3px #00f0ff;
-        transform: translate(-3px, 3px);
-    }
-    40% {
-        text-shadow: 3px -3px #ff00c8, -3px 3px #00f0ff;
-        transform: translate(3px, -3px);
-    }
-    60% {
-        text-shadow: -3px 3px #ff00c8, 3px -3px #00f0ff;
-        transform: translate(-3px, -3px);
-    }
-    80% {
-        text-shadow: 3px 3px #ff00c8, -3px -3px #00f0ff;
-        transform: translate(3px, 3px);
-    }
-    100% {
-        text-shadow: -3px -3px #ff00c8, 3px 3px #00f0ff;
-        transform: translate(0);
-    }
 }
 
 .btn-glow {
@@ -495,7 +468,7 @@ h1, h2, h3, h4, h5, h6 {
     border-radius: 35px;
     position: relative;
     box-shadow: inset 0 12px 25px rgba(255,255,255,0.3),
-                inset 0 -12px 25px rgba(0,0,0,0.4);
+                inset 0 -12px 25px rgba(0, 0, 0, 0.4);
     border: 3px solid #7e22ce;
 }
 
@@ -955,13 +928,12 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Robot container animation */
 @keyframes float {
-    0%, 100% { transform: translateY(0) translateX(-50%); }
-    50% { transform: translateY(-15px) translateX(-50%); } /* More pronounced float */
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); } /* More pronounced float */
 }
 /* Re-applying float for robot container to center it */
 .robot-container {
-    left: 50%;
-    transform: translateX(-50%);
+    margin: 0 auto; /* This centers the container now */
 }
 
 /* Scroll-to-Top Button */
@@ -972,8 +944,6 @@ h1, h2, h3, h4, h5, h6 {
     right: 30px; /* Distance from right */
     z-index: 99; /* High z-index to be on top */
     border-radius: 50%; /* Make it round */
-    /*width: 55px; /* Size */
-    /*height: 55px; /* Size */
     font-size: 1.4rem; /* Icon size */
     box-shadow: 0 5px 15px rgba(168, 85, 247, 0.7); /* Glow */
     transition: all 0.3s ease;
@@ -1022,10 +992,11 @@ h1, h2, h3, h4, h5, h6 {
     .hero-section p {
         font-size: 1rem !important;
     }
+    /* Fixed robot-container centering for mobile */
     .robot-container {
-        margin-top: 50px;
+        margin: 50px auto;
         padding: 20px;
-        left: 20%;
+        /* The `transform` and `left` properties are no longer needed here */
     }
     .robot {
         width: 200px; /* Smaller robot on mobile */
@@ -1061,6 +1032,7 @@ h1, h2, h3, h4, h5, h6 {
     .timeline-content h5 {
         font-size: 1.2rem;
     }
+    /* Fixed testimonial alignment */
     .testimonial {
         flex-direction: column !important;
         text-align: center;
@@ -1096,8 +1068,6 @@ h1, h2, h3, h4, h5, h6 {
     #scrollToTopBtn {
         bottom: 20px;
         right: 20px;
-        /*width: 45px;*/
-        /*height: 45px;*/
         font-size: 1.2rem;
     }
 }
@@ -1112,7 +1082,7 @@ h1, h2, h3, h4, h5, h6 {
     }
     .robot-container {
         padding: 15px;
-        left:30%;
+        /* The `left` and `transform` properties are no longer needed here */
     }
     .robot {
         width: 180px;
