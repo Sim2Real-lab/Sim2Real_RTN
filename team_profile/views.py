@@ -253,8 +253,8 @@ def payment_view(request):
         form = PaymentProofForm(request.POST, request.FILES, instance=team)
         if form.is_valid():
             form.save()
-            team.is_paid = True  # mark as payment proof submitted
-            team.is_verified = False  # wait for organiser verification
+            team.is_paid() = True  # mark as payment proof submitted
+            team.is_verified() = False  # wait for organiser verification
             team.save()
             messages.success(request, "Payment proof uploaded. Waiting for verification by organisers.")
             return redirect('teamprofile')
