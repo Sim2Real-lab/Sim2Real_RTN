@@ -21,7 +21,6 @@ from collections import defaultdict
 def staff_dashboard(request):
     return render(request, 'staff_home/dashboard.html')
 
-
 @login_required
 @organiser_only
 def checkregistration(request):
@@ -47,10 +46,9 @@ def checkregistration(request):
             year_int = int(year)
             user_profiles = user_profiles.annotate(
                 reg_year=ExtractYear('user__date_joined')
-        ).filter(reg_year=year_int)
+            ).filter(reg_year=year_int)
         except ValueError:
             pass
-
 
     # Sorting
     if direction == 'desc':
@@ -72,6 +70,16 @@ def checkregistration(request):
         else:
             grouped_users['No Team'].append(profile)
 
+    # **Prepare distinct years here for dropdown**
+    distinct_years = (
+        UserProfile.objects.annotate(
+            reg_year=ExtractYear('user__date_joined')
+        )
+        .values_list('reg_year', flat=True)
+        .distinct()
+        .order_by('reg_year')
+    )
+
     return render(request, 'staff_home/registration.html', {
         'grouped_users': grouped_users,
         'page_obj': page_obj,
@@ -79,7 +87,9 @@ def checkregistration(request):
         'sort': request.GET.get('sort', ''),
         'direction': direction,
         'event_year': year,
+        'distinct_years': distinct_years,  # pass this to template
     })
+
 
 @login_required
 @organiser_only
