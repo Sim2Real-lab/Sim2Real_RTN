@@ -13,25 +13,26 @@ from .forms import AnnouncmentForm
 from .models import Announcments
 from accounts.models import UserRole
 from django.core.paginator import Paginator
+from django.db.models.functions import ExtractYear
+from collections import defaultdict
 @login_required
 @organiser_only
 @profile_updated
 def staff_dashboard(request):
     return render(request, 'staff_home/dashboard.html')
 
-from django.db.models.functions import ExtractYear
 
 @login_required
 @organiser_only
 def checkregistration(request):
     query = request.GET.get('q', '')
-    filter_status = request.GET.get('filter', '')
-    sort = request.GET.get('sort', 'user__first_name')  # safer: refer to User model
+    sort = request.GET.get('sort', 'user__first_name')
     direction = request.GET.get('direction', 'asc')
-    year = request.GET.get('event_year', '')  # don’t force 2025
+    year = request.GET.get('event_year', '')
 
-    user_profiles = UserProfile.objects.select_related('user')
+    user_profiles = UserProfile.objects.select_related('user').prefetch_related('user__team')
 
+    # Search
     if query:
         user_profiles = user_profiles.filter(
             Q(user__first_name__icontains=query) |
@@ -39,13 +40,6 @@ def checkregistration(request):
             Q(college__icontains=query) |
             Q(branch__icontains=query)
         )
-
-    if filter_status == 'registered':
-        user_profiles = user_profiles.filter(user__teams__is_registered=True).distinct()
-    elif filter_status == 'not_registered':
-        user_profiles = user_profiles.filter(user__teams__is_registered=False).distinct()
-    elif filter_status == 'no_team':
-        user_profiles = user_profiles.filter(user__teams__isnull=True).distinct()
 
     # Filter by registration year
     if year:
@@ -58,19 +52,29 @@ def checkregistration(request):
         sort = f'-{sort}'
     user_profiles = user_profiles.order_by(sort)
 
+    # Pagination
     paginator = Paginator(user_profiles, 20)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
+    # Group by team
+    grouped_users = defaultdict(list)
+    for profile in page_obj:
+        teams = profile.user.team.all()
+        if teams.exists():
+            for team in teams:
+                grouped_users[team.name].append(profile)
+        else:
+            grouped_users['No Team'].append(profile)
+
     return render(request, 'staff_home/registration.html', {
+        'grouped_users': grouped_users,
         'page_obj': page_obj,
         'query': query,
-        'filter': filter_status,
         'sort': request.GET.get('sort', ''),
         'direction': direction,
         'event_year': year,
     })
-
 
 @login_required
 @organiser_only
