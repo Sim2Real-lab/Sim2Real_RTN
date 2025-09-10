@@ -1,73 +1,93 @@
 {% extends 'team_profile/team_base.html' %}
 {% block extra_styles %}
 <style>
-    h2 {
-        color: white;
-        display: block;
-        padding-bottom: 15px;
+    body {
+        font-family: 'Segoe UI', sans-serif;
     }
-    .pay {
-        background-color: #0057e7;
+
+    h2 {
+        color: #ffffff;
+        margin-bottom: 15px;
+        text-align: center;
+        font-weight: 600;
+    }
+
+    p, strong, label {
+        color: #dddddd;
+        font-size: 14px;
+    }
+
+    .container {
+        background-color: rgba(31, 32, 35, 0.9);
+        padding: 30px 25px;
+        border-radius: 15px;
+        margin: 80px auto 0 auto;
+        width: 380px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        box-shadow: 0px 4px 12px rgba(0,0,0,0.4);
+    }
+
+    form {
+        width: 100%;
+        margin-top: 15px;
+    }
+
+    input, select, textarea {
+        background: rgba(128, 128, 128, 0.25);
+        border-radius: 8px;
+        border: 1px solid rgba(255,255,255,0.15);
+        color: #fff;
+        width: 100%;
+        padding: 10px 12px;
+        margin: 10px 0 18px 0;
+        font-size: 14px;
+        transition: background 0.3s ease, border 0.3s ease;
+    }
+
+    input:focus, select:focus, textarea:focus {
+        background-color: rgba(180, 180, 180, 0.25);
+        border: 1px solid #0092e7;
+        outline: none;
+    }
+
+    button {
+        background: linear-gradient(90deg, #0057e7, #0092e7);
         cursor: pointer;
         color: #fff;
-        padding: 7px;
-        border: 0;
-        display: block;
-        margin: 25px auto 0 auto;
-        width: 120px;
-        border-radius: 5px;
-        position: relative;
+        padding: 10px;
+        border: none;
+        font-size: 15px;
+        font-weight: 600;
+        margin: 10px auto 0 auto;
+        width: 100%;
+        border-radius: 8px;
+        transition: all 0.3s ease-in-out;
     }
-    .join:hover {
-        box-shadow: 0px 3px 2px #0092e7 inset;
+
+    button:hover {
+        background: linear-gradient(90deg, #0092e7, #0057e7);
+        box-shadow: 0px 3px 8px rgba(0, 146, 231, 0.4);
     }
-    .container,
-    .container-register {
-        background-color: rgba(31, 32, 35, 0.8);
-        padding: 20px;
-        border-radius: 20px;
-        height: auto;
-        align-content: flex-start;
-        justify-self: center;
-        width:367px;
-        justify-content:center;
-        display:flex;
-        flex-wrap:wrap;
-        flex-direction:column;
-    }
-    .container{
-        margin-top:80px;
-    }
-    .container-register{
-        margin-top:20px;
-    }
-    div {
-        color: #fff;
-    }
-    input {
-        background: rgba(128, 128, 128, 0.305);
-        border-radius: 25px;
-        border: 0;
-        color: #fff;
-    }
-    input:focus {
-        background-color: rgba(118, 112, 112, 0.519);
-    }
-    
+
 </style>
 {% endblock %}
 {% block content %}
 <div class="container">
   <h2>Payment for Team: {{ team.name }}</h2>
   <p>Total members: {{ team.members.count }}</p>
-  <p>Amount to paid: Rs.500/-</p>
-  <strong>By Submitting you confirm that all details are hereby correct. For any concerns raise a query or contact organisers.</strong>
-  <h2>Submit Payment Proof</h2>
-<form method="post" enctype="multipart/form-data">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Upload & Submit</button>
-</form>
+  <p>Amount to be paid: <strong>₹500</strong></p>
+  <p style="margin-bottom: 20px; font-size: 13px; text-align: center;">
+    By submitting, you confirm that all details are correct.  
+    For any concerns, raise a query or contact organisers.
+  </p>
 
+  <h2>Submit Payment Proof</h2>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Upload & Submit</button>
+  </form>
 </div>
 {% endblock %}
