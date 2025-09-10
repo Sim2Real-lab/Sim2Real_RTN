@@ -525,11 +525,36 @@ table td ul li {
 </form>
 <table>
  <table>
-TemplateSyntaxError at /staff/check/registration/
-Invalid block tag on line 543: 'set', expected 'elif', 'else' or 'endif'. Did you forget to register or load this tag?
-Request Method:	GET
-Request URL:	https://sim2real.nitk.ac.in/staff/check/registration/?q=&filter=no_team&event_year=2025
-Django Version:	5.1.7
-Exception Type:	TemplateSyntaxError
-Exception Value:	
-Invalid block tag on line 543: 'set', expected 'elif', 'else' or 'endif'. Did you forget to register or load this tag?
+<thead>
+  <tr>
+    {% for field, label in [
+      ('first_name', 'Name'),
+      ('contact', 'Contact'),
+      ('branch', 'Branch'),
+      ('college', 'College'),
+      ('year', 'Year'),
+      ('dob', 'DOB'),
+      ('team', 'Team Name'),
+      ('registered', 'Registered')
+    ] %}
+      {% if sort == field %}
+        {% if direction == 'asc' %}
+          {% with new_dir="desc" %}
+        {% else %}
+          {% with new_dir="asc" %}
+        {% endif %}
+      {% else %}
+        {% with new_dir="asc" %}
+      {% endif %}
+      <th>
+        <a href="?q={{ query }}&filter={{ filter }}&event_year={{ event_year }}&sort={{ field }}&direction={{ new_dir }}">
+          {{ label }}
+          {% if sort == field %}
+            {% if direction == 'asc' %}▲{% else %}▼{% endif %}
+          {% endif %}
+        </a>
+      </th>
+      {% endwith %}
+    {% endfor %}
+  </tr>
+</thead>
