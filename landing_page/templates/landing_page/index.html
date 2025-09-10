@@ -33,7 +33,7 @@
                 <li class="nav-item"><a class="nav-link" href="#schedule">Time Line</a></li>
                 <li class="nav-item"><a class="nav-link" href="#prizes">Prizes</a></li>
                 <li class="nav-item"><a class="nav-link" href="#brochure">Brochure</a></li>
-                <li class="nav-item"><a class="nav-link" href="#testimonials">Testimonials</a></li> {# New link #}
+                <li class="nav-item"><a class="nav-link" href="#testimonials">Testimonials</a> {# New link #}
                 <li class="nav-item"><a class="nav-link" href="#faq">FAQ</a></li>
                 <li class="nav-item"><a class="nav-link" href="#queries">Queries</a></li>
                 <li class="nav-item"><a class="nav-link" href="{% url 'landing_page:sponsor_page' %}">Sponsor Us</a></li>
@@ -65,7 +65,10 @@
                     <p class="mt-3 fs-5">
                         Join the robotics revolution with Sim2Real Robotech NITK. Explore the real impact of Robotics. Compete, create, and change the future with sim2Real.
                     </p>
-                    <a href="#schedule" class="btn btn-lg btn-glow mt-4">Explore More</a>
+                    <div class="d-flex justify-content-center justify-content-lg-start mt-4">
+                        <a href="#schedule" class="btn btn-lg btn-glow me-3">Explore More</a>
+                        <a href="{% url 'login' %}" class="btn btn-lg btn-sign-in">Sign In</a>
+                    </div>
                 </div>
 
                 <div class="col-lg-6 text-center animate__animated animate__zoomIn mt-5 mt-lg-0 d-flex justify-content-center">
