@@ -526,35 +526,37 @@ table td ul li {
 <table>
  <table>
 <thead>
-  <tr>
-    {% for field, label in [
-      ('first_name', 'Name'),
-      ('contact', 'Contact'),
-      ('branch', 'Branch'),
-      ('college', 'College'),
-      ('year', 'Year'),
-      ('dob', 'DOB'),
-      ('team', 'Team Name'),
-      ('registered', 'Registered')
-    ] %}
-      {% if sort == field %}
+<tr>
+  {% for field, label in [
+    ('first_name', 'Name'),
+    ('contact', 'Contact'),
+    ('branch', 'Branch'),
+    ('college', 'College'),
+    ('year', 'Year'),
+    ('dob', 'DOB'),
+    ('team', 'Team Name'),
+    ('registered', 'Registered')
+  ] %}
+    {% if sort == field %}
         {% if direction == 'asc' %}
-          {% with new_dir="desc" %}
+            {% with new_dir="desc" %}
         {% else %}
-          {% with new_dir="asc" %}
+            {% with new_dir="asc" %}
         {% endif %}
-      {% else %}
+    {% else %}
         {% with new_dir="asc" %}
-      {% endif %}
-      <th>
-        <a href="?q={{ query }}&filter={{ filter }}&event_year={{ event_year }}&sort={{ field }}&direction={{ new_dir }}">
-          {{ label }}
-          {% if sort == field %}
-            {% if direction == 'asc' %}▲{% else %}▼{% endif %}
-          {% endif %}
-        </a>
-      </th>
-      {% endwith %}
-    {% endfor %}
-  </tr>
+    {% endif %}
+
+    <th>
+      <a href="?q={{ query }}&filter={{ filter }}&event_year={{ event_year }}&sort={{ field }}&direction={{ new_dir }}">
+        {{ label }}
+        {% if sort == field %}
+          {% if direction == 'asc' %}▲{% else %}▼{% endif %}
+        {% endif %}
+      </a>
+    </th>
+
+    {% endwith %}
+  {% endfor %}
+</tr>
 </thead>
