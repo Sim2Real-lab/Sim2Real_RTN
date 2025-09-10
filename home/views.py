@@ -16,6 +16,7 @@ from operator import attrgetter
 def home_view(request):
     team = request.user.team.first()
     registered = team.is_registered() if team else False
+    paid = team.is_paid() if team else False
 
     if registered:
         queryset1 = Announcments.objects.filter(category="GENERAL")
@@ -35,7 +36,8 @@ def home_view(request):
     context = {
     'registered': registered,
     'announcements': combined,
-    'show_welcome': show_welcome
+    'show_welcome': show_welcome,
+    'paid':paid,
 }
     return render(request, 'home/index.html', context)
 
