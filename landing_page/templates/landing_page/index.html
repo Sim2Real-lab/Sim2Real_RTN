@@ -20,6 +20,45 @@
 <link rel="apple-touch-icon" sizes="180x180" href="{% static 'assets/sim2real_logo.png' %}">
 <link rel="shortcut icon" href="{% static 'assets/sim2real_logo.png' %}">
 
+    <style>
+        /* This CSS is added to create the gaps and red tongue */
+        .eye.left {
+            left: 20px; /* Adjusting eyes for a slight gap */
+        }
+        .eye.right {
+            right: 20px; /* Adjusting eyes for a slight gap */
+        }
+        .mouth {
+            width: 70px;
+            height: 20px;
+            background: rgba(40, 10, 70, 0.95); /* A dark color to create the "gap" effect */
+            border-radius: 0 0 50% 50%; /* Smiling shape */
+            position: absolute;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 1.5px solid #7e22ce;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            box-shadow: inset 0 3px 6px rgba(255, 255, 255, 0.6);
+            padding-bottom: 5px; /* Creates the visual "gap" from the top */
+        }
+        .tongue {
+            width: 30px;
+            height: 10px;
+            background-color: #d32f2f; /* Red tongue color */
+            border-radius: 0 0 10px 10px;
+        }
+
+        /* Responsive adjustments for buttons */
+        @media (max-width: 575.98px) {
+            .btn-glow, .btn-sign-in {
+                padding: 10px 25px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
 </head>
 <body>
 
@@ -82,7 +121,9 @@
                                 <div class="eye right">
                                     <div class="pupil"></div>
                                 </div>
-                                <div class="mouth"></div>
+                                <div class="mouth">
+                                    <div class="tongue"></div>
+                                </div>
                             </div>
                             <div class="neck"></div>
                             <div class="body">
@@ -132,98 +173,97 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
 
 
-    <section class="schedule-section py-5" id="schedule">
-        <div class="container">
-            <h2 class="text-center text-white mb-5 animate__animated animate__fadeInUp"> Event Schedule</h2>
+        <section class="schedule-section py-5" id="schedule">
+            <div class="container">
+                <h2 class="text-center text-white mb-5 animate__animated animate__fadeInUp"> Event Schedule</h2>
 
-            <div class="timeline">
-                <div class="timeline-item" data-aos="fade-right">
-                    <div class="timeline-date">September 10, 2025, IST: 11:00</div>
-                    <div class="timeline-content">
-                        <h5>Registration</h5>
-                        <p>Event Registration Starts. Click here to <a href="{% url 'signup' %}">Register </a></p>
+                <div class="timeline">
+                    <div class="timeline-item" data-aos="fade-right">
+                        <div class="timeline-date">September 10, 2025, IST: 11:00</div>
+                        <div class="timeline-content">
+                            <h5>Registration</h5>
+                            <p>Event Registration Starts. Click here to <a href="{% url 'signup' %}">Register </a></p>
+                        </div>
                     </div>
-                </div>
 
-                <div class="timeline-item" data-aos="fade-left">
-                    <div class="timeline-date">September 15, 2025, IST : 11:00</div>
-                    <div class="timeline-content">
-                        <h5>Setup and Simulate Round Starts</h5>
-                        <p>The problem statement is given and the Simulation Round Starts</p>
+                    <div class="timeline-item" data-aos="fade-left">
+                        <div class="timeline-date">September 15, 2025, IST : 11:00</div>
+                        <div class="timeline-content">
+                            <h5>Setup and Simulate Round Starts</h5>
+                            <p>The problem statement is given and the Simulation Round Starts</p>
+                        </div>
                     </div>
-                </div>
 
-                <div class="timeline-item" data-aos="fade-right">
-                    <div class="timeline-date">September 23, 2025 IST 23:00</div>
-                    <div class="timeline-content">
-                        <h5>Submission</h5>
-                        <p>Submission of the Simulation of Problem statement.</p>
+                    <div class="timeline-item" data-aos="fade-right">
+                        <div class="timeline-date">September 23, 2025 IST 23:00</div>
+                        <div class="timeline-content">
+                            <h5>Submission</h5>
+                            <p>Submission of the Simulation of Problem statement.</p>
+                        </div>
                     </div>
-                </div>
 
-                <div class="timeline-item" data-aos="fade-left">
-                    <div class="timeline-date">September 24, 2025, IST : 16:00</div>
-                    <div class="timeline-content">
-                        <h5>Shortlist</h5>
-                        <p>Results for the simulation round will be out.</p>
+                    <div class="timeline-item" data-aos="fade-left">
+                        <div class="timeline-date">September 24, 2025, IST : 16:00</div>
+                        <div class="timeline-content">
+                            <h5>Shortlist</h5>
+                            <p>Results for the simulation round will be out.</p>
+                        </div>
                     </div>
-                </div>
 
-                <div class="timeline-item" data-aos="fade-right">
-                    <div class="timeline-date">September 27, 2025 IST 23:00</div>
-                    <div class="timeline-content">
-                        <h5>Real-World Deployment</h5>
-                        <p>Transition projects from simulation to hardware with mentorship support.</p>
+                    <div class="timeline-item" data-aos="fade-right">
+                        <div class="timeline-date">September 27, 2025 IST 23:00</div>
+                        <div class="timeline-content">
+                            <h5>Real-World Deployment</h5>
+                            <p>Transition projects from simulation to hardware with mentorship support.</p>
+                        </div>
                     </div>
-                </div>
 
-                
-                <div class="timeline-item" data-aos="fade-left">
-                    <div class="timeline-date">September 28, 2025 IST 15:00</div>
-                    <div class="timeline-content">
-                        <h5>Closing & Awards</h5>
-                        <p>Showcase your final outcomes, win prizes, and celebrate innovation.</p>
+                    
+                    <div class="timeline-item" data-aos="fade-left">
+                        <div class="timeline-date">September 28, 2025 IST 15:00</div>
+                        <div class="timeline-content">
+                            <h5>Closing & Awards</h5>
+                            <p>Showcase your final outcomes, win prizes, and celebrate innovation.</p>
+                        </div>
                     </div>
-                </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
 
 
-    <section id="prizes" class="py-5">
-        <div class="container">
-            <h2 class="text-center text-white mb-5 animate__animated animate__fadeInUp"> Exciting Prizes Await!</h2>
-            <div class="row row-cols-1 row-cols-md-3 g-4 justify-content-center">
-                <div class="col" data-aos="zoom-in" data-aos-delay="100">
-                    <div class="card h-100 prize-card">
-                        <div class="card-body text-center">
-                            <i class="fas fa-trophy text-warning mb-3 display-4"></i>
-                            <h5 class="card-title text-white">First Place</h5>
-                            <p class="card-text text-light">Grand Cash Prize + Exclusive Robotics Kit + Internship Opportunity</p>
+        <section id="prizes" class="py-5">
+            <div class="container">
+                <h2 class="text-center text-white mb-5 animate__animated animate__fadeInUp"> Exciting Prizes Await!</h2>
+                <div class="row row-cols-1 row-cols-md-3 g-4 justify-content-center">
+                    <div class="col" data-aos="zoom-in" data-aos-delay="100">
+                        <div class="card h-100 prize-card">
+                            <div class="card-body text-center">
+                                <i class="fas fa-trophy text-warning mb-3 display-4"></i>
+                                <h5 class="card-title text-white">First Place</h5>
+                                <p class="card-text text-light">Grand Cash Prize + Exclusive Robotics Kit + Internship Opportunity</p>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="col" data-aos="zoom-in" data-aos-delay="200">
-                    <div class="card h-100 prize-card">
-                        <div class="card-body text-center">
-                            <i class="fas fa-medal text-silver mb-3 display-4"></i>
-                            <h5 class="card-title text-white">Second Place</h5>
-                            <p class="card-text text-light">Significant Cash Prize + Advanced Robotics Modules</p>
+                    <div class="col" data-aos="zoom-in" data-aos-delay="200">
+                        <div class="card h-100 prize-card">
+                            <div class="card-body text-center">
+                                <i class="fas fa-medal text-silver mb-3 display-4"></i>
+                                <h5 class="card-title text-white">Second Place</h5>
+                                <p class="card-text text-light">Significant Cash Prize + Advanced Robotics Modules</p>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="col" data-aos="zoom-in" data-aos-delay="300">
-                    <div class="card h-100 prize-card">
-                        <div class="card-body text-center">
-                            <i class="fas fa-award text-bronze mb-3 display-4"></i>
-                            <h5 class="card-title text-white">Third Place</h5>
+                    <div class="col" data-aos="zoom-in" data-aos-delay="300">
+                        <div class="card h-100 prize-card">
+                            <div class="card-body text-center">
+                                <i class="fas fa-award text-bronze mb-3 display-4"></i>
+                                <h5 class="card-title text-white">Third Place</h5>
                             <p class="card-text text-light">Valuable Cash Prize + Robotics Development Tools</p>
                         </div>
                     </div>
