@@ -32,9 +32,9 @@ def login_view(request):
             user_obj = None
         if user_obj and not user_obj.is_active:
             resend_url = reverse('resend_verification') + f'?email={email}'
+            login_error = f'Your account is not active. Please <a href="{resend_url}" class="resend-link">Click here</a> to resend verification link.'
             return render(request, 'accounts/login.html', {
-                'login_error': f'Your account is not active. '
-                               f'Please <a href="{resend_url}">resend verification</a> to activate it.'
+                'login_error': login_error
             })
         user = authenticate(request, username=email, password=password)
         if user is not None:
