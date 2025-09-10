@@ -1,164 +1,233 @@
-{% extends "staff_home/dashboard.html" %}
+{% load static %}
 
-{% block title %}Registration Check{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User and Team Registrations</title>
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #1c1c3c, #121212);
+            --card-bg: rgba(255, 255, 255, 0.1);
+            --border-color: rgba(255, 255, 255, 0.2);
+            --text-color: #ffffff;
+            --accent-purple: #7b1fa2;
+            --accent-purple-hover: #9c27b0;
+            --accent-green: #66bb6a;
+            --accent-green-hover: #81c784;
+            --accent-red: #ef5350;
+            --accent-red-hover: #e57373;
+        }
 
-{% block content %}
-<div class="container">
-    <h2>Registration Data</h2>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: var(--bg-gradient);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
 
-    <!-- Search and Filters -->
-    <form method="get" class="search-filter-form">
-        <input type="text" name="q" placeholder="Search..." value="{{ query }}">
-        
-        <select name="event_year" onchange="this.form.submit()">
-    <option value="">All Years</option>
-    {% for y in available_years %}
-        <option value="{{ y }}" {% if event_year|stringformat:"s" == y|stringformat:"s" %}selected{% endif %}>{{ y }}</option>
-    {% endfor %}
-</select>
+        .main-content-area {
+            flex: 1;
+            padding: 20px;
+            background: var(--card-bg);
+            border-radius: 16px;
+            margin: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+        }
 
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
 
-        <button type="submit">Apply</button>
-    </form>
+        form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
 
-    <!-- Data Table -->
-    <table class="styled-table">
-        <thead>
-            <tr>
-                <th>
-                    <a href="?sort=user__first_name&direction={% if sort == 'user__first_name' and direction == 'asc' %}desc{% else %}asc{% endif %}{% if query %}&q={{ query }}{% endif %}{% if event_year %}&event_year={{ event_year }}{% endif %}">
-                        First Name
-                        {% if sort == "user__first_name" %}
-                            {% if direction == "asc" %} ▲ {% else %} ▼ {% endif %}
-                        {% endif %}
-                    </a>
-                </th>
-                <th>
-                    <a href="?sort=user__last_name&direction={% if sort == 'user__last_name' and direction == 'asc' %}desc{% else %}asc{% endif %}{% if query %}&q={{ query }}{% endif %}{% if event_year %}&event_year={{ event_year }}{% endif %}">
-                        Last Name
-                        {% if sort == "user__last_name" %}
-                            {% if direction == "asc" %} ▲ {% else %} ▼ {% endif %}
-                        {% endif %}
-                    </a>
-                </th>
-                <th>College</th>
-                <th>Branch</th>
-                <th>Team</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for team, profiles in grouped_users.items %}
-                {% for profile in profiles %}
-                <tr>
-                    <td>{{ profile.user.first_name }}</td>
-                    <td>{{ profile.user.last_name }}</td>
-                    <td>{{ profile.college }}</td>
-                    <td>{{ profile.branch }}</td>
-                    <td>
-                        {% with profile.user.team.all as teams %}
-                            {% if teams %}
-                                {% for t in teams %}
-                                    {{ t.name }}{% if not forloop.last %}, {% endif %}
-                                {% endfor %}
-                            {% else %}
-                                No Team
-                            {% endif %}
-                        {% endwith %}
-                    </td>
-                </tr>
-                {% endfor %}
+        input[type="text"],
+        select {
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-color);
+            flex: 1;
+            min-width: 200px;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        select:focus {
+            border-color: var(--accent-purple);
+            outline: none;
+        }
+
+        button {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 8px;
+            background-color: var(--accent-purple);
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        button:hover {
+            background-color: var(--accent-purple-hover);
+            transform: translateY(-2px);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: rgba(123, 31, 162, 0.2);
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        th:hover {
+            background-color: rgba(123, 31, 162, 0.3);
+        }
+
+        tr:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            gap: 10px;
+        }
+
+        .pagination a {
+            padding: 8px 12px;
+            border-radius: 8px;
+            text-decoration: none;
+            background-color: var(--accent-purple);
+            color: white;
+            transition: background-color 0.3s ease;
+        }
+
+        .pagination a:hover {
+            background-color: var(--accent-purple-hover);
+        }
+
+        .pagination .current {
+            background-color: var(--accent-green);
+            pointer-events: none;
+        }
+        /* Fix dropdown colors */
+select {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background-color: #2a2a3c; /* dark background */
+    color: var(--text-color);  /* white text */
+    flex: 1;
+    min-width: 200px;
+    transition: border-color 0.3s ease;
+    appearance: none; /* removes default white style in some browsers */
+}
+
+select option {
+    background-color: #2a2a3c; /* dark background for options */
+    color: var(--text-color);  /* white text for dropdown options */
+}
+
+/* Ensure table text is visible */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: #1e1e2f; /* darker background instead of translucent */
+    color: var(--text-color); /* force white text */
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+td {
+    color: var(--text-color); /* force visibility inside rows */
+}
+
+    </style>
+
+    
+</head>
+<body>
+    <div class="main-content-area">
+        <h1>User and Team Registrations</h1>
+
+<p>Total groups: {{ grouped_users|length }}</p>
+<p>Total profiles (this page): {{ page_obj.paginator.count }}</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Contact</th>
+      <th>Branch</th>
+      <th>College</th>
+      <th>Year</th>
+      <th>DOB</th>
+      <th>Team</th>
+      <th>Registered</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for team_name, profiles in grouped_users.items %}
+      <tr>
+        <td colspan="8" style="font-weight: bold; text-align:center; background:rgba(255,255,255,0.05)">
+          {{ team_name }}
+        </td>
+      </tr>
+      {% for profile in profiles %}
+        <tr>
+          <td>{{ profile.user.first_name }} {{ profile.user.last_name }}</td>
+          <td>{{ profile.contact }}</td>
+          <td>{{ profile.branch }}</td>
+          <td>{{ profile.college }}</td>
+          <td>{{ profile.year }}</td>
+          <td>{{ profile.dob }}</td>
+          <td>
+            {% for team in profile.user.team.all %}
+              {{ team.name }}{% if not forloop.last %}, {% endif %}
             {% empty %}
-                <tr><td colspan="5">No registrations found.</td></tr>
+              No Team
             {% endfor %}
-        </tbody>
-    </table>
-
-    <!-- Pagination -->
-    <div class="pagination">
-        {% if page_obj.has_previous %}
-            <a href="?page=1{% if query %}&q={{ query }}{% endif %}{% if sort %}&sort={{ sort }}&direction={{ direction }}{% endif %}{% if event_year %}&event_year={{ event_year }}{% endif %}">&laquo; First</a>
-            <a href="?page={{ page_obj.previous_page_number }}{% if query %}&q={{ query }}{% endif %}{% if sort %}&sort={{ sort }}&direction={{ direction }}{% endif %}{% if event_year %}&event_year={{ event_year }}{% endif %}">Previous</a>
-        {% endif %}
-
-        <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
-
-        {% if page_obj.has_next %}
-            <a href="?page={{ page_obj.next_page_number }}{% if query %}&q={{ query }}{% endif %}{% if sort %}&sort={{ sort }}&direction={{ direction }}{% endif %}{% if event_year %}&event_year={{ event_year }}{% endif %}">Next</a>
-            <a href="?page={{ page_obj.paginator.num_pages }}{% if query %}&q={{ query }}{% endif %}{% if sort %}&sort={{ sort }}&direction={{ direction }}{% endif %}{% if event_year %}&event_year={{ event_year }}{% endif %}">Last &raquo;</a>
-        {% endif %}
-    </div>
-</div>
-{% endblock %}
-
-{% block extra_styles %}
-<style>
-    body {
-        background: #121212;
-        color: #f5f5f5;
-        font-family: Arial, sans-serif;
-    }
-    .container {
-        width: 90%;
-        margin: auto;
-    }
-    h2 {
-        text-align: center;
-        margin: 20px 0;
-    }
-    .search-filter-form {
-        display: flex;
-        justify-content: center;
-        margin-bottom: 20px;
-        gap: 10px;
-    }
-    .search-filter-form input,
-    .search-filter-form select,
-    .search-filter-form button {
-        padding: 8px;
-        border-radius: 5px;
-        border: 1px solid #555;
-        background: #1e1e1e;
-        color: #f5f5f5;
-    }
-    .search-filter-form select option {
-        background: #1e1e1e;
-        color: #f5f5f5;
-    }
-    .styled-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 10px;
-        background: #1e1e1e;
-    }
-    .styled-table th, .styled-table td {
-        padding: 10px;
-        border: 1px solid #333;
-        text-align: center;
-    }
-    .styled-table th {
-        background: #292929;
-        cursor: pointer;
-    }
-    .styled-table tr:nth-child(even) {
-        background: #2a2a2a;
-    }
-    .styled-table tr:hover {
-        background: #333333;
-    }
-    .pagination {
-        margin: 20px 0;
-        text-align: center;
-    }
-    .pagination a {
-        margin: 0 5px;
-        padding: 5px 10px;
-        background: #292929;
-        color: #f5f5f5;
-        border-radius: 5px;
-        text-decoration: none;
-    }
-    .pagination a:hover {
-        background: #444;
-    }
-</style>
-{% endblock %}
+          </td>
+          <td>{% if profile.registered %} ✅ {% else %} ❌ {% endif %}</td>
+        </tr>
+      {% endfor %}
+    {% empty %}
+      <tr>
+        <td colspan="8" style="text-align:center; font-style: italic;">
+          No users found.
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>

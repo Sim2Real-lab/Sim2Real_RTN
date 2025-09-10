@@ -41,23 +41,16 @@ def checkregistration(request):
             Q(branch__icontains=query)
         )
 
-    # Get distinct registration years
-    available_years = (
-        UserProfile.objects.annotate(reg_year=ExtractYear('user__date_joined'))
-        .values_list('reg_year', flat=True)
-        .distinct()
-        .order_by('-reg_year')
-    )
-
     # Filter by registration year
     if year:
         try:
             year_int = int(year)
             user_profiles = user_profiles.annotate(
                 reg_year=ExtractYear('user__date_joined')
-            ).filter(reg_year=year_int)
+        ).filter(reg_year=year_int)
         except ValueError:
             pass
+
 
     # Sorting
     if direction == 'desc':
@@ -70,7 +63,6 @@ def checkregistration(request):
     page_obj = paginator.get_page(page_number)
 
     # Group by team
-    from collections import defaultdict
     grouped_users = defaultdict(list)
     for profile in page_obj:
         teams = profile.user.team.all()
@@ -87,8 +79,8 @@ def checkregistration(request):
         'sort': request.GET.get('sort', ''),
         'direction': direction,
         'event_year': year,
-        'available_years': available_years,   # 👈 added
     })
+
 @login_required
 @organiser_only
 def upload_questions(request):
