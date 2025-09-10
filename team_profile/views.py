@@ -149,10 +149,10 @@ def join_team(request):
         form = JoinCodeForm()
     return render(request, 'team_profile/join_team.html', {'form': form})
 
-@transaction.atomic #this ensures Imagine two admins click "Accept" at the same time for two users.If your team has only one spot left, both might get added if the checks don’t run atomically.This leads to overfilled teams and corrupted state.
 @login_required
 @user_view
 @profile_updated
+@transaction.atomic
 def manage_requests(request):
     if not hasattr(request.user, 'led_team'):
         messages.error(request, "You are not a team leader.")
@@ -164,16 +164,7 @@ def manage_requests(request):
     members = team.members.all()
     member_count = team.members.count()
 
-    #print("DEBUG: Team members ->", list(m.username for m in members))
-    if team.is_paid:
-        messages.info(request, "Team is registered and payment completed. No further changes allowed.")
-        return render(request, 'team_profile/manage_requests.html', {
-            'requests': requests,
-            'team_locked': True,
-            'team': team,
-            'members_count': member_count
-        })
-    
+    # ✅ handle POST first
     if request.method == 'POST':
         action = request.POST.get('action')
         req_id = request.POST.get('request_id')
@@ -183,22 +174,33 @@ def manage_requests(request):
             joinrequest.status = 'accepted'
             joinrequest.save()
             team.members.add(joinrequest.user)
-            joinrequest.delete()  # Delete immediately after adding member
+            joinrequest.delete()
             messages.success(request, f"{joinrequest.user.username} added to the team.")
         elif action == 'decline':
             joinrequest.status = 'declined'
             joinrequest.save()
-            joinrequest.delete()  # Clean up declined requests as well
+            joinrequest.delete()
             messages.info(request, f"{joinrequest.user.username}'s request was declined.")
 
         return redirect('manage_requests')
 
+    # ✅ now handle GET logic
+    if team.is_paid and team.is_verified:
+        messages.info(request, "Team is registered and payment completed. No further changes allowed.")
+        team_locked = True
+    elif team.is_paid and not team.is_verified:
+        messages.info(request, "Team payment completed. Waiting for Verification.")
+        team_locked = True
+    else:
+        team_locked = False
+
     return render(request, 'team_profile/manage_requests.html', {
         'requests': requests,
-        'team_locked': False,
+        'team_locked': team_locked,
         'team': team,
         'members_count': member_count
     })
+
 
 @login_required
 @user_view
