@@ -60,10 +60,14 @@
 <div class="container">
   <h2>Payment for Team: {{ team.name }}</h2>
   <p>Total members: {{ team.members.count }}</p>
-  <p>Amount to pay: Rs.500/-</p>
-  <form method="post">
-    {% csrf_token %}
-    <button class="pay" type="submit">Pay and Register</button>
-  </form>
+  <p>Amount to paid: Rs.500/-</p>
+  <strong>By Submitting you confirm that all details are hereby correct. For any concerns raise a query or contact organisers.</strong>
+  <h2>Submit Payment Proof</h2>
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Upload & Submit</button>
+</form>
+
 </div>
 {% endblock %}

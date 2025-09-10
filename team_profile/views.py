@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import JoinRequest,Team
-from .forms import TeamCreationForm, JoinCodeForm
+from .forms import TeamCreationForm, JoinCodeForm, PaymentProofForm
 from django.contrib import messages
 from django.db import transaction
 from .decorator import user_view,profile_updated
@@ -210,8 +210,12 @@ def register_for_event(request):
 
     team = request.user.led_team
 
-    if team.is_paid:
+    if team.is_paid and team.is_verified:
         messages.error(request, "Team is registered and payment completed. No changes allowed.")
+        return redirect('manage_requests')
+    
+    if team.is_paid and not team.is_verified:
+        messages.error(request, "Team payment completed. Waiting for Organisers to verify your status.")
         return redirect('manage_requests')
 
     if team.members.count() < 2:
@@ -245,10 +249,15 @@ def payment_view(request):
     team = request.user.led_team
 
     if request.method == 'POST':
-        # ✅ Simulate payment success
-        team.is_paid = True
-        team.save()
-        messages.success(request, f"Payment successful for team '{team.name}'!")
-        return redirect('teamprofile')
+        form = PaymentProofForm(request.POST, request.FILES, instance=team)
+        if form.is_valid():
+            form.save()
+            team.is_paid = True  # mark as payment proof submitted
+            team.is_verified = False  # wait for organiser verification
+            team.save()
+            messages.success(request, "Payment proof uploaded. Waiting for verification by organisers.")
+            return redirect('teamprofile')
+    else:
+        form = PaymentProofForm(instance=team)
 
-    return render(request, 'team_profile/register_pay.html', {'team': team})
+    return render(request, 'team_profile/register_pay.html', {'team': team, 'form': form})

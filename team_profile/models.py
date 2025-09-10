@@ -9,6 +9,9 @@ class Team(models.Model):
     leader=models.OneToOneField(User,related_name="led_team",on_delete=models.CASCADE)
     members=models.ManyToManyField(User,related_name="team")
     is_paid = models.BooleanField(default=False)
+    is_verified = models.BooleanField(default=False)
+    payment_screenshot = models.ImageField(upload_to="payments/", blank=True, null=True)
+    payment_ref = models.CharField(max_length=50, blank=True, null=True)
 
     def is_registered(self):
         return self.is_paid
