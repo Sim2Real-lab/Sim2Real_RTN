@@ -505,7 +505,7 @@ table td ul li {
         font-size: 0.8rem;
     }
     .action-btn i {
-        font-size: 1rem;
+        font-size: 1.1rem;
     }
 }
 
@@ -618,64 +618,52 @@ table td ul li {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>John Smith</td>
-                            <td>john@example.com</td>
-                            <td>CS</td>
-                            <td>University of Tech</td>
-                            <td>3rd</td>
-                            <td>12/10/2003</td>
-                            <td>Alpha</td>
-                            <td><span style="color: var(--success-color);">Yes</span></td>
-                        </tr>
-                        <tr>
-                            <td>Jane Doe</td>
-                            <td>jane@example.com</td>
-                            <td>EE</td>
-                            <td>State College</td>
-                            <td>4th</td>
-                            <td>05/22/2002</td>
-                            <td>Alpha</td>
-                            <td><span style="color: var(--success-color);">Yes</span></td>
-                        </tr>
-                        <tr>
-                            <td>Michael Johnson</td>
-                            <td>mike@example.com</td>
-                            <td>ME</td>
-                            <td>City University</td>
-                            <td>2nd</td>
-                            <td>08/15/2004</td>
-                            <td>
-                                <span style="font-style: italic; opacity: 0.8;">Not part of any team</span>
-                            </td>
-                            <td><span style="color: var(--warning-color);">No</span></td>
-                        </tr>
-                        <tr>
-                            <td>Sarah Chen</td>
-                            <td>sarah@example.com</td>
-                            <td>CS</td>
-                            <td>University of Tech</td>
-                            <td>3rd</td>
-                            <td>03/01/2003</td>
-                            <td>
-                                Beta
-                            </td>
-                            <td><span style="color: var(--success-color);">Yes</span></td>
-                        </tr>
-                        <tr>
-                            <td>David Lee</td>
-                            <td>david@example.com</td>
-                            <td>EE</td>
-                            <td>State College</td>
-                            <td>4th</td>
-                            <td>11/11/2002</td>
-                            <td>
-                                Beta
-                            </td>
-                            <td><span style="color: var(--success-color);">Yes</span></td>
-                        </tr>
+                        {% for team_name, user_list in grouped_users.items %}
+                            {% for profile in user_list %}
+                                <tr>
+                                    <td>{{ profile.user.first_name }} {{ profile.user.last_name }}</td>
+                                    <td>{{ profile.user.email }}</td>
+                                    <td>{{ profile.branch }}</td>
+                                    <td>{{ profile.college }}</td>
+                                    <td>{{ profile.year }}</td>
+                                    <td>{{ profile.dob }}</td>
+                                    <td>
+                                        {% if team_name == 'No Team' %}
+                                            <span style="font-style: italic; opacity: 0.8;">Not part of any team</span>
+                                        {% else %}
+                                            {{ team_name }}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if profile.is_registered %}
+                                            <span style="color: var(--success-color);">Yes</span>
+                                        {% else %}
+                                            <span style="color: var(--warning-color);">No</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% endfor %}
                     </tbody>
                 </table>
+            </div>
+
+            <div style="margin-top: 20px; text-align: center;">
+                <span class="step-links">
+                    {% if page_obj.has_previous %}
+                        <a href="?page=1&q={{ query }}&filter={{ filter }}&event_year={{ event_year }}&sort={{ sort }}&direction={{ direction }}">&laquo; first</a>
+                        <a href="?page={{ page_obj.previous_page_number }}&q={{ query }}&filter={{ filter }}&event_year={{ event_year }}&sort={{ sort }}&direction={{ direction }}">previous</a>
+                    {% endif %}
+            
+                    <span class="current">
+                        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                    </span>
+            
+                    {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}&q={{ query }}&filter={{ filter }}&event_year={{ event_year }}&sort={{ sort }}&direction={{ direction }}">next</a>
+                        <a href="?page={{ page_obj.paginator.num_pages }}&q={{ query }}&filter={{ filter }}&event_year={{ event_year }}&sort={{ sort }}&direction={{ direction }}">last &raquo;</a>
+                    {% endif %}
+                </span>
             </div>
         </div>
 
