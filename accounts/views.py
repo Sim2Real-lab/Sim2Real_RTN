@@ -165,32 +165,36 @@ def activate(request, uidb64, token):
         return HttpResponse('Activation link is invalid or has expired.')
 
 def resend_verification_view(request):
-    if request.method=="POST":
-        email=request.POST.get('email')
-        user_model = get_user_model()
+    email = request.GET.get('email') or request.POST.get('email')
+    user_model = get_user_model()
 
-        try:
-            user = user_model.objects.get(email=email)
-            if user.is_active:
-                messages.info(request, 'Your account is already active. You can log in.')
-                return redirect('login')
-            # Resend verification email
-            uid = urlsafe_base64_encode(force_bytes(user.pk))
-            token = account_activation_token.make_token(user)
-            verification_link = request.build_absolute_uri(
-                reverse('activate', kwargs={'uidb64': uid, 'token': token})
-            )
+    if not email:
+        messages.error(request, "No email provided.")
+        return redirect('login')
 
-            subject = 'Resend - Verify your SIM2REAL account'
-            message = f'Hi again! Click below to verify your account:\n\n{verification_link}'
-            send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [email], fail_silently=False)
-
-            messages.success(request, 'Verification email resent. Please check your inbox.')
+    try:
+        user = user_model.objects.get(email=email)
+        if user.is_active:
+            messages.info(request, 'Your account is already active. You can log in.')
             return redirect('login')
-        except user_model.DoesNotExist:
-            messages.error(request, 'No account found with that email.')
-            return render(request, 'accounts/signup.html')
-    return render(request, 'accounts/login.html')
+
+        # Resend verification email
+        uid = urlsafe_base64_encode(force_bytes(user.pk))
+        token = account_activation_token.make_token(user)
+        verification_link = request.build_absolute_uri(
+            reverse('activate', kwargs={'uidb64': uid, 'token': token})
+        )
+
+        subject = 'Resend - Verify your SIM2REAL account'
+        message = f'Hi again! Click below to verify your account:\n\n{verification_link}'
+        send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [email], fail_silently=False)
+
+        messages.success(request, 'Verification email resent. Please check your inbox.')
+        return redirect('login')
+
+    except user_model.DoesNotExist:
+        messages.error(request, 'No account found with that email.')
+        return render(request, 'accounts/signup.html')
 
 def request_otp_view(request):
     if request.method == "POST":
