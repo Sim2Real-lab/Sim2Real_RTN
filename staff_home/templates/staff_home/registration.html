@@ -10,13 +10,13 @@
     <form method="get" class="search-filter-form">
         <input type="text" name="q" placeholder="Search..." value="{{ query }}">
         
-        <select name="event_year">
-            <option value="">All Years</option>
-            {% for y in available_years %}
-    <option value="{{ y }}" {% if event_year|stringformat:"s" == y|stringformat:"s" %}selected{% endif %}>{{ y }}</option>
-{% endfor %}
+        <select name="event_year" onchange="this.form.submit()">
+    <option value="">All Years</option>
+    {% for y in available_years %}
+        <option value="{{ y }}" {% if event_year|stringformat:"s" == y|stringformat:"s" %}selected{% endif %}>{{ y }}</option>
+    {% endfor %}
+</select>
 
-        </select>
 
         <button type="submit">Apply</button>
     </form>
