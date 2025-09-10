@@ -245,20 +245,27 @@ def payment_view(request):
     if not hasattr(request.user, 'led_team'):
         messages.error(request, "You don't lead any team.")
         return redirect('teamprofile')
+
     team = request.user.led_team
-    if team.is_paid(request):
+
+    # Just check the boolean field
+    if team.is_paid:
+        messages.info(request, "Payment proof already submitted.")
         return redirect('teamprofile')
 
     if request.method == 'POST':
         form = PaymentProofForm(request.POST, request.FILES, instance=team)
         if form.is_valid():
-            form.save()
-            team.is_paid() = True  # mark as payment proof submitted
-            team.is_verified() = False  # wait for organiser verification
+            team = form.save(commit=False)
+            team.is_paid = True       # ✅ set boolean directly
+            team.is_verified = False  # ✅ wait for organisers
             team.save()
             messages.success(request, "Payment proof uploaded. Waiting for verification by organisers.")
             return redirect('teamprofile')
     else:
         form = PaymentProofForm(instance=team)
 
-    return render(request, 'team_profile/register_pay.html', {'team': team, 'form': form})
+    return render(request, 'team_profile/register_pay.html', {
+        'team': team,
+        'form': form
+    })
