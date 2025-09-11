@@ -7,6 +7,7 @@ from user_profile.models import UserProfile
 from team_profile.models import Team
 from staff_home.models import Announcments,ProblemStatementConfig,Resource,Brochure
 from itertools import chain
+from django.contrib import messages
 from operator import attrgetter
 
 @login_required
@@ -111,13 +112,18 @@ def view_resources(request):
 
 
 @login_required
-@user_view  # if you have this decorator for participants
+@user_view
 def download_brochure(request):
     brochure = Brochure.objects.first()
     if not brochure or not brochure.file:
-        raise Http404("Brochure not available.")
+        # Show a side toast message instead of 404
+        messages.error(request, "Brochure download failed. File not available.")
+        return redirect("problem_statement")  # Redirect to a participant page
 
-    # Return as file download
-    response = FileResponse(brochure.file.open('rb'), as_attachment=True, filename=brochure.file.name)
+    # Return the file as a download
+    response = FileResponse(
+        brochure.file.open('rb'),
+        as_attachment=True,
+        filename=brochure.file.name
+    )
     return response
-
