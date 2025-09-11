@@ -9,8 +9,8 @@ from user_profile.models import UserProfile
 from team_profile.models import Team
 from django.db.models import Q
 from django.http import JsonResponse
-from .forms import AnnouncmentForm
-from .models import Announcments
+from .forms import AnnouncmentForm,ProblemStatementConfigForm,ProblemStatementSectionForm
+from .models import Announcments,ProblemStatementConfig,ProblemStatementSection
 from accounts.models import UserRole
 from django.core.paginator import Paginator
 from django.db.models.functions import ExtractYear
@@ -210,3 +210,71 @@ def view_payment_screenshot(request, team_id):
         return redirect('verify_payments')
 
     return render(request, "staff_home/payment_screenshot.html", {"team": team})
+
+
+
+@login_required
+@organiser_only
+def manage_problem_statement(request):
+    config, _ = ProblemStatementConfig.objects.get_or_create(id=1)  # single row
+
+    if request.method == "POST":
+        form = ProblemStatementConfigForm(request.POST, request.FILES, instance=config)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Problem statement settings updated.")
+            return redirect("manage_problem_statement")
+    else:
+        form = ProblemStatementConfigForm(instance=config)
+
+    sections = config.sections.all()
+
+    return render(request, "staff_home/manage_problem_statement.html", {
+        "form": form,
+        "sections": sections
+    })
+
+
+@login_required
+@organiser_only
+def add_section(request):
+    config, _ = ProblemStatementConfig.objects.get_or_create(id=1)
+
+    if request.method == "POST":
+        form = ProblemStatementSectionForm(request.POST)
+        if form.is_valid():
+            section = form.save(commit=False)
+            section.config = config
+            section.save()
+            messages.success(request, "Section added successfully.")
+            return redirect("manage_problem_statement")
+    else:
+        form = ProblemStatementSectionForm()
+
+    return render(request, "staff_home/section_form.html", {"form": form, "action": "Add"})
+
+
+@login_required
+@organiser_only
+def edit_section(request, pk):
+    section = get_object_or_404(ProblemStatementSection, pk=pk)
+
+    if request.method == "POST":
+        form = ProblemStatementSectionForm(request.POST, instance=section)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Section updated successfully.")
+            return redirect("manage_problem_statement")
+    else:
+        form = ProblemStatementSectionForm(instance=section)
+
+    return render(request, "staff_home/section_form.html", {"form": form, "action": "Edit"})
+
+
+@login_required
+@organiser_only
+def delete_section(request, pk):
+    section = get_object_or_404(ProblemStatementSection, pk=pk)
+    section.delete()
+    messages.success(request, "Section deleted successfully.")
+    return redirect("manage_problem_statement")

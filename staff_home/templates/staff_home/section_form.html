@@ -1,0 +1,9 @@
+{% extends "staff_home/dashboard.html" %}
+{% block content %}
+<h2>{{ action }} Section</h2>
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit" class="btn btn-primary">{{ action }}</button>
+</form>
+{% endblock %}

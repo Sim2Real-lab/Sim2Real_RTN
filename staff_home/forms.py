@@ -1,7 +1,7 @@
 from django import forms
 from .models import Announcments
 import datetime
-
+from .models import ProblemStatementConfig, ProblemStatementSection
 class AnnouncmentForm(forms.ModelForm):
     class Meta:
         model=Announcments
@@ -34,3 +34,15 @@ class AnnouncmentForm(forms.ModelForm):
                 self.add_error('valid_till', 'Valid till date must be after the scheduled date.')
 
             return cleaned_data
+        
+
+class ProblemStatementConfigForm(forms.ModelForm):
+    class Meta:
+        model = ProblemStatementConfig
+        fields = ["enabled", "file"]
+
+class ProblemStatementSectionForm(forms.ModelForm):
+    class Meta:
+        model = ProblemStatementSection
+        fields = ["title", "content", "order"]
+

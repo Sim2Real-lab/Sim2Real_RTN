@@ -1,0 +1,30 @@
+{% extends "staff_home/dashboard.html" %}
+{% block content %}
+<h2>Manage Problem Statement</h2>
+
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit" class="btn btn-primary">Save Config</button>
+</form>
+
+<hr>
+<h3>Sections</h3>
+<a href="{% url 'add_section' %}" class="btn btn-success">+ Add Section</a>
+
+<ul>
+  {% for section in sections %}
+    <li>
+      <strong>{{ section.title }}</strong> (Order: {{ section.order }})
+      <br>
+      {{ section.content|truncatechars:150 }}
+      <br>
+      <a href="{% url 'edit_section' section.id %}">Edit</a> |
+      <a href="{% url 'delete_section' section.id %}" 
+         onclick="return confirm('Delete this section?')">Delete</a>
+    </li>
+  {% empty %}
+    <li>No sections added yet.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

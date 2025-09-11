@@ -42,7 +42,21 @@ class Announcments(models.Model):
 
 class ProblemStatementConfig(models.Model):
     enabled = models.BooleanField(default=False)
-    file = models.FileField(upload_to="problem_statements/", null=True, blank=True)
+    file = models.FileField(upload_to="problem_statements/", blank=True, null=True)
 
     def __str__(self):
-        return "Problem Statement Config"
+        return "Problem Statement Configuration"
+
+
+class ProblemStatementSection(models.Model):
+    config = models.ForeignKey(ProblemStatementConfig, on_delete=models.CASCADE, related_name="sections")
+    title = models.CharField(max_length=200)
+    content = models.TextField()
+
+    order = models.PositiveIntegerField(default=0)  # for ordering
+
+    class Meta:
+        ordering = ["order"]
+
+    def __str__(self):
+        return self.title

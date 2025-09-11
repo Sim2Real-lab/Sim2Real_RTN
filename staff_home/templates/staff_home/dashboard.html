@@ -46,8 +46,8 @@
 </header>
 
 <nav class="main-nav">
-  <a href="{%url 'user_query'%}" class="nav-link-item">View Teams</a><hr class="vertical">
-  <a href="{%url 'user_query'%}" class="nav-link-item">Check General Queries</a><hr class="vertical">
+  <a href="{%url 'verify_payments'%}" class="nav-link-item">Verify Payments</a><hr class="vertical">
+  <a href="{%url 'respond_queries'%}" class="nav-link-item">Check General Queries</a><hr class="vertical">
   <a href="{%url 'user_query'%}" class="nav-link-item">Make Bulk emails</a><hr class="vertical">
   <a href="{%url 'user_query'%}" class="nav-link-item">Check Submissions</a><hr class="vertical">
   <a href="{%url 'user_query'%}" class="nav-link-item">Upload Newsletter templates</a><hr class="vertical">
@@ -111,8 +111,26 @@
         <div class="col-md-6 mb-4">
             <div class="card feature-card">
                 <div class="card-body">
-                    <h5 class="card-title"><i class="fa fa-envelope" aria-hidden="true"></i> Send emails</h5>
-                    <p class="card-text">Submit your project, view guidelines, and track your submission status.</p>
+                    <h5 class="card-title"><i class="fa fa-envelope" aria-hidden="true"></i> Upload Problem Statment</h5>
+                    <p class="card-text">Upload the Problem Statment for the contest</p>
+                    <a href="{% url 'teamprofile' %}" class="btn btn-sm btn-outline-light">Send</a> {# Placeholder URL #}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="card feature-card">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fa fa-envelope" aria-hidden="true"></i> Upload Resources</h5>
+                    <p class="card-text">Upload Helpful Content suppoerting the problem statement</p>
+                    <a href="{% url 'teamprofile' %}" class="btn btn-sm btn-outline-light">Send</a> {# Placeholder URL #}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="card feature-card">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fa fa-envelope" aria-hidden="true"></i> Upload Brochure</h5>
+                    <p class="card-text">Upload brochure, and let the participants access it.</p>
                     <a href="{% url 'teamprofile' %}" class="btn btn-sm btn-outline-light">Send</a> {# Placeholder URL #}
                 </div>
             </div>
@@ -121,7 +139,7 @@
             <div class="card feature-card">
                 <div class="card-body">
                     <h5 class="card-title"><i class="fa fa-bullhorn" aria-hidden="true"></i> Make Announcements</h5>
-                    <p class="card-text">Submit your project, view guidelines, and track your submission status.</p>
+                    <p class="card-text">Announcements can me made for multiple user categories, along with validity and TTL.</p>
                     <a href="{% url 'make_announcments' %}" class="btn btn-sm btn-outline-light">Make</a> {# Placeholder URL #}
                 </div>
             </div>
