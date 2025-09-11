@@ -158,7 +158,7 @@ def announcement_edit(request, pk):
 
 @login_required
 @organiser_only
-def payment_verification(request):
+def verify_payments(request):
     query = request.GET.get("q", "")
     status = request.GET.get("status", "pending")  # lowercase since your flags are booleans
 
