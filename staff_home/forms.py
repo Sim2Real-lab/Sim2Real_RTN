@@ -55,3 +55,10 @@ class BrochureForm(forms.ModelForm):
     class Meta:
         model = Brochure
         fields = ["file"]
+
+        def clean_file(self):
+            file = self.cleaned_data.get('file')
+            max_size = 50 * 1024 * 1024  # 50 MB
+            if file.size > max_size:
+                raise forms.ValidationError("File too large (max 50 MB).")
+            return file
