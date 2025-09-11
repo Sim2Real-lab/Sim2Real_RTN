@@ -186,4 +186,4 @@ def verify_payments(request):
         "query": query,
         "status": status,
     }
-    return render(request, "staff_home/payment_verification.html", context)
+    return render(request, "staff_home/verify_payments.html", context)
