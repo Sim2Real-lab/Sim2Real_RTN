@@ -130,11 +130,6 @@
                     {% csrf_token %}
                     <button class="btn-verify" type="submit">✔ Verify</button>
                 </form>
-
-                <form method="post" action="{% url 'reject_payment' team.id %}">
-                    {% csrf_token %}
-                    <button class="btn-reject" type="submit">✖ Reject</button>
-                </form>
                 {% endif %}
             </div>
         </div>
