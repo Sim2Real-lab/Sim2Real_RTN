@@ -118,11 +118,9 @@
                 {% endif %}
             </p>
 
-            {% if team.payment_screenshot %}
-            <div class="screenshot">
-                <img src="{{ team.payment_screenshot.url }}" alt="Payment Screenshot">
-            </div>
-            {% endif %}
+             {% if team.payment_screenshot %}
+    <a href="{% url 'view_payment_screenshot' team.id %}" class="btn-verify" style="background:#17a2b8;">View Screenshot</a>
+    {% endif %}
 
             <div class="actions">
                 {% if team.is_paid and not team.is_verified %}

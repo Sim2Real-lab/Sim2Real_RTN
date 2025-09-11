@@ -1,0 +1,14 @@
+{% extends "staff_home/base.html" %}
+
+{% block content %}
+<div style="text-align:center; margin-top:50px;">
+    <h3>Payment Screenshot – Team {{ team.name }}</h3>
+    {% if team.payment_screenshot %}
+        <img src="{{ team.payment_screenshot.url }}" alt="Payment Screenshot" style="max-width:90%; max-height:80vh; border:1px solid #444; border-radius:8px;">
+    {% else %}
+        <p>No screenshot available.</p>
+    {% endif %}
+    <br><br>
+    <a href="{% url 'verify_payments' %}" style="padding:10px 20px; background:#007bff; color:#fff; border-radius:6px;">Back to Teams</a>
+</div>
+{% endblock %}

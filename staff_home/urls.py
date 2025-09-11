@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import staff_dashboard,checkregistration,upload_questions,queries,create_announcement,resolve_query,announcement_list,announcement_edit,verify_payments
+from .views import staff_dashboard,checkregistration,upload_questions,queries,create_announcement,resolve_query,announcement_list,announcement_edit,verify_payments,view_payment_screenshot
 
 urlpatterns = [
     path('', staff_dashboard, name='staff_dashboard'),
@@ -12,4 +12,5 @@ urlpatterns = [
     path('modify/edit/<int:pk>/',announcement_edit, name='announcement_edit'),
     path("verify-payments/", verify_payments, name="verify_payments"),  # list view
     path("verify-payments/<int:team_id>/", verify_payments, name="verify_payments"),  # verify single team
+    path("payment-screenshot/<int:team_id>/", view_payment_screenshot, name="view_payment_screenshot"),
 ]

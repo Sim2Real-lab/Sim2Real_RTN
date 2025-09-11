@@ -200,3 +200,13 @@ def verify_payments(request, team_id=None):
         "status": status,
     }
     return render(request, "staff_home/verify_payments.html", context)
+
+@login_required
+@organiser_only
+def view_payment_screenshot(request, team_id):
+    team = get_object_or_404(Team, id=team_id)
+    if not team.payment_screenshot:
+        messages.warning(request, "No screenshot available for this team.")
+        return redirect('verify_payments')
+
+    return render(request, "staff_home/payment_screenshot.html", {"team": team})
