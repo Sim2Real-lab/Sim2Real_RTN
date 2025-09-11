@@ -157,3 +157,46 @@ def announcement_edit(request, pk):
     return render(request, 'staff_home/announcment_edit.html', {'form': form})
 
 
+@login_required
+@organiser_only
+def verify_payments(request):
+    query = request.GET.get("q", "")
+    status_filter = request.GET.get("status", "")
+
+    teams = Team.objects.all().select_related("leader").prefetch_related("members")
+
+    # Search
+    if query:
+        teams = teams.filter(Q(name__icontains=query) | Q(leader__username__icontains=query))
+
+    # Filter
+    if status_filter == "pending":
+        teams = teams.filter(is_paid=True, is_verified=False)
+    elif status_filter == "verified":
+        teams = teams.filter(is_verified=True)
+    elif status_filter == "rejected":
+        teams = teams.filter(is_paid=False, is_verified=False)
+
+    # Handle verify/reject
+    if request.method == "POST":
+        team_id = request.POST.get("team_id")
+        action = request.POST.get("action")
+        team = get_object_or_404(Team, id=team_id)
+
+        if action == "verify":
+            team.is_verified = True
+            team.save()
+            messages.success(request, f"✅ {team.name} verified.")
+        elif action == "reject":
+            team.is_paid = False
+            team.is_verified = False
+            team.save()
+            messages.warning(request, f"❌ {team.name} payment rejected.")
+
+        return redirect("verify_payments")
+
+    return render(request, "staff_home/verify_payments.html", {
+        "teams": teams,
+        "query": query,
+        "status_filter": status_filter,
+    })
