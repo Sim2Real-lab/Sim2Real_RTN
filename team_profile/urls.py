@@ -12,6 +12,6 @@ urlpatterns = [
     path('join-team/code/', join_team_with_code, name="join_team_with_code"),
     path('manage/',manage_requests, name='manage_requests'),
     path('register/',register_for_event,name='register_pay'),
-    path('payment/',payment_view, name='payment_page'),
+    path('media/payment/',payment_view, name='payment_page'),
 
 ]
