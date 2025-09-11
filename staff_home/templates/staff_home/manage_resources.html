@@ -1,28 +1,30 @@
 {% extends "staff_home/base.html" %}
 {% block content %}
-<h2>Manage Resources</h2>
+<div class="container mt-4 text-white">
+  <h2 class="mb-4">Manage Resources</h2>
 
-<form method="post" enctype="multipart/form-data" class="mb-4">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit" class="btn btn-primary">Upload</button>
-</form>
+  <form method="post" enctype="multipart/form-data" class="mb-4 bg-dark p-3 rounded shadow">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Upload</button>
+  </form>
 
-<hr>
-<h3>Uploaded Resources</h3>
-<ul>
-  {% for r in resources %}
-    <li>
-      <strong>{{ r.title }}</strong>
-      {% if r.file %}
-        <a href="{{ r.file.url }}" target="_blank">📄 File</a>
-      {% endif %}
-      {% if r.link %}
-        <a href="{{ r.link }}" target="_blank">🔗 Link</a>
-      {% endif %}
-    </li>
-  {% empty %}
-    <li>No resources yet.</li>
-  {% endfor %}
-</ul>
+  <hr class="border-light">
+  <h3 class="mb-3">Uploaded Resources</h3>
+  <ul class="list-unstyled">
+    {% for r in resources %}
+      <li class="mb-2">
+        <strong>{{ r.title }}</strong>
+        {% if r.file %}
+          <a href="{{ r.file.url }}" target="_blank" class="text-info ms-2">📄 File</a>
+        {% endif %}
+        {% if r.link %}
+          <a href="{{ r.link }}" target="_blank" class="text-warning ms-2">🔗 Link</a>
+        {% endif %}
+      </li>
+    {% empty %}
+      <li class="text-muted">No resources yet.</li>
+    {% endfor %}
+  </ul>
+</div>
 {% endblock %}
