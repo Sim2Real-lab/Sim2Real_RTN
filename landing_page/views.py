@@ -111,27 +111,3 @@ Sitemap: https://sim2real.nitk.ac.in/sitemap.xml
 
 
 
-
-def download_brochure(request):
-    brochure = Brochure.objects.first()
-    if not brochure or not brochure.file:
-        # Instead of 404, redirect with a toast message
-        from django.contrib import messages
-        messages.error(request, "Brochure download failed. File not available.")
-        from django.shortcuts import redirect
-        return redirect('landing_page:main_landing_page')
-
-    # Ensure proper filename
-    filename = os.path.basename(brochure.file.name)
-    
-    # Explicit content type
-    content_type = 'application/pdf'
-    if filename.lower().endswith('.jpg') or filename.lower().endswith('.jpeg'):
-        content_type = 'image/jpeg'
-
-    return FileResponse(
-        brochure.file.open('rb'),
-        as_attachment=True,
-        filename=filename,
-        content_type=content_type
-    )
