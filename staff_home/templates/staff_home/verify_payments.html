@@ -119,11 +119,9 @@
             </p>
 
              {% if team.payment_screenshot %}
-    <a href="{% url 'view_payment_screenshot' team.id %}" class="btn-verify" style="background:#17a2b8;">View Screenshot</a>
-    <p>Screenshot URL: {{ team.payment_screenshot.url }}</p>
-<p>File exists: {{ team.payment_screenshot.path|default:"No file" }}</p>
+<a href="{{ team.payment_screenshot.url }}" target="_blank" class="btn-verify" style="background:#17a2b8;">View Screenshot</a>
+{% endif %}
 
-    {% endif %}
 
             <div class="actions">
                 {% if team.is_paid and not team.is_verified %}
