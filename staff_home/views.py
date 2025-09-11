@@ -159,9 +159,11 @@ def announcement_edit(request, pk):
 @login_required
 @organiser_only
 def verify_payments(request):
+    team = Team.objects.get(id=team_id)
+    team.is_verified = True
+    team.save()
     query = request.GET.get("q", "")
     status = request.GET.get("status", "pending")  # lowercase since your flags are booleans
-
     teams = Team.objects.all()
 
     # search filter
@@ -185,5 +187,6 @@ def verify_payments(request):
         "teams": teams,
         "query": query,
         "status": status,
+        "team_id":team,
     }
     return render(request, "staff_home/verify_payments.html", context)
