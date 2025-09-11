@@ -64,33 +64,30 @@
 {% block content %}
 <div class="payment-card">
     <h3>Payment Proof – Team {{ team.name }}</h3>
-    <p><strong>Reference No:</strong> {{ team.payment_reference }}</p>
-    <p><strong>Status:</strong> 
-        {% if team.is_verified %}
-            ✅ Verified
-        {% elif team.is_paid %}
-            ⏳ Pending Verification
-        {% else %}
-            ❌ Not Submitted
-        {% endif %}
-    </p>
-
-    {% if team.payment_screenshot %}
-    <div class="screenshot">
-        <img src="{{ team.payment_screenshot.url }}" alt="Payment Screenshot">
-    </div>
+<p><strong>Reference No:</strong> {{ team.payment_ref }}</p>
+<p><strong>Status:</strong> 
+    {% if team.is_verified %}
+        ✅ Verified
+    {% elif team.is_paid %}
+        ⏳ Pending Verification
+    {% else %}
+        ❌ Not Submitted
     {% endif %}
+</p>
 
-    <div class="actions">
-        <form method="post" action="{% url 'verify_payments' team.id %}">
-            {% csrf_token %}
-            <button class="btn-verify" type="submit">✔ Verify</button>
-        </form>
+{% if team.payment_screenshot %}
+<div class="screenshot">
+    <img src="{{ team.payment_screenshot.url }}" alt="Payment Screenshot">
+</div>
+{% endif %}
 
-        <form method="post" action="{% url 'reject_payment' team.id %}">
-            {% csrf_token %}
-            <button class="btn-reject" type="submit">✖ Reject</button>
-        </form>
-    </div>
+<div class="actions">
+    {% if team.is_paid and not team.is_verified %}
+    <form method="post" action="{% url 'verify_payments' team.id %}">
+        {% csrf_token %}
+        <button class="btn-verify" type="submit">✔ Verify</button>
+    </form>
+    {% endif %}
+</div>
 </div>
 {% endblock %}

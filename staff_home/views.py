@@ -158,15 +158,25 @@ def announcement_edit(request, pk):
 
 @login_required
 @organiser_only
-def verify_payments(request):
-    team = Team.objects.get(id=team_id)
-    team.is_verified = True
-    team.save()
-    query = request.GET.get("q", "")
-    status = request.GET.get("status", "pending")  # lowercase since your flags are booleans
-    teams = Team.objects.all()
+def verify_payments(request, team_id=None):
+    """
+    If team_id is provided via POST, verify that specific team.
+    Otherwise, show list of teams with search & status filters.
+    """
+    # Handle POST request to verify a single team
+    if request.method == "POST" and team_id:
+        team = get_object_or_404(Team, id=team_id)
+        team.is_verified = True
+        team.save()
+        messages.success(request, f"Team '{team.name}' payment verified.")
+        return redirect('verify_payments')  # redirect back to the list view
 
-    # search filter
+    # GET request: list teams with search & filter
+    query = request.GET.get("q", "")
+    status = request.GET.get("status", "pending")  # pending/verified/unpaid
+    teams = Team.objects.all().order_by('-id')
+
+    # Search filter
     if query:
         teams = teams.filter(
             Q(name__icontains=query) |
@@ -175,7 +185,7 @@ def verify_payments(request):
             Q(leader__email__icontains=query)
         )
 
-    # status filter (pending/verified/rejected)
+    # Status filter
     if status == "pending":
         teams = teams.filter(is_paid=True, is_verified=False)
     elif status == "verified":
@@ -187,6 +197,5 @@ def verify_payments(request):
         "teams": teams,
         "query": query,
         "status": status,
-        "team_id":team,
     }
     return render(request, "staff_home/verify_payments.html", context)

@@ -10,5 +10,6 @@ urlpatterns = [
     path('make/registration/',create_announcement, name='make_announcments'),
     path('modify/',announcement_list, name='announcement_list'),
     path('modify/edit/<int:pk>/',announcement_edit, name='announcement_edit'),
-    path("verify-payments/<int:team_id>/", verify_payments, name="verify_payments")
+    path("verify-payments/", verify_payments, name="verify_payments"),  # list view
+    path("verify-payments/<int:team_id>/", verify_payments, name="verify_payments"),  # verify single team
 ]
