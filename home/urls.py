@@ -1,6 +1,6 @@
 from django.contrib.auth import views
 from django.urls import path, include
-from .views import home_view,schedule_view,registration_view,prize_view,brochure_view,resources_view,announce_view,faq_view,problem_statement_view,view_resources
+from .views import home_view,schedule_view,registration_view,download_brochure,prize_view,brochure_view,resources_view,announce_view,faq_view,problem_statement_view,view_resources
 urlpatterns = [
     path('',home_view,name='home'),
     path('logout/',views.LogoutView.as_view(next_page='login'),name='logout'),
@@ -15,5 +15,5 @@ urlpatterns = [
     path("resources/",view_resources, name="view_resources"),
     path('team/', include('team_profile.urls'),name='manage_requests'),
     path('problem_statement/',problem_statement_view,name='problem_statement'),
-    path("brochure/download/", views.download_brochure, name="download_brochure"),
+    path("brochure/download/", download_brochure, name="download_brochure"),
 ]
