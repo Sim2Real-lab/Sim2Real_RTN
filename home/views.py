@@ -5,7 +5,7 @@ from django.http import HttpResponseForbidden
 from .decorator import user_view,organiser_only,profile_updated
 from user_profile.models import UserProfile
 from team_profile.models import Team
-from staff_home.models import Announcments,ProblemStatementConfig
+from staff_home.models import Announcments,ProblemStatementConfig,Resource
 from itertools import chain
 from operator import attrgetter
 
