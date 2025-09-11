@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="{% static 'staff_home/style.css' %}">
-  <title>Staff Panel | SIM2REAL</title>
+  <title>Organisers Dashboard | SIM2REAL</title>
 </head>
 <body>
   <div class="d-flex">
@@ -17,8 +17,8 @@
         <li class="nav-item"><a href="{% url 'staff_dashboard' %}" class="nav-link text-white">Dashboard</a></li>
         <li class="nav-item"><a href="{% url 'manage_problem_statement' %}" class="nav-link text-white">Problem Statement</a></li>
         <li class="nav-item"><a href="{% url 'verify_payments' %}" class="nav-link text-white">Verify Payments</a></li>
-        <li class="nav-item"><a href="{% url 'queries' %}" class="nav-link text-white">Queries</a></li>
-        <li class="nav-item"><a href="{% url 'announcement_list' %}" class="nav-link text-white">Announcements</a></li>
+        <li class="nav-item"><a href="{% url 'resolve_query' %}" class="nav-link text-white">Queries</a></li>
+        <li class="nav-item"><a href="{% url 'announcement_list' %}" class="nav-link text-white">Check Announcements</a></li>
       </ul>
     </div>
 
