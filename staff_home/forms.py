@@ -1,5 +1,5 @@
 from django import forms
-from .models import Announcments
+from .models import Announcments,Resource
 import datetime
 from .models import ProblemStatementConfig, ProblemStatementSection
 class AnnouncmentForm(forms.ModelForm):
@@ -46,3 +46,7 @@ class ProblemStatementSectionForm(forms.ModelForm):
         model = ProblemStatementSection
         fields = ["title", "content", "order"]
 
+class ResourceForm(forms.ModelForm):
+    class Meta:
+        model = Resource
+        fields = ["title", "file", "link"]

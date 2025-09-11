@@ -101,3 +101,9 @@ def problem_statement_view(request):
         "file": config.file if config else None,
         "sections": config.sections.all().order_by("order") if config else []
     })
+
+@login_required
+@user_view
+def view_resources(request):
+    resources = Resource.objects.all()
+    return render(request, "home/resources.html", {"resources": resources})

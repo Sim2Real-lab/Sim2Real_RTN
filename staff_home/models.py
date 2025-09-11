@@ -60,3 +60,11 @@ class ProblemStatementSection(models.Model):
 
     def __str__(self):
         return self.title
+    
+class Resource(models.Model):
+    title = models.CharField(max_length=200)
+    file = models.FileField(upload_to="resources/", blank=True, null=True)
+    link = models.URLField(blank=True, null=True)
+
+    def __str__(self):
+        return self.title

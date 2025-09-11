@@ -1,0 +1,28 @@
+{% extends "staff_home/base.html" %}
+{% block content %}
+<h2>Manage Resources</h2>
+
+<form method="post" enctype="multipart/form-data" class="mb-4">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit" class="btn btn-primary">Upload</button>
+</form>
+
+<hr>
+<h3>Uploaded Resources</h3>
+<ul>
+  {% for r in resources %}
+    <li>
+      <strong>{{ r.title }}</strong>
+      {% if r.file %}
+        <a href="{{ r.file.url }}" target="_blank">📄 File</a>
+      {% endif %}
+      {% if r.link %}
+        <a href="{{ r.link }}" target="_blank">🔗 Link</a>
+      {% endif %}
+    </li>
+  {% empty %}
+    <li>No resources yet.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

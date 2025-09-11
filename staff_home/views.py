@@ -9,8 +9,8 @@ from user_profile.models import UserProfile
 from team_profile.models import Team
 from django.db.models import Q
 from django.http import JsonResponse
-from .forms import AnnouncmentForm,ProblemStatementConfigForm,ProblemStatementSectionForm
-from .models import Announcments,ProblemStatementConfig,ProblemStatementSection
+from .forms import AnnouncmentForm,ProblemStatementConfigForm,ProblemStatementSectionForm,ResourceForm
+from .models import Announcments,ProblemStatementConfig,ProblemStatementSection,Resource
 from accounts.models import UserRole
 from django.core.paginator import Paginator
 from django.db.models.functions import ExtractYear
@@ -278,3 +278,20 @@ def delete_section(request, pk):
     section.delete()
     messages.success(request, "Section deleted successfully.")
     return redirect("manage_problem_statement")
+
+@login_required
+@organiser_only
+def manage_resources(request):
+    if request.method == "POST":
+        form = ResourceForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect("manage_resources")
+    else:
+        form = ResourceForm()
+
+    resources = Resource.objects.all()
+    return render(request, "staff_home/manage_resources.html", {
+        "form": form,
+        "resources": resources,
+    })

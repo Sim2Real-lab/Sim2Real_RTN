@@ -1,7 +1,26 @@
 {% extends "home/index.html" %}
-{% block title %}Schedule | SIM2REAL{% endblock %}
+{% block title %}Resources | SIM2REAL{% endblock %}
 
 {% block content %}
-  <h2>Resources</h2>
-  <p>Resources go here...</p>
+<h2 class="text-center mb-4">Resources</h2>
+
+{% if resources %}
+  <ul class="list-group">
+    {% for r in resources %}
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        {{ r.title }}
+        <div>
+          {% if r.file %}
+            <a href="{{ r.file.url }}" class="btn btn-sm btn-outline-primary" target="_blank">📄 File</a>
+          {% endif %}
+          {% if r.link %}
+            <a href="{{ r.link }}" class="btn btn-sm btn-outline-success" target="_blank">🔗 Link</a>
+          {% endif %}
+        </div>
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <div class="alert alert-warning text-center">No resources available yet.</div>
+{% endif %}
 {% endblock %}
