@@ -1,0 +1,63 @@
+{% extends "staff_home/dashboard.html" %}
+
+{% block content %}
+<div class="container">
+    <h2>Payment Verification</h2>
+
+    <!-- Filters -->
+    <form method="get">
+        <input type="text" name="q" placeholder="Search team/leader" value="{{ query }}">
+        <select name="status">
+            <option value="">All</option>
+            <option value="pending" {% if status_filter == "pending" %}selected{% endif %}>Pending</option>
+            <option value="verified" {% if status_filter == "verified" %}selected{% endif %}>Verified</option>
+            <option value="rejected" {% if status_filter == "rejected" %}selected{% endif %}>Rejected</option>
+        </select>
+        <button type="submit">Apply</button>
+    </form>
+
+    <hr>
+
+    {% if teams %}
+        {% for team in teams %}
+            <div class="team-card">
+                <h3>{{ team.name }}</h3>
+                <p><b>Leader:</b> {{ team.leader.username }}</p>
+                <p><b>Members:</b> 
+                    {% for member in team.members.all %}
+                        {{ member.username }}{% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                </p>
+                <p><b>Status:</b>
+                    {% if team.is_verified %} ✅ Verified
+                    {% elif team.is_paid %} ⏳ Pending
+                    {% else %} ❌ Rejected
+                    {% endif %}
+                </p>
+
+                {% if team.payment_proof %}
+                    <button type="button" onclick="toggleScreenshot('ss{{ team.id }}')">📷 View Proof</button>
+                    <img id="ss{{ team.id }}" src="{{ team.payment_proof.url }}" style="max-width:300px; display:none;">
+                {% endif %}
+
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="team_id" value="{{ team.id }}">
+                    <button type="submit" name="action" value="verify">✅ Verify</button>
+                    <button type="submit" name="action" value="reject">❌ Reject</button>
+                </form>
+            </div>
+            <hr>
+        {% endfor %}
+    {% else %}
+        <p>No teams found.</p>
+    {% endif %}
+</div>
+
+<script>
+function toggleScreenshot(id) {
+    let img = document.getElementById(id);
+    img.style.display = img.style.display === "none" ? "block" : "none";
+}
+</script>
+{% endblock %}
