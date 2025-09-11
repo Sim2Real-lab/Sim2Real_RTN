@@ -1,4 +1,5 @@
 {% extends "staff_home/base.html" %}
+
 {% block extra_styles %}
 <style>
     .payment-card {
@@ -12,7 +13,7 @@
     }
 
     .payment-card h3 {
-        margin-bottom: 15px;
+        margin-bottom: 10px;
         font-size: 20px;
         font-weight: 600;
     }
@@ -58,36 +59,88 @@
 
     .btn-verify:hover { background: #218838; }
     .btn-reject:hover { background: #c82333; }
+
+    .filter-bar {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-start;
+        margin: 20px auto;
+        max-width: 700px;
+    }
+
+    .filter-bar input, .filter-bar select, .filter-bar button {
+        padding: 6px 10px;
+        border-radius: 6px;
+        border: 1px solid #555;
+        background: #222;
+        color: #fff;
+    }
+
+    .filter-bar button {
+        background: #007bff;
+        border: none;
+        cursor: pointer;
+    }
+
+    .filter-bar button:hover {
+        background: #0069d9;
+    }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="payment-card">
-    <h3>Payment Proof – Team {{ team.name }}</h3>
-<p><strong>Reference No:</strong> {{ team.payment_ref }}</p>
-<p><strong>Status:</strong> 
-    {% if team.is_verified %}
-        ✅ Verified
-    {% elif team.is_paid %}
-        ⏳ Pending Verification
-    {% else %}
-        ❌ Not Submitted
-    {% endif %}
-</p>
 
-{% if team.payment_screenshot %}
-<div class="screenshot">
-    <img src="{{ team.payment_screenshot.url }}" alt="Payment Screenshot">
+<div class="filter-bar">
+    <form method="get" style="display:flex; gap: 10px; width:100%;">
+        <input type="text" name="q" placeholder="Search team or leader" value="{{ query }}">
+        <select name="status">
+            <option value="" {% if status == "" %}selected{% endif %}>All</option>
+            <option value="pending" {% if status == "pending" %}selected{% endif %}>Pending</option>
+            <option value="verified" {% if status == "verified" %}selected{% endif %}>Verified</option>
+            <option value="unpaid" {% if status == "unpaid" %}selected{% endif %}>Unpaid</option>
+        </select>
+        <button type="submit">Filter</button>
+    </form>
 </div>
+
+{% if teams %}
+    {% for team in teams %}
+        <div class="payment-card">
+            <h3>Payment Proof – Team {{ team.name }}</h3>
+            <p><strong>Reference No:</strong> {{ team.payment_ref|default:"N/A" }}</p>
+            <p><strong>Status:</strong> 
+                {% if team.is_verified %}
+                    ✅ Verified
+                {% elif team.is_paid %}
+                    ⏳ Pending Verification
+                {% else %}
+                    ❌ Not Submitted
+                {% endif %}
+            </p>
+
+            {% if team.payment_screenshot %}
+            <div class="screenshot">
+                <img src="{{ team.payment_screenshot.url }}" alt="Payment Screenshot">
+            </div>
+            {% endif %}
+
+            <div class="actions">
+                {% if team.is_paid and not team.is_verified %}
+                <form method="post" action="{% url 'verify_payments' team.id %}">
+                    {% csrf_token %}
+                    <button class="btn-verify" type="submit">✔ Verify</button>
+                </form>
+
+                <form method="post" action="{% url 'reject_payment' team.id %}">
+                    {% csrf_token %}
+                    <button class="btn-reject" type="submit">✖ Reject</button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+{% else %}
+    <p style="text-align:center; color:#ccc; margin-top:30px;">No teams found.</p>
 {% endif %}
 
-<div class="actions">
-    {% if team.is_paid and not team.is_verified %}
-    <form method="post" action="{% url 'verify_payments' team.id %}">
-        {% csrf_token %}
-        <button class="btn-verify" type="submit">✔ Verify</button>
-    </form>
-    {% endif %}
-</div>
-</div>
 {% endblock %}
