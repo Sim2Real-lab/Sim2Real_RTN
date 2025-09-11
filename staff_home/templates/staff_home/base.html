@@ -1,42 +1,33 @@
-{%load static%}
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{%static 'team_profile/style.css'%}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'assets/sim2real_logo.png' %}">
-<link rel="icon" type="image/png" sizes="16x16" href="{% static 'assets/sim2real_logo.png' %}">
-<link rel="apple-touch-icon" sizes="180x180" href="{% static 'assets/sim2real_logo.png' %}">
-<link rel="shortcut icon" href="{% static 'assets/sim2real_logo.png' %}">
-    {% block extra_styles %}{% endblock %}
-    <title>Team</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'staff_home/style.css' %}">
+  <title>Staff Panel | SIM2REAL</title>
 </head>
 <body>
-    <header>
-      <div class="back"><a href="{%url 'home'%}"><i class="fa fa-home"></i></a></div>
-      <div class="dropdown">
-        <a class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" href="#" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-          <img src="{% static 'assets/default.png' %}" alt="Profile" class="profile-img">
-        </a>
-        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownUser1">
-            <li><a class="dropdown-item" href="{%url 'profile'%}">My Profile</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li>
-              <form method="post" action="{% url 'logout' %}">
-                {% csrf_token %}
-            <button type="submit" class="dropdown-item">Logout</button>
-            </form>
-          </li>
-        </ul> 
-        </div>
-        </header>
-        <div class="overlay"></div>
-         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-         <div class=content>
-        {%block content%}{%endblock%}
-         </div>
+  <div class="d-flex">
+    <!-- Sidebar -->
+    <div class="bg-dark text-white p-3" style="width: 250px; min-height: 100vh;">
+      <h4>Staff Menu</h4>
+      <ul class="nav flex-column">
+        <li class="nav-item"><a href="{% url 'staff_dashboard' %}" class="nav-link text-white">Dashboard</a></li>
+        <li class="nav-item"><a href="{% url 'manage_problem_statement' %}" class="nav-link text-white">Problem Statement</a></li>
+        <li class="nav-item"><a href="{% url 'verify_payments' %}" class="nav-link text-white">Verify Payments</a></li>
+        <li class="nav-item"><a href="{% url 'queries' %}" class="nav-link text-white">Queries</a></li>
+        <li class="nav-item"><a href="{% url 'announcement_list' %}" class="nav-link text-white">Announcements</a></li>
+      </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-grow-1 p-4">
+      {% block content %}{% endblock %}
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
