@@ -113,7 +113,7 @@ def download_brochure(request):
     if not brochure or not brochure.file:
         # Show a side toast message instead of 404
         messages.error(request, "Brochure download failed. File not available.")
-        return redirect("problem_statement")  # Redirect to a participant page
+        return redirect("landing_page:main_landing_page")  # Redirect to a participant page
 
     # Return the file as a download
     response = FileResponse(
