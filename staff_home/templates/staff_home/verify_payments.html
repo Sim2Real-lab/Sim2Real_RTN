@@ -82,7 +82,7 @@
     {% endif %}
 
     <div class="actions">
-        <form method="post" action="{% url 'verify_payment' team.id %}">
+        <form method="post" action="{% url 'verify_payments' team.id %}">
             {% csrf_token %}
             <button class="btn-verify" type="submit">✔ Verify</button>
         </form>
