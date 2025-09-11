@@ -94,10 +94,10 @@ def problem_statement_view(request):
     config = ProblemStatementConfig.objects.first()  # Single row config
 
     if not registered or not (config and config.enabled):
-        # Show a blank page (template with nothing)
         return render(request, "home/problem_statement.html", {"visible": False})
 
     return render(request, "home/problem_statement.html", {
         "visible": True,
-        "file": config.file if config else None
+        "file": config.file if config else None,
+        "sections": config.sections.all().order_by("order") if config else []
     })

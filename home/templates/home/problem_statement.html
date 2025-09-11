@@ -3,37 +3,21 @@
 
 {% block content %}
   {% if visible %}
-    <h2>Problem Statement</h2>
+    <h2 class="text-center mb-4">Problem Statement</h2>
 
-    <section>
-      <h3>Section 1</h3>
-      <p>Write your Section 1 description here...</p>
-    </section>
-
-    <section>
-      <h3>Section 2</h3>
-      <p>Details for section 2...</p>
-    </section>
-
-    <section>
-      <h3>Section 3</h3>
-      <p>Details for section 3...</p>
-    </section>
-
-    <section>
-      <h3>Section 4</h3>
-      <p>Details for section 4...</p>
-    </section>
-
-    <section>
-      <h3>Section 5</h3>
-      <p>Details for section 5...</p>
-    </section>
-    {% if not visible%}
-    
+    <!-- Sections -->
+    {% if sections %}
+      {% for section in sections %}
+        <section class="mb-4">
+          <h3>{{ section.title }}</h3>
+          <p>{{ section.content|linebreaks }}</p>
+        </section>
+      {% endfor %}
     {% endif %}
+
+    <!-- File download -->
     {% if file %}
-      <div style="margin-top:20px;">
+      <div class="mt-4 text-center">
         <a href="{{ file.url }}" class="btn btn-primary" download>
           📄 Download Full Problem Statement
         </a>
@@ -41,8 +25,8 @@
     {% endif %}
 
   {% else %}
-  <div>
-    <strong> No Problem Statement Available </strong>
-  </div>
+    <div class="alert alert-warning text-center">
+      <strong>No Problem Statement Available</strong>
+    </div>
   {% endif %}
 {% endblock %}
