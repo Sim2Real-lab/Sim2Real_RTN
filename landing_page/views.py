@@ -4,7 +4,8 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.contrib import messages
 from .models import Sponsor, Query, GeneralQuery
-from django.http import HttpResponse
+from staff_home.models import Brochure
+from django.http import HttpResponseForbidden,FileResponse, Http404,HttpResponse
 
 def main_landing_page_view(request):
     """
@@ -105,3 +106,19 @@ Allow: /
 Sitemap: https://sim2real.nitk.ac.in/sitemap.xml
 """
     return HttpResponse(content, content_type="text/plain")
+
+
+def download_brochure(request):
+    brochure = Brochure.objects.first()
+    if not brochure or not brochure.file:
+        # Show a side toast message instead of 404
+        messages.error(request, "Brochure download failed. File not available.")
+        return redirect("problem_statement")  # Redirect to a participant page
+
+    # Return the file as a download
+    response = FileResponse(
+        brochure.file.open('rb'),
+        as_attachment=True,
+        filename=brochure.file.name
+    )
+    return response
