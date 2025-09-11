@@ -1,5 +1,39 @@
 {% extends "staff_home/base.html" %}
 
+{%block extra_styles%%}
+.team-card {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 12px;
+  color: #fff; /* make text visible on dark bg */
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  padding-top: 60px;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.9);
+}
+
+.modal-content {
+  display: block;
+  margin: auto;
+  max-width: 80%;
+  border-radius: 10px;
+}
+
+.close {
+  position: absolute;
+  top: 20px; right: 35px;
+  font-size: 40px;
+  color: #fff;
+  cursor: pointer;
+}
+{%endblock%}
 {% block content %}
 <div class="container">
     <h2>Payment Verification</h2>
