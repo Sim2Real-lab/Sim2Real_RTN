@@ -17,3 +17,10 @@ class PaymentProofForm(forms.ModelForm):
         widgets = {
             'payment_ref': forms.TextInput(attrs={'placeholder': 'Enter UPI Reference Number'}),
         }
+    
+    def clean_payment_screenshot(self):
+        file = self.cleaned_data.get("payment_screenshot")
+        if file:
+            if not file.name.lower().endswith(".png"):
+                raise forms.ValidationError("Only .png files are allowed for payment proof.")
+        return file

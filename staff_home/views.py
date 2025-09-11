@@ -156,47 +156,34 @@ def announcement_edit(request, pk):
 
     return render(request, 'staff_home/announcment_edit.html', {'form': form})
 
-
 @login_required
 @organiser_only
-def verify_payments(request):
+def payment_verification(request):
     query = request.GET.get("q", "")
-    status_filter = request.GET.get("status", "")
+    status = request.GET.get("status", "pending")  # lowercase since your flags are booleans
 
-    teams = Team.objects.all().select_related("leader").prefetch_related("members")
+    teams = Team.objects.all()
 
-    # Search
+    # search filter
     if query:
-        teams = teams.filter(Q(name__icontains=query) | Q(leader__username__icontains=query))
+        teams = teams.filter(
+            Q(name__icontains=query) |
+            Q(leader__first_name__icontains=query) |
+            Q(leader__last_name__icontains=query) |
+            Q(leader__email__icontains=query)
+        )
 
-    # Filter
-    if status_filter == "pending":
+    # status filter (pending/verified/rejected)
+    if status == "pending":
         teams = teams.filter(is_paid=True, is_verified=False)
-    elif status_filter == "verified":
-        teams = teams.filter(is_verified=True)
-    elif status_filter == "rejected":
-        teams = teams.filter(is_paid=False, is_verified=False)
+    elif status == "verified":
+        teams = teams.filter(is_paid=True, is_verified=True)
+    elif status == "unpaid":
+        teams = teams.filter(is_paid=False)
 
-    # Handle verify/reject
-    if request.method == "POST":
-        team_id = request.POST.get("team_id")
-        action = request.POST.get("action")
-        team = get_object_or_404(Team, id=team_id)
-
-        if action == "verify":
-            team.is_verified = True
-            team.save()
-            messages.success(request, f"✅ {team.name} verified.")
-        elif action == "reject":
-            team.is_paid = False
-            team.is_verified = False
-            team.save()
-            messages.warning(request, f"❌ {team.name} payment rejected.")
-
-        return redirect("verify_payments")
-
-    return render(request, "staff_home/verify_payments.html", {
+    context = {
         "teams": teams,
         "query": query,
-        "status_filter": status_filter,
-    })
+        "status": status,
+    }
+    return render(request, "staff_home/payment_verification.html", context)

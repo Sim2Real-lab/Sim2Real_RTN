@@ -250,7 +250,6 @@ def payment_view(request):
 
     team = request.user.led_team
 
-    # Just check the boolean field
     if team.is_paid:
         messages.info(request, "Payment proof already submitted.")
         return redirect('teamprofile')
@@ -259,10 +258,26 @@ def payment_view(request):
         form = PaymentProofForm(request.POST, request.FILES, instance=team)
         if form.is_valid():
             team = form.save(commit=False)
-            team.is_paid = True       # ✅ set boolean directly
-            team.is_verified = False  # ✅ wait for organisers
+            team.is_paid = True
+            team.is_verified = False
+
+            screenshot = form.cleaned_data.get("payment_screenshot")
+            if screenshot:
+                if not screenshot.name.lower().endswith(".png"):
+                    messages.error(request, "Only .png files are allowed.")
+                    return redirect("payment_view")
+
+                if not team.payment_ref:
+                    team.payment_ref = str(uuid.uuid4())
+
+                screenshot.name = f"{team.payment_ref}.png"
+                team.payment_screenshot = screenshot
+
             team.save()
-            messages.success(request, "Payment proof uploaded. Waiting for verification by organisers.")
+            messages.success(
+                request,
+                "Payment proof uploaded. Waiting for verification by organisers."
+            )
             return redirect('teamprofile')
     else:
         form = PaymentProofForm(instance=team)

@@ -1,21 +1,23 @@
 {% extends "staff_home/base.html" %}
 
-{%block extra_styles%%}
+{% block extra_styles %}
+<style>
 .team-card {
   background: rgba(255, 255, 255, 0.05);
   padding: 1rem;
   margin-bottom: 1rem;
   border-radius: 12px;
-  color: #fff; /* make text visible on dark bg */
+  color: #fff;
 }
 
-.container{
-    background: rgba(255, 255, 255, 0.05) !important;
+.container {
+  background: rgba(255, 255, 255, 0.05) !important;
   padding: 1rem !important;
   margin-bottom: 1rem !important;
   border-radius: 12px !important;
-  color: #fff !important; /* make text visible on dark bg */
+  color: #fff !important;
 }
+
 .modal {
   display: none;
   position: fixed;
@@ -40,7 +42,9 @@
   color: #fff;
   cursor: pointer;
 }
-{%endblock%}
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="container">
     <h2>Payment Verification</h2>
@@ -61,44 +65,55 @@
 
     {% if teams %}
         {% for team in teams %}
-            <div class="Container">
+            <div class="team-card">
                 <h3>{{ team.name }}</h3>
-                <p><b>Leader:</b> {{ team.leader.username }}</p>
-                <p><b>Members:</b> 
-                    {% for member in team.members.all %}
-                        {{ member.username }}{% if not forloop.last %}, {% endif %}
-                    {% endfor %}
-                </p>
-                <p><b>Status:</b>
-                    {% if team.is_verified %} ✅ Verified
-                    {% elif team.is_paid %} ⏳ Pending
-                    {% else %} ❌ Rejected
-                    {% endif %}
+                <p><strong>Leader:</strong> {{ team.leader.email }}</p>
+                <p><strong>Members:</strong>
+                  {% for member in team.members.all %}
+                    {{ member.email }}{% if not forloop.last %}, {% endif %}
+                  {% endfor %}
                 </p>
 
-                {% if team.payment_proof %}
-                    <button type="button" onclick="toggleScreenshot('ss{{ team.id }}')">📷 View Proof</button>
-                    <img id="ss{{ team.id }}" src="{{ team.payment_proof.url }}" style="max-width:300px; display:none;">
+                <p><strong>Ref No:</strong> {{ team.payment_ref|default_if_none:"N/A" }}</p>
+
+                {% if team.payment_screenshot %}
+                    <button type="button" onclick="openModal('{{ team.payment_screenshot.url }}')">
+                        📷 View Screenshot
+                    </button>
+                {% else %}
+                    <p>No screenshot uploaded</p>
                 {% endif %}
 
-                <form method="post">
-                    {% csrf_token %}
-                    <input type="hidden" name="team_id" value="{{ team.id }}">
-                    <button type="submit" name="action" value="verify">✅ Verify</button>
-                    <button type="submit" name="action" value="reject">❌ Reject</button>
-                </form>
+                <p>
+                  Status:
+                  {% if team.is_paid and team.is_verified %}
+                    ✅ Verified
+                  {% elif team.is_paid and not team.is_verified %}
+                    ⏳ Pending
+                  {% else %}
+                    ❌ Not Paid
+                  {% endif %}
+                </p>
             </div>
-            <hr>
         {% endfor %}
     {% else %}
         <p>No teams found.</p>
     {% endif %}
 </div>
 
+<!-- Modal -->
+<div id="screenshotModal" class="modal">
+  <span class="close" onclick="closeModal()">&times;</span>
+  <img class="modal-content" id="modalImage">
+</div>
+
 <script>
-function toggleScreenshot(id) {
-    let img = document.getElementById(id);
-    img.style.display = img.style.display === "none" ? "block" : "none";
+function openModal(src) {
+  document.getElementById("screenshotModal").style.display = "block";
+  document.getElementById("modalImage").src = src;
+}
+function closeModal() {
+  document.getElementById("screenshotModal").style.display = "none";
 }
 </script>
 {% endblock %}
