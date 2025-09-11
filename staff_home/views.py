@@ -155,28 +155,27 @@ def announcement_edit(request, pk):
         form = AnnouncmentForm(instance=announcement)
 
     return render(request, 'staff_home/announcment_edit.html', {'form': form})
-
 @login_required
 @organiser_only
 def verify_payments(request, team_id=None):
     """
-    If team_id is provided via POST, verify that specific team.
-    Otherwise, show list of teams with search & status filters.
+    Handles both:
+    - POST: verify a specific team
+    - GET: list all teams with optional search/status filters
     """
-    # Handle POST request to verify a single team
+    # POST: verify a specific team
     if request.method == "POST" and team_id:
         team = get_object_or_404(Team, id=team_id)
         team.is_verified = True
         team.save()
         messages.success(request, f"Team '{team.name}' payment verified.")
-        return redirect('verify_payments')  # redirect back to the list view
+        return redirect('verify_payments')  # redirect to the list view
 
-    # GET request: list teams with search & filter
-    query = request.GET.get("q", "")
-    status = request.GET.get("status", "pending")  # pending/verified/unpaid
+    # GET: list all teams
     teams = Team.objects.all().order_by('-id')
 
     # Search filter
+    query = request.GET.get("q", "").strip()
     if query:
         teams = teams.filter(
             Q(name__icontains=query) |
@@ -186,12 +185,14 @@ def verify_payments(request, team_id=None):
         )
 
     # Status filter
+    status = request.GET.get("status", "").lower()
     if status == "pending":
         teams = teams.filter(is_paid=True, is_verified=False)
     elif status == "verified":
         teams = teams.filter(is_paid=True, is_verified=True)
     elif status == "unpaid":
         teams = teams.filter(is_paid=False)
+    # else: show all if no status filter
 
     context = {
         "teams": teams,
