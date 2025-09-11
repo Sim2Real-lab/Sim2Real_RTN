@@ -16,6 +16,16 @@
   padding-left: 0px;
   padding-right: 0px;
 }
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.5); /* or whatever */
+  z-index: 1030; /* less than modal backdrop (1040) */
+  pointer-events: none; /* if you want clicks to pass through */
+}
 h2{
   text-align:center;
 }
