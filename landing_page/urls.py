@@ -13,6 +13,6 @@ urlpatterns = [
     # Dedicated Sponsor Page
     path('sponsor/', views.landing_page_sponsor_view, name='sponsor_page'),
     path('sponsor/contact-submit/', views.sponsor_contact_submit_view, name='sponsor_contact_submit'),
-    path("brochure/download/", views.download_brochure, name="download_brochure"),
+    path("brochure/", views.download_brochure, name="brochure"),
 ]
 
