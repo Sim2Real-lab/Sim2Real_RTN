@@ -15,4 +15,5 @@ urlpatterns = [
     path("resources/",view_resources, name="view_resources"),
     path('team/', include('team_profile.urls'),name='manage_requests'),
     path('problem_statement/',problem_statement_view,name='problem_statement'),
+    path("brochure/download/", views.download_brochure, name="download_brochure"),
 ]

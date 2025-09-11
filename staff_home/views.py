@@ -9,8 +9,8 @@ from user_profile.models import UserProfile
 from team_profile.models import Team
 from django.db.models import Q
 from django.http import JsonResponse
-from .forms import AnnouncmentForm,ProblemStatementConfigForm,ProblemStatementSectionForm,ResourceForm
-from .models import Announcments,ProblemStatementConfig,ProblemStatementSection,Resource
+from .forms import AnnouncmentForm,ProblemStatementConfigForm,ProblemStatementSectionForm,ResourceForm,BrochureForm
+from .models import Announcments,ProblemStatementConfig,ProblemStatementSection,Resource,Brochure
 from accounts.models import UserRole
 from django.core.paginator import Paginator
 from django.db.models.functions import ExtractYear
@@ -295,3 +295,24 @@ def manage_resources(request):
         "form": form,
         "resources": resources,
     })
+
+
+
+@login_required
+@organiser_only
+def upload_brochure(request):
+    brochure = Brochure.objects.first()  # keep only one
+    if request.method == "POST":
+        form = BrochureForm(request.POST, request.FILES, instance=brochure)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Brochure uploaded successfully.")
+            return redirect("upload_brochure")
+    else:
+        form = BrochureForm(instance=brochure)
+
+    return render(request, "staff_home/upload_brochure.html", {
+        "form": form,
+        "brochure": brochure
+    })
+

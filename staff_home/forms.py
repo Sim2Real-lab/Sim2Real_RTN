@@ -1,7 +1,7 @@
 from django import forms
 from .models import Announcments,Resource
 import datetime
-from .models import ProblemStatementConfig, ProblemStatementSection
+from .models import ProblemStatementConfig, ProblemStatementSection,Brochure
 class AnnouncmentForm(forms.ModelForm):
     class Meta:
         model=Announcments
@@ -50,3 +50,8 @@ class ResourceForm(forms.ModelForm):
     class Meta:
         model = Resource
         fields = ["title", "file", "link"]
+
+class BrochureForm(forms.ModelForm):
+    class Meta:
+        model = Brochure
+        fields = ["file"]

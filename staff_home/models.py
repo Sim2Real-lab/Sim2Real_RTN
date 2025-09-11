@@ -68,3 +68,10 @@ class Resource(models.Model):
 
     def __str__(self):
         return self.title
+
+class Brochure(models.Model):
+    file = models.FileField(upload_to="brochures/")
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Brochure ({self.file.name})"

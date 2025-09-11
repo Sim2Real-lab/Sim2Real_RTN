@@ -1,14 +1,13 @@
 from django.shortcuts import render,redirect
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import never_cache
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseForbidden,FileResponse, Http404
 from .decorator import user_view,organiser_only,profile_updated
 from user_profile.models import UserProfile
 from team_profile.models import Team
-from staff_home.models import Announcments,ProblemStatementConfig,Resource
+from staff_home.models import Announcments,ProblemStatementConfig,Resource,Brochure
 from itertools import chain
 from operator import attrgetter
-
 
 @login_required
 @user_view
@@ -107,3 +106,18 @@ def problem_statement_view(request):
 def view_resources(request):
     resources = Resource.objects.all()
     return render(request, "home/resources.html", {"resources": resources})
+
+
+
+
+@login_required
+@user_view  # if you have this decorator for participants
+def download_brochure(request):
+    brochure = Brochure.objects.first()
+    if not brochure or not brochure.file:
+        raise Http404("Brochure not available.")
+
+    # Return as file download
+    response = FileResponse(brochure.file.open('rb'), as_attachment=True, filename=brochure.file.name)
+    return response
+
