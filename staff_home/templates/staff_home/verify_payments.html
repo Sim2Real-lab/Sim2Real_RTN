@@ -1,119 +1,96 @@
-{% extends "staff_home/base.html" %}
-
+{% extends "staff_home/staff_base.html" %}
 {% block extra_styles %}
 <style>
-.team-card {
-  background: rgba(255, 255, 255, 0.05);
-  padding: 1rem;
-  margin-bottom: 1rem;
-  border-radius: 12px;
-  color: #fff;
-}
+    .payment-card {
+        background: rgba(30, 30, 40, 0.95);
+        padding: 20px;
+        margin: 20px auto;
+        border-radius: 12px;
+        max-width: 700px;
+        color: #fff;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+    }
 
-.container {
-  background: rgba(255, 255, 255, 0.05) !important;
-  padding: 1rem !important;
-  margin-bottom: 1rem !important;
-  border-radius: 12px !important;
-  color: #fff !important;
-}
+    .payment-card h3 {
+        margin-bottom: 15px;
+        font-size: 20px;
+        font-weight: 600;
+    }
 
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 1000;
-  padding-top: 60px;
-  left: 0; top: 0;
-  width: 100%; height: 100%;
-  background: rgba(0,0,0,0.9);
-}
+    .screenshot {
+        margin: 15px 0;
+        text-align: center;
+    }
 
-.modal-content {
-  display: block;
-  margin: auto;
-  max-width: 80%;
-  border-radius: 10px;
-}
+    .screenshot img {
+        max-width: 100%;
+        max-height: 350px;
+        border-radius: 8px;
+        border: 1px solid #444;
+    }
 
-.close {
-  position: absolute;
-  top: 20px; right: 35px;
-  font-size: 40px;
-  color: #fff;
-  cursor: pointer;
-}
+    .actions {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        margin-top: 15px;
+    }
+
+    .btn-verify {
+        background: #28a745;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        color: #fff;
+        cursor: pointer;
+        font-weight: 600;
+    }
+
+    .btn-reject {
+        background: #dc3545;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        color: #fff;
+        cursor: pointer;
+        font-weight: 600;
+    }
+
+    .btn-verify:hover { background: #218838; }
+    .btn-reject:hover { background: #c82333; }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="container">
-    <h2>Payment Verification</h2>
+<div class="payment-card">
+    <h3>Payment Proof – Team {{ team.name }}</h3>
+    <p><strong>Reference No:</strong> {{ team.payment_reference }}</p>
+    <p><strong>Status:</strong> 
+        {% if team.is_verified %}
+            ✅ Verified
+        {% elif team.is_paid %}
+            ⏳ Pending Verification
+        {% else %}
+            ❌ Not Submitted
+        {% endif %}
+    </p>
 
-    <!-- Filters -->
-    <form method="get">
-        <input type="text" name="q" placeholder="Search team/leader" value="{{ query }}">
-        <select name="status">
-            <option value="">All</option>
-            <option value="pending" {% if status_filter == "pending" %}selected{% endif %}>Pending</option>
-            <option value="verified" {% if status_filter == "verified" %}selected{% endif %}>Verified</option>
-            <option value="rejected" {% if status_filter == "rejected" %}selected{% endif %}>Rejected</option>
-        </select>
-        <button type="submit">Apply</button>
-    </form>
-
-    <hr>
-
-    {% if teams %}
-        {% for team in teams %}
-            <div class="team-card">
-                <h3>{{ team.name }}</h3>
-                <p><strong>Leader:</strong> {{ team.leader.email }}</p>
-                <p><strong>Members:</strong>
-                  {% for member in team.members.all %}
-                    {{ member.email }}{% if not forloop.last %}, {% endif %}
-                  {% endfor %}
-                </p>
-
-                <p><strong>Ref No:</strong> {{ team.payment_ref|default_if_none:"N/A" }}</p>
-
-                {% if team.payment_screenshot %}
-                    <button type="button" onclick="openModal('{{ team.payment_screenshot.url }}')">
-                        📷 View Screenshot
-                    </button>
-                {% else %}
-                    <p>No screenshot uploaded</p>
-                {% endif %}
-
-                <p>
-                  Status:
-                  {% if team.is_paid and team.is_verified %}
-                    ✅ Verified
-                  {% elif team.is_paid and not team.is_verified %}
-                    ⏳ Pending
-                  {% else %}
-                    ❌ Not Paid
-                  {% endif %}
-                </p>
-            </div>
-        {% endfor %}
-    {% else %}
-        <p>No teams found.</p>
+    {% if team.payment_screenshot %}
+    <div class="screenshot">
+        <img src="{{ team.payment_screenshot.url }}" alt="Payment Screenshot">
+    </div>
     {% endif %}
-</div>
 
-<!-- Modal -->
-<div id="screenshotModal" class="modal">
-  <span class="close" onclick="closeModal()">&times;</span>
-  <img class="modal-content" id="modalImage">
-</div>
+    <div class="actions">
+        <form method="post" action="{% url 'verify_payment' team.id %}">
+            {% csrf_token %}
+            <button class="btn-verify" type="submit">✔ Verify</button>
+        </form>
 
-<script>
-function openModal(src) {
-  document.getElementById("screenshotModal").style.display = "block";
-  document.getElementById("modalImage").src = src;
-}
-function closeModal() {
-  document.getElementById("screenshotModal").style.display = "none";
-}
-</script>
+        <form method="post" action="{% url 'reject_payment' team.id %}">
+            {% csrf_token %}
+            <button class="btn-reject" type="submit">✖ Reject</button>
+        </form>
+    </div>
+</div>
 {% endblock %}
