@@ -12,6 +12,7 @@ urlpatterns = [
     path('resources/',resources_view,name='resources'),
     path('announcements/',announce_view,name='announcements'),
     path('faqs/',faq_view,name='faq_1'),
+    path("resources/", views.view_resources, name="view_resources"),
     path('team/', include('team_profile.urls'),name='manage_requests'),
     path('problem_statement/',problem_statement_view,name='problem_statement'),
 ]
