@@ -24,7 +24,7 @@ from django.db.models import Q, Prefetch
 def staff_dashboard(request):
     return render(request, 'staff_home/dashboard.html')
 
-def check_registration(request):
+def checkregistration(request):
     query = request.GET.get("q", "")
     filter_paid = request.GET.get("paid")
     filter_verified = request.GET.get("verified")
