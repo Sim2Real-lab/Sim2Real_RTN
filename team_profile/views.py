@@ -201,25 +201,26 @@ def manage_requests(request):
         'members_count': member_count
     })
 
-
 @login_required
 @user_view
 @profile_updated
+@transaction.atomic
 def register_for_event(request):
+    # Only team leaders can register
     if not hasattr(request.user, 'led_team'):
         messages.error(request, "Only team leaders can register.")
         return redirect('teamprofile')
 
     team = request.user.led_team
 
-    # Already registered
+    # Already registered and verified
     if team.is_paid and team.is_verified:
         messages.error(request, "Team is registered and payment completed. No changes allowed.")
         return redirect('manage_requests')
-
-    # Payment submitted but pending verification
+    
+    # Payment submitted but waiting for verification
     if team.is_paid and not team.is_verified:
-        messages.error(request, "Team payment completed. Waiting for organisers to verify your status.")
+        messages.info(request, "Team payment submitted. Waiting for organisers to verify your status.")
         return redirect('manage_requests')
 
     # Minimum team size
@@ -227,31 +228,26 @@ def register_for_event(request):
         messages.error(request, "You need at least 2 members to register.")
         return redirect('create_team_with_code')
 
-    # ✅ Free registration for all-NITK teams
-    try:
-        if not team.is_outsider():  # uses user.userprofile internally
-            team.is_paid = True
-            team.is_verified = False  # wait for organiser verification
-            team.save()
-            messages.success(
-                request,
-                "As all team members are NITK students, your team has been registered for free. Waiting for organisers to verify your status."
-            )
-            return redirect('teamprofile')
-    except AttributeError:
-        messages.error(request, "Some members do not have a user profile set up. Please update profiles.")
+    # Free registration for all-NITK teams
+    if not team.is_outsider():  # All members are NITK
+        team.is_paid = True
+        team.is_verified = False  # Wait for organiser verification
+        team.save()
+        messages.success(
+            request,
+            "All team members are NITK students. Your team has been registered for free. Waiting for organisers to verify your status."
+        )
         return redirect('teamprofile')
 
-    # Outsiders exist → normal payment flow
+    # Teams with outsiders → normal payment flow
     if request.method == 'POST':
-        return redirect('payment_page')  # payment page view
+        return redirect('payment_page')  # Redirect to your payment gateway or form
 
-    # GET: show registration page / instructions
+    # GET request → show team info before payment
     return render(request, 'team_profile/manage_requests.html', {
         'team': team,
         'members_count': team.members.count()
     })
-
 
 @login_required
 @user_view
