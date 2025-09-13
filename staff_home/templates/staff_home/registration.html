@@ -1,74 +1,114 @@
-{% extends "staff_home/dashboard.html" %}
-
-{% block title %}Registration Check{% endblock %}
-
+{% extends "staff_home/base.html" %}
 {% block content %}
-<div class="container">
-  <h2>Registered Teams</h2>
+<div class="container mt-4">
+    <h2 class="mb-4 text-center text-white">Registered Teams & Users</h2>
 
-  <!-- Search + Filters -->
-  <form method="get" class="filter-form mb-3">
-    <input type="text" name="q" value="{{ query }}" placeholder="Search by team/leader" class="form-control mb-2">
+    <!-- Search & Filters -->
+    <form method="get" class="row g-2 mb-4">
+        <div class="col-md-3">
+            <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="Search team/leader/email">
+        </div>
 
-    <select name="paid" class="form-select mb-2">
-      <option value="">Filter by Paid</option>
-      <option value="yes" {% if filter_paid == "yes" %}selected{% endif %}>Paid</option>
-      <option value="no" {% if filter_paid == "no" %}selected{% endif %}>Not Paid</option>
-    </select>
+        <div class="col-md-2">
+            <select name="event_year" class="form-select">
+                <option value="">All Years</option>
+                {% for y in available_years %}
+                  <option value="{{ y }}" {% if filter_year|stringformat:"s" == y|stringformat:"s" %}selected{% endif %}>{{ y }}</option>
+                {% endfor %}
+            </select>
+        </div>
 
-    <select name="verified" class="form-select mb-2">
-      <option value="">Filter by Verified</option>
-      <option value="yes" {% if filter_verified == "yes" %}selected{% endif %}>Verified</option>
-      <option value="no" {% if filter_verified == "no" %}selected{% endif %}>Not Verified</option>
-    </select>
+        <div class="col-md-2">
+            <select name="paid" class="form-select">
+                <option value="">Paid?</option>
+                <option value="yes" {% if filter_paid == "yes" %}selected{% endif %}>Yes</option>
+                <option value="no" {% if filter_paid == "no" %}selected{% endif %}>No</option>
+            </select>
+        </div>
 
-    <select name="outsider" class="form-select mb-2">
-      <option value="">Filter by Outsider</option>
-      <option value="yes" {% if filter_outsider == "yes" %}selected{% endif %}>Outsiders Only</option>
-      <option value="no" {% if filter_outsider == "no" %}selected{% endif %}>Only NITK</option>
-    </select>
+        <div class="col-md-2">
+            <select name="verified" class="form-select">
+                <option value="">Verified?</option>
+                <option value="yes" {% if filter_verified == "yes" %}selected{% endif %}>Yes</option>
+                <option value="no" {% if filter_verified == "no" %}selected{% endif %}>No</option>
+            </select>
+        </div>
 
-    <button type="submit" class="btn btn-primary">Apply</button>
-  </form>
+        <div class="col-md-2">
+            <select name="outsider" class="form-select">
+                <option value="">Outsider?</option>
+                <option value="yes" {% if filter_outsider == "yes" %}selected{% endif %}>Yes</option>
+                <option value="no" {% if filter_outsider == "no" %}selected{% endif %}>No</option>
+            </select>
+        </div>
 
-  <!-- Teams List -->
-  {% for team in page_obj %}
-    <div class="card my-3 p-3">
-      <h4>{{ team.name }}</h4>
-      <p><b>Leader:</b> {{ team.leader.username }} ({{ team.leader.email }})</p>
-      <p><b>Paid:</b> {{ team.is_paid }}</p>
-      <p><b>Verified:</b> {{ team.is_verified }}</p>
-      <p><b>Outsider:</b> {{ team.is_outsider }}</p>
-      <p><b>Members:</b>
-        {% for member in team.members.all %}
-          {{ member.username }} ({{ member.email }})
-          {% if member.profile %}[{{ member.profile.college }}]{% endif %}
-          {% if not forloop.last %}, {% endif %}
-        {% empty %}
-          No members yet
+        <div class="col-md-1 d-grid">
+            <button type="submit" class="btn btn-primary">Apply</button>
+        </div>
+
+        <div class="col-md-2 d-grid">
+            <a href="?download=csv&q={{ query }}&paid={{ filter_paid }}&verified={{ filter_verified }}&outsider={{ filter_outsider }}&event_year={{ filter_year }}"
+               class="btn btn-success">Download CSV</a>
+        </div>
+    </form>
+
+    <!-- Teams Table -->
+    {% if page_obj %}
+        {% for team in page_obj %}
+        <div class="card mb-3">
+            <div class="card-header bg-dark text-white">
+                <strong>{{ team.name }}</strong> (Year: {{ team.event_year }})<br>
+                Leader: {{ team.leader.username }} ({{ team.leader.email }})<br>
+                <span class="badge {% if team.is_paid %}bg-success{% else %}bg-danger{% endif %}">Paid: {{ team.is_paid }}</span>
+                <span class="badge {% if team.is_verified %}bg-success{% else %}bg-warning{% endif %}">Verified: {{ team.is_verified }}</span>
+                {% if team.payment_screenshot %}
+                  <a href="{{ team.payment_screenshot.url }}" target="_blank" class="badge bg-info text-dark">View Payment</a>
+                {% endif %}
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-sm table-striped mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>College</th>
+                            <th>Branch</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for member in team.members.all %}
+                        <tr>
+                            <td>{{ member.first_name }} {{ member.last_name }}</td>
+                            <td>{{ member.email }}</td>
+                            <td>{{ member.userprofile.college|default:"-" }}</td>
+                            <td>{{ member.userprofile.branch|default:"-" }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
         {% endfor %}
-      </p>
-      {% if team.payment_screenshot %}
-        <p><b>Payment Screenshot:</b></p>
-        <img src="{{ team.payment_screenshot.url }}" style="max-height:200px;">
-      {% endif %}
-      {% if team.payment_ref %}
-        <p><b>Payment Ref:</b> {{ team.payment_ref }}</p>
-      {% endif %}
-    </div>
-  {% empty %}
-    <p>No teams found.</p>
-  {% endfor %}
 
-  <!-- Pagination -->
-  <div class="pagination mt-3">
-    {% if page_obj.has_previous %}
-      <a class="btn btn-secondary" href="?page={{ page_obj.previous_page_number }}&q={{ query }}&paid={{ filter_paid }}&verified={{ filter_verified }}&outsider={{ filter_outsider }}">Previous</a>
+        <!-- Pagination -->
+        <nav>
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                  <li class="page-item"><a class="page-link" href="?page=1&{{ request.GET.urlencode }}">« First</a></li>
+                  <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}&{{ request.GET.urlencode }}">‹ Prev</a></li>
+                {% endif %}
+
+                <li class="page-item active"><span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span></li>
+
+                {% if page_obj.has_next %}
+                  <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}&{{ request.GET.urlencode }}">Next ›</a></li>
+                  <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}&{{ request.GET.urlencode }}">Last »</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+
+    {% else %}
+        <p class="text-center text-white">No registered teams found.</p>
     {% endif %}
-    <span class="mx-2">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
-    {% if page_obj.has_next %}
-      <a class="btn btn-secondary" href="?page={{ page_obj.next_page_number }}&q={{ query }}&paid={{ filter_paid }}&verified={{ filter_verified }}&outsider={{ filter_outsider }}">Next</a>
-    {% endif %}
-  </div>
 </div>
 {% endblock %}

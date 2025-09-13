@@ -3,11 +3,12 @@ from django.http import Http404
 from django.contrib.auth.decorators import login_required
 from .decorators import organiser_only,profile_updated
 from django.contrib import messages
-from django.http import HttpResponseForbidden,HttpResponseNotFound
+from django.http import HttpResponseForbidden,HttpResponseNotFound,HttpResponse
 from queries.models import Query
 from user_profile.models import UserProfile
 from team_profile.models import Team
 from django.db.models import Q
+import csv
 from django.http import JsonResponse
 from .forms import AnnouncmentForm,ProblemStatementConfigForm,ProblemStatementSectionForm,ResourceForm,BrochureForm
 from .models import Announcments,ProblemStatementConfig,ProblemStatementSection,Resource,Brochure
@@ -25,11 +26,16 @@ from django.db.models import Q, Prefetch
 def staff_dashboard(request):
     return render(request, 'staff_home/dashboard.html')
 
+@login_required
+@organiser_only
+@profile_updated
 def checkregistration(request):
     query = request.GET.get("q", "")
     filter_paid = request.GET.get("paid")
     filter_verified = request.GET.get("verified")
     filter_outsider = request.GET.get("outsider")
+    filter_year = request.GET.get("event_year")
+    download_csv = request.GET.get("download") == "csv"
 
     teams = (
         Team.objects.select_related("leader")
@@ -54,15 +60,45 @@ def checkregistration(request):
     if filter_verified in ["yes", "no"]:
         teams = teams.filter(is_verified=(filter_verified == "yes"))
 
+    if filter_year:
+        teams = teams.filter(event_year=filter_year)
+
     if filter_outsider == "yes":
         teams = [t for t in teams if t.is_outsider()]
     elif filter_outsider == "no":
         teams = [t for t in teams if not t.is_outsider()]
 
+    # --- CSV Export ---
+    if download_csv:
+        response = HttpResponse(content_type="text/csv")
+        response["Content-Disposition"] = 'attachment; filename="registrations.csv"'
+
+        writer = csv.writer(response)
+        writer.writerow(["Team", "Leader", "Email", "Paid", "Verified", "Year", "Members"])
+
+        for team in teams:
+            members_str = ", ".join(
+                [f"{m.username} ({getattr(m, 'userprofile', None) and m.userprofile.college})"
+                 for m in team.members.all()]
+            )
+            writer.writerow([
+                team.name,
+                team.leader.username,
+                team.leader.email,
+                "Yes" if team.is_paid else "No",
+                "Yes" if team.is_verified else "No",
+                team.event_year,
+                members_str,
+            ])
+
+        return response
+
     # --- Pagination ---
-    paginator = Paginator(teams, 20)  # 20 teams per page
+    paginator = Paginator(teams, 20)
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
+
+    available_years = Team.objects.values_list("event_year", flat=True).distinct().order_by("event_year")
 
     context = {
         "page_obj": page_obj,
@@ -70,8 +106,11 @@ def checkregistration(request):
         "filter_paid": filter_paid,
         "filter_verified": filter_verified,
         "filter_outsider": filter_outsider,
+        "filter_year": filter_year,
+        "available_years": available_years,
     }
     return render(request, "staff_home/registration.html", context)
+
 @login_required
 @organiser_only
 def upload_questions(request):
