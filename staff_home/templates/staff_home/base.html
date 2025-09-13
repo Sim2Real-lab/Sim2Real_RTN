@@ -1,42 +1,92 @@
-{%load static%}
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{%static 'team_profile/style.css'%}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'assets/sim2real_logo.png' %}">
-<link rel="icon" type="image/png" sizes="16x16" href="{% static 'assets/sim2real_logo.png' %}">
-<link rel="apple-touch-icon" sizes="180x180" href="{% static 'assets/sim2real_logo.png' %}">
-<link rel="shortcut icon" href="{% static 'assets/sim2real_logo.png' %}">
-    {% block extra_styles %}{% endblock %}
-    <title>Team</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="{% static 'team_profile/style.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<title>{% block title %}Team{% endblock %}</title>
+{% block extra_styles %}{% endblock %}
 </head>
 <body>
-    <header>
-      <div class="back"><a href="{%url 'home'%}"><i class="fa fa-home"></i></a></div>
-      <div class="dropdown">
-        <a class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" href="#" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-          <img src="{% static 'assets/default.png' %}" alt="Profile" class="profile-img">
-        </a>
-        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownUser1">
-            <li><a class="dropdown-item" href="{%url 'profile'%}">My Profile</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li>
-              <form method="post" action="{% url 'logout' %}">
-                {% csrf_token %}
-            <button type="submit" class="dropdown-item">Logout</button>
-            </form>
-          </li>
-        </ul> 
+
+<!-- Header -->
+<header class="d-flex justify-content-between align-items-center px-4 py-2">
+    <div class="d-flex align-items-center">
+        <a href="{% url 'home' %}" class="me-3"><i class="fa fa-home fa-lg"></i></a>
+        <h1 class="m-0">SIM2REAL 2025</h1>
+    </div>
+
+    <!-- Profile dropdown -->
+    {% if user.is_authenticated %}
+    <div class="d-flex align-items-center">
+        <div class="dropdown me-2">
+            <a class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" href="#" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+                <img src="{% static 'assets/default.png' %}" alt="Profile" class="profile-img">
+                <div class="d-flex flex-column ps-2 m-0">
+                    <span>Welcome</span>
+                    <strong>{{ user.username }}</strong>
+                </div>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownUser1">
+                <li><a class="dropdown-item" href="{% url 'profile' %}">My Profile</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <form method="post" action="{% url 'logout' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="dropdown-item">Logout</button>
+                    </form>
+                </li>
+            </ul>
         </div>
-        </header>
-        <div class="overlay"></div>
-         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-         <div class=content>
-        {%block content%}{%endblock%}
-         </div>
+
+        <!-- Mobile menu toggle -->
+        <button id="menuToggleBtn" class="btn btn-outline-light d-md-none" onclick="toggleMenu()">☰</button>
+    </div>
+    {% endif %}
+</header>
+
+<!-- Navigation bar -->
+<nav id="mainNav" class="navbar navbar-expand-md navbar-dark bg-dark d-none d-md-flex px-4">
+    <div class="container-fluid">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item"><a class="nav-link" href="{% url 'verify_payments' %}">Verify Payments</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'respond_queries' %}">Check Queries</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'teamprofile' %}">Test Module</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'manage_problem_statement' %}">Problem Statement</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'manage_resources' %}">Upload Resources</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'upload_brochure' %}">Upload Brochure</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'make_announcments' %}">Announcements</a></li>
+        </ul>
+    </div>
+</nav>
+
+<!-- Mobile menu -->
+<div id="mobileMenu" class="d-md-none d-none bg-dark text-white p-3">
+    <a href="{% url 'verify_payments' %}" class="d-block py-2 text-white">Verify Payments</a>
+    <a href="{% url 'respond_queries' %}" class="d-block py-2 text-white">Check Queries</a>
+    <a href="{% url 'teamprofile' %}" class="d-block py-2 text-white">Test Module</a>
+    <a href="{% url 'manage_problem_statement' %}" class="d-block py-2 text-white">Problem Statement</a>
+    <a href="{% url 'manage_resources' %}" class="d-block py-2 text-white">Upload Resources</a>
+    <a href="{% url 'upload_brochure' %}" class="d-block py-2 text-white">Upload Brochure</a>
+    <a href="{% url 'make_announcments' %}" class="d-block py-2 text-white">Announcements</a>
+</div>
+
+<!-- Main content -->
+<div class="content container mt-4">
+    {% block content %}{% endblock %}
+</div>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+function toggleMenu() {
+    const menu = document.getElementById('mobileMenu');
+    menu.classList.toggle('d-none');
+}
+</script>
+{% block extra_scripts %}{% endblock %}
 </body>
 </html>
