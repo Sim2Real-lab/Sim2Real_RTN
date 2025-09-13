@@ -212,32 +212,40 @@ def register_for_event(request):
 
     team = request.user.led_team
 
+    # already registered
     if team.is_paid and team.is_verified:
         messages.error(request, "Team is registered and payment completed. No changes allowed.")
         return redirect('manage_requests')
     
     if team.is_paid and not team.is_verified:
-        messages.error(request, "Team payment completed. Waiting for Organisers to verify your status.")
+        messages.error(request, "Team payment completed. Waiting for organisers to verify your status.")
         return redirect('manage_requests')
 
+    # minimum team size
     if team.members.count() < 2:
         messages.error(request, "You need at least 2 members to register.")
         return redirect('create_team_with_code')
 
-    profile = request.user.userprofile
-    if profile.is_nitk_user():
+    # ✅ Free registration for all-NITK teams
+    if not team.is_outsider():
         team.is_paid = True
+        team.is_verified = False  # wait for organiser verification
         team.save()
-        messages.success(request, "As an NITK student, your team has been registered without payment.")
+        messages.success(
+            request,
+            "As all team members are NITK students, your team has been registered for free. Waiting for organisers to verify your status."
+        )
         return redirect('teamprofile')
 
+    # outsiders exist → normal payment flow
     if request.method == 'POST':
-        return redirect('payment_page')  # real or simulated payment gateway
+        return redirect('payment_page')
 
     return render(request, 'team_profile/manage_requests.html', {
         'team': team,
         'members_count': team.members.count()
     })
+
 
 
 @login_required
@@ -268,7 +276,8 @@ def payment_view(request):
                     return redirect("payment_view")
 
                 if not team.payment_ref:
-                    team.payment_ref = str(uuid.uuid4())
+                    messages.error(request, "Give Payment Reference")
+                    return redirect("payment_view")
 
                 screenshot.name = f"{team.payment_ref}.png"
                 team.payment_screenshot = screenshot

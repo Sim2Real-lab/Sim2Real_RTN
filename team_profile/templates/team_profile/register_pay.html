@@ -1,4 +1,5 @@
 {% extends 'team_profile/team_base.html' %}
+
 {% block extra_styles %}
 <style>
     body {
@@ -73,7 +74,7 @@
 
     /* 🔴 Make form errors clearly visible */
     ul.errorlist {
-        color: #ff4d4d;      /* red text */
+        color: #ff4d4d;
         font-size: 13px;
         margin: -5px 0 10px 0;
         padding-left: 15px;
@@ -83,23 +84,77 @@
     ul.errorlist li {
         margin-bottom: 5px;
     }
+
+    /* Free registration banner */
+    .free-registration-banner {
+        background-color: #28a745;
+        color: #fff;
+        padding: 12px 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        text-align: center;
+        font-size: 14px;
+        font-weight: 600;
+    }
 </style>
 {% endblock %}
+
 {% block content %}
 <div class="container">
+
+  <!-- ✅ Free registration banner for NITK teams -->
+  {% if team.is_paid and not team.is_verified and not team.is_outsider %}
+  <div class="free-registration-banner">
+      As all team members are NITK students, your team has been registered for free. Waiting for organiser verification.
+  </div>
+  {% endif %}
+
   <h2>Payment for Team: {{ team.name }}</h2>
   <p>Total members: {{ team.members.count }}</p>
+
+  {% if team.is_outsider %}
   <p>Amount to be paid: <strong>₹500</strong></p>
+  {% else %}
+  <p>Amount to be paid: <strong>Free</strong></p>
+  {% endif %}
+
   <p style="margin-bottom: 20px; font-size: 13px; text-align: center;">
     By submitting, you confirm that all details are correct.  
     For any concerns, raise a query or contact organisers.
   </p>
 
+  {% if team.is_outsider %}
   <h2>Submit Payment Proof</h2>
   <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit">Upload & Submit</button>
   </form>
+  {% endif %}
 </div>
+
+<!-- ✅ Side Ticker / Toast Notifications -->
+{% if messages %}
+<div class="toast-container position-fixed top-0 end-0 p-3">
+  {% for message in messages %}
+  <div class="toast align-items-center text-white bg-{{ message.tags }} border-0 mb-2" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="d-flex">
+      <div class="toast-body">
+        {{ message }}
+      </div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  var toastElList = [].slice.call(document.querySelectorAll('.toast'));
+  toastElList.forEach(function(toastEl) {
+    new bootstrap.Toast(toastEl, { delay: 5000 }).show();
+  });
+});
+</script>
+{% endif %}
 {% endblock %}

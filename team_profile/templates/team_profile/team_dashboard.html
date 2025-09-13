@@ -69,7 +69,7 @@
         font-weight: bold;
         color: #58a6ff;
     }
-  /* Your styles here - keep or extend your existing ones */
+
   h2 { color: white; margin-bottom: 15px; }
   ul { list-style: none; padding-left: 0; }
   li { color: #ddd; padding: 5px 0; }
@@ -86,11 +86,56 @@
     box-shadow: 0px 3px 5px #0092e7 inset;
   }
   form div { margin-bottom: 10px; }
+
+  /* NITK free registration alert */
+  .nitk-alert {
+      background-color: #1a73e8;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 10px;
+      text-align: center;
+      margin-bottom: 15px;
+      font-size: 14px;
+  }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="container">
+
+  {% if messages %}
+    <div class="toast-container position-fixed top-0 end-0 p-3">
+      {% for message in messages %}
+      <div class="toast align-items-center text-white bg-{{ message.tags }} border-0 mb-2" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+          <div class="toast-body">
+            {{ message }}
+          </div>
+          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var toastElList = [].slice.call(document.querySelectorAll('.toast'))
+      toastElList.forEach(function(toastEl) {
+        new bootstrap.Toast(toastEl, { delay: 5000 }).show()
+      })
+    });
+    </script>
+  {% endif %}
+
+  {% if team.is_paid and not team.is_verified %}
+    <div class="nitk-alert">
+      {% if user.userprofile.is_nitk_user %}
+        Your team is registered for free as all members are NITK students. Waiting for organiser verification.
+      {% else %}
+        Your team has submitted payment. Waiting for organiser verification.
+      {% endif %}
+    </div>
+  {% endif %}
+
   {% if is_leader %}
     <h2>Your Team: {{ team.name }}</h2>
     <p>Join Code: <strong>{{ team.join_code }}</strong></p>
