@@ -19,31 +19,6 @@
     <strong>ROBOTECH NITK</strong>
     <p>Simulate. Build. Compete.</p>
   </div>
-  <div>
-    {% if user.is_authenticated %}
-      <div class="dropdown">
-        <a class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" href="#" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-          <img src="{% static 'assets/default.png' %}" alt="Profile" class="profile-img">
-          <div style="display: flex, flex-direction:column,padding:0,margin:0;">
-          <span >Welcome<br></span>
-          <strong class="username">{{ user.username }}</strong>
-        </div>
-        </a>
-
-        
-        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownUser1">
-            <li><a class="dropdown-item" href="{%url 'profile'%}">My Profile</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <form method="post" action="{% url 'logout' %}">
-                {% csrf_token %}
-            <button type="submit" class="dropdown-item">Logout</button>
-            </form>
-            </li>
-        </ul>
-      </div>
-    {% endif %}
-    
-  </div>
 </header>
 <nav class="navbar navbar-expand-md navbar-dark bg-dark sticky-top">
   <div class="container-fluid">
