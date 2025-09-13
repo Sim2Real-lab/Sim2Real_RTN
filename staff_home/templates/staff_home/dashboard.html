@@ -30,6 +30,7 @@
         </div>
         </a>
         <button id="menuToggleBtn" class="menu-toggle d-md-none" onclick="toggleMenu()">☰</button>
+        
         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownUser1">
             <li><a class="dropdown-item" href="{%url 'profile'%}">My Profile</a></li>
             <li><hr class="dropdown-divider"></li>
@@ -45,14 +46,36 @@
   </div>
 </header>
 
-<nav class="main-nav">
-  <a href="{%url 'verify_payments'%}" class="nav-link-item">Verify Payments</a><hr class="vertical">
-  <a href="{%url 'respond_queries'%}" class="nav-link-item">Check General Queries</a><hr class="vertical">
-  <a href="{%url 'user_query'%}" class="nav-link-item">Make Bulk emails</a><hr class="vertical">
-  <a href="{%url 'user_query'%}" class="nav-link-item">Check Submissions</a><hr class="vertical">
-  <a href="{%url 'user_query'%}" class="nav-link-item">Upload Newsletter templates</a><hr class="vertical">
-  <a href="{%url 'respond_queries'%}" class="nav-link-item">Check User Queries</a>
+<nav class="navbar navbar-expand-md navbar-dark bg-dark sticky-top">
+  <div class="container-fluid">
+    <!-- Navbar brand -->
+    <a class="navbar-brand text-white" href="#">SIM2REAL 2025</a>
+
+    <!-- Hamburger button for mobile -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#dashboardNav" aria-controls="dashboardNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Navbar links -->
+    <div class="collapse navbar-collapse" id="dashboardNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'verify_payments' %}">Verify Payments</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'respond_queries' %}">Check General Queries</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'user_query' %}">Check Submissions</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'respond_queries' %}">Check User Queries</a>
+        </li>
+      </ul>
+    </div>
+  </div>
 </nav>
+
 </div>
 
 </div>
@@ -140,7 +163,7 @@
                 <div class="card-body">
                     <h5 class="card-title"><i class="fa fa-bullhorn" aria-hidden="true"></i> Make Announcements</h5>
                     <p class="card-text">Announcements can me made for multiple user categories, along with validity and TTL.</p>
-                    <a href="{% url 'make_announcments' %}" class="btn btn-sm btn-outline-light">Make</a> {# Placeholder URL #}
+                    <a href="{% url 'make_announcments' %}" class="btn btn-sm btn-outline-light">Announce</a> {# Placeholder URL #}
                 </div>
             </div>
         </div>
