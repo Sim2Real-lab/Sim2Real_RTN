@@ -24,24 +24,23 @@
         </div>
         <div class="col-md-2">
             <select name="paid" class="form-select">
-                <option value="">Paid Status</option>
-                <option value="yes" {% if filter_paid=='yes' %}selected{% endif %}>Yes</option>
-                <option value="no" {% if filter_paid=='no' %}selected{% endif %}>No</option>
-            </select>
-        </div>
-        <div class="col-md-2">
-            <select name="verified" class="form-select">
-                <option value="">Verified Status</option>
-                <option value="yes" {% if filter_verified=='yes' %}selected{% endif %}>Yes</option>
-                <option value="no" {% if filter_verified=='no' %}selected{% endif %}>No</option>
-            </select>
-        </div>
-        <div class="col-md-2">
-            <select name="outsider" class="form-select">
-                <option value="">Outsider</option>
-                <option value="yes" {% if filter_outsider=='yes' %}selected{% endif %}>Yes</option>
-                <option value="no" {% if filter_outsider=='no' %}selected{% endif %}>No</option>
-            </select>
+    <option value="">Paid Status</option>
+    <option value="yes" {% if filter_paid == "yes" %}selected{% endif %}>Yes</option>
+    <option value="no" {% if filter_paid == "no" %}selected{% endif %}>No</option>
+</select>
+
+<select name="verified" class="form-select">
+    <option value="">Verified Status</option>
+    <option value="yes" {% if filter_verified == "yes" %}selected{% endif %}>Yes</option>
+    <option value="no" {% if filter_verified == "no" %}selected{% endif %}>No</option>
+</select>
+
+<select name="outsider" class="form-select">
+    <option value="">Outsider</option>
+    <option value="yes" {% if filter_outsider == "yes" %}selected{% endif %}>Yes</option>
+    <option value="no" {% if filter_outsider == "no" %}selected{% endif %}>No</option>
+</select>
+
         </div>
         <div class="col-md-2">
             <select name="event_year" class="form-select">
