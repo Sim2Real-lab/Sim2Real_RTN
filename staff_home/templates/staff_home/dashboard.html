@@ -29,6 +29,7 @@
           <strong class="username">{{ user.username }}</strong>
         </div>
         </a>
+
         
         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownUser1">
             <li><a class="dropdown-item" href="{%url 'profile'%}">My Profile</a></li>
@@ -44,7 +45,6 @@
     
   </div>
 </header>
-
 <nav class="navbar navbar-expand-md navbar-dark bg-dark sticky-top">
   <div class="container-fluid">
     <!-- Navbar brand -->
@@ -57,23 +57,38 @@
 
     <!-- Navbar links -->
     <div class="collapse navbar-collapse" id="dashboardNav">
+      <ul class="navbar-nav me-auto mb-2 mb-md-0">
+        <li class="nav-item"><a class="nav-link" href="{% url 'verify_payments' %}">Verify Payments</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'respond_queries' %}">Check General Queries</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'user_query' %}">Check Submissions</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'respond_queries' %}">Check User Queries</a></li>
+      </ul>
+
+      {% if user.is_authenticated %}
       <ul class="navbar-nav ms-auto">
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'verify_payments' %}">Verify Payments</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'respond_queries' %}">Check General Queries</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'user_query' %}">Check Submissions</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'respond_queries' %}">Check User Queries</a>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="dropdownUser1" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <img src="{% static 'assets/default.png' %}" alt="Profile" class="profile-img me-2">
+            {{ user.username }}
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownUser1">
+            <li><a class="dropdown-item" href="{% url 'profile' %}">My Profile</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+              <form method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="dropdown-item">Logout</button>
+              </form>
+            </li>
+          </ul>
         </li>
       </ul>
+      {% endif %}
+
     </div>
   </div>
 </nav>
+
 
 </div>
 
