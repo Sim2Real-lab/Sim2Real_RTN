@@ -219,7 +219,7 @@ def register_for_event(request):
         return redirect('create_team_with_code')
 
     # Everyone goes to payment page (NITK teams will see free registration)
-    return redirect('payment_view')
+    return redirect('payment_page')
 
 
 @login_required
@@ -255,14 +255,14 @@ def payment_view(request):
                 # Require roll number and ID card
                 if not getattr(team, 'roll_number', None) or not screenshot:
                     messages.error(request, "Provide your roll number and upload ID card.")
-                    return redirect('payment_view')
+                    return redirect('payment_page')
                 screenshot.name = f"{team.roll_number}.png"
                 team.payment_screenshot = screenshot
             else:
                 # Require payment reference and screenshot
                 if not team.payment_ref or not screenshot:
                     messages.error(request, "Provide payment reference and upload screenshot.")
-                    return redirect('payment_view')
+                    return redirect('payment_page')
                 screenshot.name = f"{team.payment_ref}.png"
                 team.payment_screenshot = screenshot
 
