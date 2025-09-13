@@ -20,43 +20,55 @@ from collections import defaultdict
 @profile_updated
 def staff_dashboard(request):
     return render(request, 'staff_home/dashboard.html')
+
 @login_required
 @organiser_only
-@login_required
 def checkregistration(request):
-    query = request.GET.get('q', '').strip()
-    event_year = request.GET.get('event_year', '').strip()
-    sort = request.GET.get('sort', '')
-    direction = request.GET.get('direction', 'asc')
+    query = request.GET.get("q", "").strip()
+    event_year = request.GET.get("event_year", "").strip()
+    sort = request.GET.get("sort", "user__first_name")
+    direction = request.GET.get("direction", "asc")
 
-    # Get profiles and filter based on search query
-    profiles = UserProfile.objects.select_related('user').all()
+    # Get profiles with related user + team
+    profiles = UserProfile.objects.select_related("user", "team").all()
 
+    # Search filter
     if query:
-        profiles = profiles.filter(user__first_name__icontains=query) | profiles.filter(user__last_name__icontains=query) | profiles.filter(team__name__icontains=query)
+        profiles = profiles.filter(
+            Q(user__first_name__icontains=query) |
+            Q(user__last_name__icontains=query) |
+            Q(team__name__icontains=query) |
+            Q(college__icontains=query) |
+            Q(branch__icontains=query)
+        )
 
-    # Filter by event_year if provided (assuming you have an event_year field in your profile or team)
+    # Year filter
     if event_year:
         profiles = profiles.filter(team__event_year=event_year)
 
-    # Group profiles by team name
+    # Sorting
+    if sort:
+        if direction == "desc":
+            sort = f"-{sort}"
+        profiles = profiles.order_by(sort)
+
+    # Group users by team
     grouped_users = defaultdict(list)
     for profile in profiles:
-        for team in profile.user.team.all():
-            grouped_users[team.name].append(profile)
+        if profile.team:
+            grouped_users[profile.team.name].append(profile)
 
-    # Available years for filter dropdown (adjust as needed)
-    available_years = Team.objects.values_list('event_year', flat=True).distinct() if hasattr(Team, 'event_year') else [2024, 2025]
+    # For dropdown
+    available_years = Team.objects.values_list("event_year", flat=True).distinct()
 
-    return render(request, 'staff_home/registration.html', {
-    'grouped_users': grouped_users,
-    'query': query,
-    'sort': request.GET.get('sort', ''),
-    'direction': direction,
-    'event_year': event_year,
-    'available_years': available_years,
-})
-
+    return render(request, "staff_home/registration.html", {
+        "grouped_users": grouped_users,
+        "query": query,
+        "sort": request.GET.get("sort", ""),
+        "direction": direction,
+        "event_year": event_year,
+        "available_years": available_years,
+    })
 @login_required
 @organiser_only
 def upload_questions(request):
