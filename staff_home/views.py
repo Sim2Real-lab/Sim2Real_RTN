@@ -282,20 +282,45 @@ def delete_section(request, pk):
 @login_required
 @organiser_only
 def manage_resources(request):
+    # For editing
+    edit_id = request.GET.get("edit")
+    delete_id = request.GET.get("delete")
+
+    # Add / Edit
     if request.method == "POST":
-        form = ResourceForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
+        if "delete_id" in request.POST:  # Delete request
+            resource = get_object_or_404(Resource, pk=request.POST["delete_id"])
+            resource.delete()
+            messages.success(request, "Resource deleted successfully.")
             return redirect("manage_resources")
+
+        elif "edit_id" in request.POST:  # Edit request
+            resource = get_object_or_404(Resource, pk=request.POST["edit_id"])
+            form = ResourceForm(request.POST, request.FILES, instance=resource)
+            if form.is_valid():
+                form.save()
+                messages.success(request, "Resource updated successfully.")
+                return redirect("manage_resources")
+
+        else:  # New upload
+            form = ResourceForm(request.POST, request.FILES)
+            if form.is_valid():
+                form.save()
+                messages.success(request, "Resource added successfully.")
+                return redirect("manage_resources")
     else:
-        form = ResourceForm()
+        if edit_id:  # Prefill edit form
+            resource = get_object_or_404(Resource, pk=edit_id)
+            form = ResourceForm(instance=resource)
+        else:
+            form = ResourceForm()
 
     resources = Resource.objects.all()
     return render(request, "staff_home/manage_resources.html", {
         "form": form,
         "resources": resources,
+        "edit_id": edit_id,
     })
-
 
 
 @login_required
