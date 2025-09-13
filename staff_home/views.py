@@ -34,7 +34,7 @@ def checkregistration(request):
     teams = (
         Team.objects.select_related("leader")
         .prefetch_related(
-            Prefetch("members", queryset=User.objects.all().select_related("profile"))
+            Prefetch("members", queryset=User.objects.all().select_related("userprofile"))
         )
         .order_by("name")
     )
