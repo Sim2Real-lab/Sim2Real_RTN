@@ -72,13 +72,37 @@
                 </div>
                 <div class="countdown text-center mt-4 text-white" id="countdownTimer">
     <h4>Registration Ends In:</h4>
-    <div id="timer" class="d-flex justify-content-center gap-3 fs-4">
-        <span id="days">00</span> Days 
-        <span id="hours">00</span> Hours 
-        <span id="minutes">00</span> Minutes 
-        <span id="seconds">00</span> Seconds
+    <div class="graphical-timer text-center mt-5">
+    <h4 class="text-white mb-3">Registration Ends In:</h4>
+    <div class="d-flex justify-content-center gap-4" id="countdownCircles">
+        <div class="timer-circle">
+            <svg class="progress-ring" width="100" height="100">
+                <circle class="progress-ring__circle" stroke="#a855f7" stroke-width="8" fill="transparent" r="45" cx="50" cy="50"/>
+            </svg>
+            <div class="timer-label text-white"><span id="daysCircle">00</span><br>Days</div>
+        </div>
+        <div class="timer-circle">
+            <svg class="progress-ring" width="100" height="100">
+                <circle class="progress-ring__circle" stroke="#6b21a8" stroke-width="8" fill="transparent" r="45" cx="50" cy="50"/>
+            </svg>
+            <div class="timer-label text-white"><span id="hoursCircle">00</span><br>Hours</div>
+        </div>
+        <div class="timer-circle">
+            <svg class="progress-ring" width="100" height="100">
+                <circle class="progress-ring__circle" stroke="#10b981" stroke-width="8" fill="transparent" r="45" cx="50" cy="50"/>
+            </svg>
+            <div class="timer-label text-white"><span id="minutesCircle">00</span><br>Minutes</div>
+        </div>
+        <div class="timer-circle">
+            <svg class="progress-ring" width="100" height="100">
+                <circle class="progress-ring__circle" stroke="#f59e0b" stroke-width="8" fill="transparent" r="45" cx="50" cy="50"/>
+            </svg>
+            <div class="timer-label text-white"><span id="secondsCircle">00</span><br>Seconds</div>
+        </div>
     </div>
+    <a href="{% url 'login' %}" class="btn btn-lg btn-sign-in mt-4">Sign In</a>
 </div>
+
 
  <!--
                 <div class="col-lg-6 text-center animate__animated animate__zoomIn mt-5 mt-lg-0 d-flex justify-content-center">
@@ -456,34 +480,46 @@
 
     </script>
     <script>
-    // Set the target date and time
-    const targetDate = new Date("September 17, 2025 11:00:00 GMT+0530").getTime();
+const targetDate = new Date("September 17, 2025 11:00:00 GMT+0530").getTime();
 
-    function updateCountdown() {
-        const now = new Date().getTime();
-        const distance = targetDate - now;
+function setProgress(circle, value, max) {
+    const radius = circle.r.baseVal.value;
+    const circumference = 2 * Math.PI * radius;
+    circle.style.strokeDasharray = `${circumference} ${circumference}`;
+    const offset = circumference - (value / max) * circumference;
+    circle.style.strokeDashoffset = offset;
+}
 
-        if (distance < 0) {
-            document.getElementById("countdownTimer").innerHTML = "<h4>Registration Closed</h4>";
-            clearInterval(countdownInterval);
-            return;
-        }
+function updateGraphicalCountdown() {
+    const now = new Date().getTime();
+    const distance = targetDate - now;
 
-        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-        document.getElementById("days").innerText = days.toString().padStart(2, '0');
-        document.getElementById("hours").innerText = hours.toString().padStart(2, '0');
-        document.getElementById("minutes").innerText = minutes.toString().padStart(2, '0');
-        document.getElementById("seconds").innerText = seconds.toString().padStart(2, '0');
+    if (distance < 0) {
+        document.getElementById("countdownCircles").innerHTML = "<h4 class='text-white'>Registration Closed</h4>";
+        clearInterval(interval);
+        return;
     }
 
-    // Update every second
-    const countdownInterval = setInterval(updateCountdown, 1000);
-    updateCountdown(); // initial call
+    const days = Math.floor(distance / (1000*60*60*24));
+    const hours = Math.floor((distance % (1000*60*60*24)) / (1000*60*60));
+    const minutes = Math.floor((distance % (1000*60*60)) / (1000*60));
+    const seconds = Math.floor((distance % (1000*60)) / 1000);
+
+    document.getElementById("daysCircle").innerText = days.toString().padStart(2,'0');
+    document.getElementById("hoursCircle").innerText = hours.toString().padStart(2,'0');
+    document.getElementById("minutesCircle").innerText = minutes.toString().padStart(2,'0');
+    document.getElementById("secondsCircle").innerText = seconds.toString().padStart(2,'0');
+
+    setProgress(document.querySelector("#countdownCircles .timer-circle:nth-child(1) circle"), days, 30);
+    setProgress(document.querySelector("#countdownCircles .timer-circle:nth-child(2) circle"), hours, 24);
+    setProgress(document.querySelector("#countdownCircles .timer-circle:nth-child(3) circle"), minutes, 60);
+    setProgress(document.querySelector("#countdownCircles .timer-circle:nth-child(4) circle"), seconds, 60);
+}
+
+const interval = setInterval(updateGraphicalCountdown, 1000);
+updateGraphicalCountdown();
 </script>
+
 <script type="application/ld+json">
     {
       "@context": "https://schema.org",
