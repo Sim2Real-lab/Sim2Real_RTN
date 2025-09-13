@@ -26,6 +26,18 @@ from django.db.models import Q, Prefetch
 def staff_dashboard(request):
     return render(request, 'staff_home/dashboard.html')
 
+import csv
+from django.http import HttpResponse
+from django.db.models import Q, Prefetch
+from django.core.paginator import Paginator
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
+from django.contrib.auth.models import User
+
+from teams.models import Team
+from staff_home.decorators import organiser_only, profile_updated
+
+
 @login_required
 @organiser_only
 @profile_updated
@@ -37,6 +49,7 @@ def checkregistration(request):
     filter_year = request.GET.get("event_year")
     download_csv = request.GET.get("download") == "csv"
 
+    # Base queryset
     teams = (
         Team.objects.select_related("leader")
         .prefetch_related(
@@ -51,7 +64,9 @@ def checkregistration(request):
             Q(name__icontains=query)
             | Q(leader__username__icontains=query)
             | Q(leader__email__icontains=query)
-        )
+            | Q(members__username__icontains=query)
+            | Q(members__email__icontains=query)
+        ).distinct()
 
     # --- Filters ---
     if filter_paid in ["yes", "no"]:
@@ -60,13 +75,17 @@ def checkregistration(request):
     if filter_verified in ["yes", "no"]:
         teams = teams.filter(is_verified=(filter_verified == "yes"))
 
-    if filter_year:
+    if filter_year and hasattr(Team, "event_year"):
         teams = teams.filter(event_year=filter_year)
 
-    if filter_outsider == "yes":
-        teams = [t for t in teams if t.is_outsider()]
-    elif filter_outsider == "no":
-        teams = [t for t in teams if not t.is_outsider()]
+    # Outsider filter requires list evaluation
+    if filter_outsider in ["yes", "no"]:
+        outsider_filtered = []
+        for t in teams:
+            is_outsider = t.is_outsider()
+            if (filter_outsider == "yes" and is_outsider) or (filter_outsider == "no" and not is_outsider):
+                outsider_filtered.append(t)
+        teams = outsider_filtered
 
     # --- CSV Export ---
     if download_csv:
@@ -74,20 +93,27 @@ def checkregistration(request):
         response["Content-Disposition"] = 'attachment; filename="registrations.csv"'
 
         writer = csv.writer(response)
-        writer.writerow(["Team", "Leader", "Email", "Paid", "Verified", "Year", "Members"])
+        writer.writerow([
+            "Team", "Leader", "Leader Email", "Leader Phone",
+            "Paid", "Verified", "Year", "Members"
+        ])
 
         for team in teams:
-            members_str = ", ".join(
-                [f"{m.username} ({getattr(m, 'userprofile', None) and m.userprofile.college})"
-                 for m in team.members.all()]
+            leader_phone = getattr(team.leader.userprofile, "phone", "N/A")
+            members_str = "; ".join(
+                [
+                    f"{m.get_full_name() or m.username} ({m.email}, {getattr(m.userprofile, 'phone', 'N/A')})"
+                    for m in team.members.all()
+                ]
             )
             writer.writerow([
                 team.name,
-                team.leader.username,
+                team.leader.get_full_name() or team.leader.username,
                 team.leader.email,
+                leader_phone,
                 "Yes" if team.is_paid else "No",
                 "Yes" if team.is_verified else "No",
-                team.event_year,
+                getattr(team, "event_year", "N/A"),
                 members_str,
             ])
 
@@ -98,9 +124,17 @@ def checkregistration(request):
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
 
-    available_years = Team.objects.values_list("event_year", flat=True).distinct().order_by("event_year")
+    # Available years (only if field exists)
+    available_years = []
+    if hasattr(Team, "event_year"):
+        available_years = (
+            Team.objects.values_list("event_year", flat=True)
+            .distinct()
+            .order_by("event_year")
+        )
 
     context = {
+        "teams": page_obj,  # ✅ pass as `teams` so template works
         "page_obj": page_obj,
         "query": query,
         "filter_paid": filter_paid,
