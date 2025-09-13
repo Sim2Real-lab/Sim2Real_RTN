@@ -72,7 +72,6 @@
         box-shadow: 0px 3px 8px rgba(0, 146, 231, 0.4);
     }
 
-    /* 🔴 Make form errors clearly visible */
     ul.errorlist {
         color: #ff4d4d;
         font-size: 13px;
@@ -85,7 +84,6 @@
         margin-bottom: 5px;
     }
 
-    /* Free registration banner */
     .free-registration-banner {
         background-color: #28a745;
         color: #fff;
@@ -96,16 +94,36 @@
         font-size: 14px;
         font-weight: 600;
     }
+
+    /* ✅ QR styling */
+    .qr-section {
+        margin: 20px 0;
+        text-align: center;
+    }
+
+    .qr-section img {
+        width: 200px;
+        height: 200px;
+        border-radius: 10px;
+        border: 2px solid #0092e7;
+        margin-bottom: 10px;
+    }
+
+    .qr-note {
+        font-size: 13px;
+        color: #bbbbbb;
+        margin-bottom: 15px;
+    }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="container">
 
-  <!-- ✅ Free registration banner for NITK teams -->
-  {% if team.is_paid and not team.is_verified and not team.is_outsider %}
+  {% if not team.is_outsider %}
   <div class="free-registration-banner">
-      As all team members are NITK students, your team has been registered for free. Waiting for organiser verification.
+      As all team members are NITK students, your team has been registered for free.
+      {% if not team.is_verified %} Waiting for organiser verification. {% endif %}
   </div>
   {% endif %}
 
@@ -114,6 +132,19 @@
 
   {% if team.is_outsider %}
   <p>Amount to be paid: <strong>₹500</strong></p>
+
+  <!-- ✅ QR Code Section -->
+  <div class="qr-section">
+      <img src="{% static 'assets/upi_qr.png' %}" alt="UPI QR Code">
+      <p class="qr-note">Scan this QR code to pay using any UPI app (PhonePe, GPay, Paytm, etc.)</p>
+  </div>
+
+  <h2>Submit Payment Proof</h2>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Upload & Submit</button>
+  </form>
   {% else %}
   <p>Amount to be paid: <strong>Free</strong></p>
   {% endif %}
@@ -122,18 +153,8 @@
     By submitting, you confirm that all details are correct.  
     For any concerns, raise a query or contact organisers.
   </p>
-
-  {% if team.is_outsider %}
-  <h2>Submit Payment Proof</h2>
-  <form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Upload & Submit</button>
-  </form>
-  {% endif %}
 </div>
 
-<!-- ✅ Side Ticker / Toast Notifications -->
 {% if messages %}
 <div class="toast-container position-fixed top-0 end-0 p-3">
   {% for message in messages %}
