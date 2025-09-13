@@ -16,7 +16,13 @@ class Team(models.Model):
     def is_registered(self):
         return self.is_paid and self.is_verified
     def is_outsider(self):
-        return any(member.profile.college != "National Institute of Technology Karnataka" for member in self.members.all())
+        for member in self.members.all():
+            try:
+                if member.profile.college != "National Institute of Technology Karnataka":
+                    return True
+            except AttributeError:
+                return True  # treat users without profile as outsider
+        return False
 
     def is_full(self):
         return self.members.count()>=3
