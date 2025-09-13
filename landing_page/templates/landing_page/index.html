@@ -70,39 +70,39 @@
                         <a href="{% url 'login' %}" class="btn btn-lg btn-sign-in">Sign In</a>
                     </div>
                 </div>
-                <div class="countdown text-center mt-4 text-white" id="countdownTimer">
-    <h4>Registration Ends In:</h4>
-    <div class="graphical-timer text-center mt-5">
+                <div class="flip-clock text-center mt-5">
     <h4 class="text-white mb-3">Registration Ends In:</h4>
-    <div class="d-flex justify-content-center gap-4" id="countdownCircles">
-        <div class="timer-circle">
-            <svg class="progress-ring" width="100" height="100">
-                <circle class="progress-ring__circle" stroke="#a855f7" stroke-width="8" fill="transparent" r="45" cx="50" cy="50"/>
-            </svg>
-            <div class="timer-label text-white"><span id="daysCircle">00</span><br>Days</div>
+    <div class="flip-clock-container d-flex justify-content-center gap-3">
+        <div class="flip-unit">
+            <div class="flip-card">
+                <div class="top" id="daysTop">00</div>
+                <div class="bottom" id="daysBottom">00</div>
+            </div>
+            <div class="label text-white">Days</div>
         </div>
-        <div class="timer-circle">
-            <svg class="progress-ring" width="100" height="100">
-                <circle class="progress-ring__circle" stroke="#6b21a8" stroke-width="8" fill="transparent" r="45" cx="50" cy="50"/>
-            </svg>
-            <div class="timer-label text-white"><span id="hoursCircle">00</span><br>Hours</div>
+        <div class="flip-unit">
+            <div class="flip-card">
+                <div class="top" id="hoursTop">00</div>
+                <div class="bottom" id="hoursBottom">00</div>
+            </div>
+            <div class="label text-white">Hours</div>
         </div>
-        <div class="timer-circle">
-            <svg class="progress-ring" width="100" height="100">
-                <circle class="progress-ring__circle" stroke="#10b981" stroke-width="8" fill="transparent" r="45" cx="50" cy="50"/>
-            </svg>
-            <div class="timer-label text-white"><span id="minutesCircle">00</span><br>Minutes</div>
+        <div class="flip-unit">
+            <div class="flip-card">
+                <div class="top" id="minutesTop">00</div>
+                <div class="bottom" id="minutesBottom">00</div>
+            </div>
+            <div class="label text-white">Minutes</div>
         </div>
-        <div class="timer-circle">
-            <svg class="progress-ring" width="100" height="100">
-                <circle class="progress-ring__circle" stroke="#f59e0b" stroke-width="8" fill="transparent" r="45" cx="50" cy="50"/>
-            </svg>
-            <div class="timer-label text-white"><span id="secondsCircle">00</span><br>Seconds</div>
+        <div class="flip-unit">
+            <div class="flip-card">
+                <div class="top" id="secondsTop">00</div>
+                <div class="bottom" id="secondsBottom">00</div>
+            </div>
+            <div class="label text-white">Seconds</div>
         </div>
     </div>
-    <a href="{% url 'login' %}" class="btn btn-lg btn-sign-in mt-4">Sign In</a>
 </div>
-
 
  <!--
                 <div class="col-lg-6 text-center animate__animated animate__zoomIn mt-5 mt-lg-0 d-flex justify-content-center">
@@ -479,47 +479,6 @@
         });
 
     </script>
-    <script>
-const targetDate = new Date("September 17, 2025 11:00:00 GMT+0530").getTime();
-
-function setProgress(circle, value, max) {
-    const radius = circle.r.baseVal.value;
-    const circumference = 2 * Math.PI * radius;
-    circle.style.strokeDasharray = `${circumference} ${circumference}`;
-    const offset = circumference - (value / max) * circumference;
-    circle.style.strokeDashoffset = offset;
-}
-
-function updateGraphicalCountdown() {
-    const now = new Date().getTime();
-    const distance = targetDate - now;
-
-    if (distance < 0) {
-        document.getElementById("countdownCircles").innerHTML = "<h4 class='text-white'>Registration Closed</h4>";
-        clearInterval(interval);
-        return;
-    }
-
-    const days = Math.floor(distance / (1000*60*60*24));
-    const hours = Math.floor((distance % (1000*60*60*24)) / (1000*60*60));
-    const minutes = Math.floor((distance % (1000*60*60)) / (1000*60));
-    const seconds = Math.floor((distance % (1000*60)) / 1000);
-
-    document.getElementById("daysCircle").innerText = days.toString().padStart(2,'0');
-    document.getElementById("hoursCircle").innerText = hours.toString().padStart(2,'0');
-    document.getElementById("minutesCircle").innerText = minutes.toString().padStart(2,'0');
-    document.getElementById("secondsCircle").innerText = seconds.toString().padStart(2,'0');
-
-    setProgress(document.querySelector("#countdownCircles .timer-circle:nth-child(1) circle"), days, 30);
-    setProgress(document.querySelector("#countdownCircles .timer-circle:nth-child(2) circle"), hours, 24);
-    setProgress(document.querySelector("#countdownCircles .timer-circle:nth-child(3) circle"), minutes, 60);
-    setProgress(document.querySelector("#countdownCircles .timer-circle:nth-child(4) circle"), seconds, 60);
-}
-
-const interval = setInterval(updateGraphicalCountdown, 1000);
-updateGraphicalCountdown();
-</script>
-
 <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -540,5 +499,49 @@ updateGraphicalCountdown();
       }
     }
     </script>
+    <script>
+const targetDate = new Date("September 17, 2025 11:00:00 GMT+0530").getTime();
+
+function pad(n){ return n.toString().padStart(2,'0'); }
+
+function flipUpdate(unit, value) {
+    const top = document.getElementById(unit+'Top');
+    const bottom = document.getElementById(unit+'Bottom');
+    if(top.innerText !== value) {
+        top.innerText = bottom.innerText;
+        bottom.innerText = value;
+
+        const parent = top.parentElement;
+        parent.classList.remove('flip');
+        void parent.offsetWidth; // trigger reflow
+        parent.classList.add('flip');
+    }
+}
+
+function updateFlipClock() {
+    const now = new Date().getTime();
+    const distance = targetDate - now;
+
+    if(distance < 0){
+        document.querySelector('.flip-clock-container').innerHTML = "<h4 class='text-white'>Registration Closed</h4>";
+        clearInterval(interval);
+        return;
+    }
+
+    const days = Math.floor(distance / (1000*60*60*24));
+    const hours = Math.floor((distance % (1000*60*60*24)) / (1000*60*60));
+    const minutes = Math.floor((distance % (1000*60*60)) / (1000*60));
+    const seconds = Math.floor((distance % (1000*60)) / 1000);
+
+    flipUpdate('days', pad(days));
+    flipUpdate('hours', pad(hours));
+    flipUpdate('minutes', pad(minutes));
+    flipUpdate('seconds', pad(seconds));
+}
+
+const interval = setInterval(updateFlipClock, 1000);
+updateFlipClock();
+</script>
+
 </body>
 </html>
