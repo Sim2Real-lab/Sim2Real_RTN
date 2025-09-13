@@ -50,14 +50,14 @@
                     {% if r.file %}
                       <a href="{{ r.file.url }}" target="_blank" class="text-white">📄 View</a>
                     {% else %}
-                      <span class="text-muted">—</span>
+                      <span class="text-white">—</span>
                     {% endif %}
                   </td>
                   <td>
                     {% if r.link %}
                       <a href="{{ r.link }}" target="_blank" class="text-white">🔗 Visit</a>
                     {% else %}
-                      <span class="text-muted">—</span>
+                      <span class="text-white">—</span>
                     {% endif %}
                   </td>
                   <td class="text-center">
@@ -80,7 +80,7 @@
           </table>
         </div>
       {% else %}
-        <p class="text-muted" style="color:white;">No resources yet.</p>
+        <p class="text-white">No resources yet.</p>
       {% endif %}
     </div>
   </div>
