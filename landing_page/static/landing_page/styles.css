@@ -24,6 +24,67 @@ body {
     100% { background-position: 0% 50%; }
 }
 
+.flip-clock-container {
+    gap: 15px;
+}
+
+.flip-unit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.flip-card {
+    position: relative;
+    width: 70px;
+    height: 90px;
+    perspective: 400px;
+}
+
+.flip-card .top,
+.flip-card .bottom {
+    width: 100%;
+    height: 50%;
+    background: #1e1e2f;
+    color: #a855f7;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
+    font-weight: bold;
+    border-radius: 6px;
+    backface-visibility: hidden;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.flip-card .bottom {
+    border-top: 1px solid #444;
+}
+
+.flip-card.flip .top {
+    animation: flipTop 0.5s forwards;
+}
+
+.flip-card.flip .bottom {
+    animation: flipBottom 0.5s forwards;
+}
+
+@keyframes flipTop {
+    0% { transform: rotateX(0deg); }
+    100% { transform: rotateX(-180deg); }
+}
+
+@keyframes flipBottom {
+    0% { transform: rotateX(180deg); }
+    100% { transform: rotateX(0deg); }
+}
+
+.label {
+    margin-top: 5px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
 /* Section Separators */
 section {
     padding: 80px 0; /* Consistent vertical padding for all sections */
