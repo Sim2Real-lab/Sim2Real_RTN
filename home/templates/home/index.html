@@ -73,24 +73,62 @@
   </div>
 </header>
 
-<nav class="main-nav">
-    <a href="{%url 'home'%}" class="nav-link-item">Dashboard</a><hr class="vertical">
-  {%if not registered%}
-  <a href="{%url 'manage_requests'%}" class="nav-link-item">Register</a>
-  <a href="{% url 'download_brochure' %}" class="btn btn-success">
- Download Brochure
-</a>
+<nav class="navbar navbar-expand-md navbar-dark bg-dark sticky-top">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">SIM2REAL 2025</a>
 
-  {%endif%}
-  {% if registered%}
-  <a href="{%url 'problem_statement'%}" class="nav-link-item">Problem Statement</a><hr class="vertical">
-  <a href="{%url 'resources'%}" class="nav-link-item">Resources</a><hr class="vertical">
-  <!--<a href="#" class="nav-link-item">leaderboard</a><hr class="vertical">-->
-  <!--<a href="#" class="nav-link-item">Test</a><hr class="vertical">-->
-  {%endif%}
-  <a href="{%url 'announcements'%}" class="nav-link-item">Announcements</a><hr class="vertical">
-  <a href="{%url 'user_query'%}" class="nav-link-item">Queries-Ask Us</a>
+    <!-- Hamburger for mobile -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#dashboardNav"
+      aria-controls="dashboardNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="dashboardNav">
+      <ul class="navbar-nav me-auto mb-2 mb-md-0">
+        <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Dashboard</a></li>
+        {% if not registered %}
+        <li class="nav-item"><a class="nav-link" href="{% url 'manage_requests' %}">Register</a></li>
+        <li class="nav-item"><a class="btn btn-success" href="{% url 'download_brochure' %}">Download Brochure</a></li>
+        {% endif %}
+        {% if registered %}
+        <li class="nav-item"><a class="nav-link" href="{% url 'problem_statement' %}">Problem Statement</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'resources' %}">Resources</a></li>
+        {% endif %}
+        <li class="nav-item"><a class="nav-link" href="{% url 'announcements' %}">Announcements</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'user_query' %}">Queries-Ask Us</a></li>
+      </ul>
+
+      {% if user.is_authenticated %}
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="dropdownUser1"
+             role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <img src="{% static 'assets/default.png' %}" alt="Profile" class="profile-img rounded-circle me-2">
+            {{ user.username }}
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownUser1">
+            <li><a class="dropdown-item" href="{% url 'profile' %}"><i class="fas fa-user me-2"></i>My Profile</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="{% url 'teamprofile' %}"><i class="fas fa-users me-2"></i>Team Profile</a></li>
+            {% if user.led_team %}
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="{% url 'manage_requests' %}"><i class="fas fa-cogs me-2"></i>Manage Team</a></li>
+            {% endif %}
+            <li><hr class="dropdown-divider"></li>
+            <li>
+              <form method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="dropdown-item"><i class="fas fa-sign-out-alt me-2"></i>Logout</button>
+              </form>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      {% endif %}
+    </div>
+  </div>
 </nav>
+
 </div>
 
 <div class="container main-content-area mt-4">
