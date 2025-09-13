@@ -23,7 +23,7 @@ def staff_dashboard(request):
 @login_required
 @organiser_only
 @login_required
-def registration_check(request):
+def checkregistration(request):
     query = request.GET.get('q', '').strip()
     event_year = request.GET.get('event_year', '').strip()
     sort = request.GET.get('sort', '')
