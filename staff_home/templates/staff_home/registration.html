@@ -1,140 +1,76 @@
-{% extends "staff_home/dashboard.html" %}
-
-{% block title %}Registration Check{% endblock %}
+{% extends 'staff_home/base.html' %}
 
 {% block content %}
-<div class="container">
-    <h2>Registration Data</h2>
+<div class="container mt-4">
+    <h2 class="mb-4 text-center text-white">Registered Users</h2>
 
-    <!-- Search and Filters -->
-    <form method="get" class="filter-form">
-    <input type="text" name="q" placeholder="Search..." value="{{ query }}" />
+    <!-- Search & Filter Form -->
+    <form method="get" class="mb-3 row g-2">
+        <div class="col-md-4">
+            <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="Search by name, college, branch">
+        </div>
+        <div class="col-md-3">
+            <select name="event_year" class="form-select">
+                <option value="">All Years</option>
+                {% for y in available_years %}
+                    <option value="{{ y }}" {% if event_year == y|stringformat:"s" %}selected{% endif %}>{{ y }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-2">
+            <select name="sort" class="form-select">
+                <option value="user__first_name" {% if sort == 'user__first_name' %}selected{% endif %}>First Name</option>
+                <option value="user__last_name" {% if sort == 'user__last_name' %}selected{% endif %}>Last Name</option>
+                <option value="college" {% if sort == 'college' %}selected{% endif %}>College</option>
+                <option value="branch" {% if sort == 'branch' %}selected{% endif %}>Branch</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <select name="direction" class="form-select">
+                <option value="asc" {% if direction == 'asc' %}selected{% endif %}>Ascending</option>
+                <option value="desc" {% if direction == 'desc' %}selected{% endif %}>Descending</option>
+            </select>
+        </div>
+        <div class="col-md-1">
+            <button type="submit" class="btn btn-primary w-100">Go</button>
+        </div>
+    </form>
 
-    <select name="event_year" class="filter-dropdown" onchange="this.form.submit()">
-        <option value="">All Years</option>
-        {% for y in available_years %}
-            <option value="{{ y }}" {% if event_year|stringformat:"s" == y|stringformat:"s" %}selected{% endif %}>{{ y }}</option>
+    <!-- Users Table -->
+    {% if grouped_users %}
+        {% for team_name, users in grouped_users.items %}
+            <div class="card mb-3">
+                <div class="card-header bg-dark text-white">
+                    <strong>{{ team_name }}</strong> ({{ users|length }} member{% if users|length > 1 %}s{% endif %})
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-striped mb-0">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>College</th>
+                                <th>Branch</th>
+                                <th>Registration Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for user in users %}
+                                <tr>
+                                    <td>{{ user.user.first_name }} {{ user.user.last_name }}</td>
+                                    <td>{{ user.user.email }}</td>
+                                    <td>{{ user.college }}</td>
+                                    <td>{{ user.branch }}</td>
+                                    <td>{{ user.user.date_joined|date:"d M Y" }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         {% endfor %}
-    </select>
-
-    <button type="submit">Filter</button>
-</form>
-
-<table class="data-table">
-    <thead>
-        <tr>
-            <th><a href="?sort=user__first_name&direction={% if sort == 'user__first_name' and direction == 'asc' %}desc{% else %}asc{% endif %}">First Name</a></th>
-            <th><a href="?sort=user__last_name&direction={% if sort == 'user__last_name' and direction == 'asc' %}desc{% else %}asc{% endif %}">Last Name</a></th>
-            <th>College</th>
-            <th>Branch</th>
-            <th>Team</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for team_name, members in grouped_users.items %}
-            <tr class="team-row">
-                <td colspan="5"><strong>Team: {{ team_name }}</strong></td>
-            </tr>
-            {% for profile in members %}
-                <tr>
-                    <td>{{ profile.user.first_name }}</td>
-                    <td>{{ profile.user.last_name }}</td>
-                    <td>{{ profile.college }}</td>
-                    <td>{{ profile.branch }}</td>
-                    <td>{{ team_name }}</td>
-                </tr>
-            {% endfor %}
-        {% endfor %}
-    </tbody>
-</table>
-
-
-    <!-- Pagination 
-    <div class="pagination">
-        {% if page_obj.has_previous %}
-            <a href="?page=1{% if query %}&q={{ query }}{% endif %}{% if sort %}&sort={{ sort }}&direction={{ direction }}{% endif %}{% if event_year %}&event_year={{ event_year }}{% endif %}">&laquo; First</a>
-            <a href="?page={{ page_obj.previous_page_number }}{% if query %}&q={{ query }}{% endif %}{% if sort %}&sort={{ sort }}&direction={{ direction }}{% endif %}{% if event_year %}&event_year={{ event_year }}{% endif %}">Previous</a>
-        {% endif %}
-
-        <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
-
-        {% if page_obj.has_next %}
-            <a href="?page={{ page_obj.next_page_number }}{% if query %}&q={{ query }}{% endif %}{% if sort %}&sort={{ sort }}&direction={{ direction }}{% endif %}{% if event_year %}&event_year={{ event_year }}{% endif %}">Next</a>
-            <a href="?page={{ page_obj.paginator.num_pages }}{% if query %}&q={{ query }}{% endif %}{% if sort %}&sort={{ sort }}&direction={{ direction }}{% endif %}{% if event_year %}&event_year={{ event_year }}{% endif %}">Last &raquo;</a>
-        {% endif %}
-    </div>
-</div>-->
-{% endblock %}
-
-{% block extra_styles %}
-<style>
-    body {
-        background: #121212;
-        color: #f5f5f5;
-        font-family: Arial, sans-serif;
-    }
-    .container {
-        width: 90%;
-        margin: auto;
-    }
-    h2 {
-        text-align: center;
-        margin: 20px 0;
-    }
-    .search-filter-form {
-        display: flex;
-        justify-content: center;
-        margin-bottom: 20px;
-        gap: 10px;
-    }
-    .search-filter-form input,
-    .search-filter-form select,
-    .search-filter-form button {
-        padding: 8px;
-        border-radius: 5px;
-        border: 1px solid #555;
-        background: #1e1e1e;
-        color: #f5f5f5;
-    }
-    .search-filter-form select option {
-        background: #1e1e1e;
-        color: #f5f5f5;
-    }
-    .styled-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 10px;
-        background: #1e1e1e;
-    }
-    .styled-table th, .styled-table td {
-        padding: 10px;
-        border: 1px solid #333;
-        text-align: center;
-    }
-    .styled-table th {
-        background: #292929;
-        cursor: pointer;
-    }
-    .styled-table tr:nth-child(even) {
-        background: #2a2a2a;
-    }
-    .styled-table tr:hover {
-        background: #333333;
-    }
-    .pagination {
-        margin: 20px 0;
-        text-align: center;
-    }
-    .pagination a {
-        margin: 0 5px;
-        padding: 5px 10px;
-        background: #292929;
-        color: #f5f5f5;
-        border-radius: 5px;
-        text-decoration: none;
-    }
-    .pagination a:hover {
-        background: #444;
-    }
-</style>
+    {% else %}
+        <p class="text-white text-center">No registered users found.</p>
+    {% endif %}
+</div>
 {% endblock %}
