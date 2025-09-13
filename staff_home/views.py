@@ -15,6 +15,7 @@ from accounts.models import UserRole
 from django.core.paginator import Paginator
 from django.db.models.functions import ExtractYear
 from collections import defaultdict
+from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 from django.db.models import Q, Prefetch
 
