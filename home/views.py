@@ -52,20 +52,6 @@ def schedule_view(request):
 def registration_view(request):
     return render(request,'home/register.html')
 
-@login_required
-@user_view
-def prize_view(request):
-    return render(request,'home/prize.html')
-
-@login_required
-@user_view
-def brochure_view(request):
-    return render(request,'home/brochure.html')
-
-@login_required
-@user_view
-def resources_view(request):
-    return render(request,'home/resources.html')
 
 @login_required
 @user_view
@@ -104,9 +90,10 @@ def problem_statement_view(request):
 
 @login_required
 @user_view
-def view_resources(request):
+def resources_view(request):
     resources = Resource.objects.all()
     return render(request, "home/resources.html", {"resources": resources})
+
 
 
 
