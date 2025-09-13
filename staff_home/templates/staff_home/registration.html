@@ -8,7 +8,12 @@
 <body class="bg-dark text-white">
 
 <div class="container mt-4">
-    <h2 class="mb-4 text-center">Registered Teams</h2>
+
+    <!-- Dashboard Navigation -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="mb-0">Registered Teams</h2>
+        <a href="{% url 'staff_dashboard' %}" class="btn btn-primary">Back to Dashboard</a>
+    </div>
 
     <!-- Filters Form -->
     <form method="get" class="row g-2 mb-3">
@@ -120,6 +125,12 @@
     {% else %}
         <p class="text-center">No teams found.</p>
     {% endif %}
+
+    <!-- Bottom Dashboard Button -->
+    <div class="mt-4 text-center">
+        <a href="{% url 'staff_dashboard' %}" class="btn btn-primary">Back to Dashboard</a>
+    </div>
+
 </div>
 
 </body>
