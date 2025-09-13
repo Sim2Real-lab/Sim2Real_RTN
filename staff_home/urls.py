@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import staff_dashboard,checkregistration,edit_resource,delete_resource,upload_questions,upload_brochure,queries,manage_resources,create_announcement,resolve_query,announcement_list,announcement_edit,verify_payments,view_payment_screenshot,add_section,manage_problem_statement,delete_section,edit_section
+from .views import staff_dashboard,checkregistration,upload_questions,upload_brochure,queries,manage_resources,create_announcement,resolve_query,announcement_list,announcement_edit,verify_payments,view_payment_screenshot,add_section,manage_problem_statement,delete_section,edit_section
 
 urlpatterns = [
     path('', staff_dashboard, name='staff_dashboard'),
