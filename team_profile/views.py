@@ -204,60 +204,39 @@ def manage_requests(request):
 @login_required
 @user_view
 @profile_updated
-@transaction.atomic
 def register_for_event(request):
-    # Only team leaders can register
+    """
+    Redirect all team leaders to the payment page.
+    """
     if not hasattr(request.user, 'led_team'):
         messages.error(request, "Only team leaders can register.")
         return redirect('teamprofile')
 
     team = request.user.led_team
 
-    # Already registered and verified
-    if team.is_paid and team.is_verified:
-        messages.error(request, "Team is registered and payment completed. No changes allowed.")
-        return redirect('manage_requests')
-    
-    # Payment submitted but waiting for verification
-    if team.is_paid and not team.is_verified:
-        messages.info(request, "Team payment submitted. Waiting for organisers to verify your status.")
-        return redirect('manage_requests')
-
-    # Minimum team size
     if team.members.count() < 2:
-        messages.error(request, "You need at least 2 members to register.")
+        messages.error(request, "You need at least 2 members to register your team.")
         return redirect('create_team_with_code')
 
-    # Free registration for all-NITK teams
-    if not team.is_outsider():  # All members are NITK
-        team.is_paid = True
-        team.is_verified = False  # Wait for organiser verification
-        team.save()
-        messages.success(
-            request,
-            "All team members are NITK students. Your team has been registered for free. Waiting for organisers to verify your status."
-        )
-        return redirect('teamprofile')
+    # Everyone goes to payment page (NITK teams will see free registration)
+    return redirect('payment_view')
 
-    # Teams with outsiders → normal payment flow
-    if request.method == 'POST':
-        return redirect('payment_page')  # Redirect to your payment gateway or form
-
-    # GET request → show team info before payment
-    return render(request, 'team_profile/manage_requests.html', {
-        'team': team,
-        'members_count': team.members.count()
-    })
 
 @login_required
 @user_view
 @profile_updated
 def payment_view(request):
+    """
+    Show payment page for both NITK and outsider teams.
+    NITK: upload ID card + roll number
+    Outsiders: upload payment screenshot + payment reference
+    """
     if not hasattr(request.user, 'led_team'):
         messages.error(request, "You don't lead any team.")
         return redirect('teamprofile')
 
     team = request.user.led_team
+    is_nitk_team = not team.is_outsider()
 
     if team.is_paid:
         messages.info(request, "Payment proof already submitted.")
@@ -271,28 +250,30 @@ def payment_view(request):
             team.is_verified = False
 
             screenshot = form.cleaned_data.get("payment_screenshot")
-            if screenshot:
-                if not screenshot.name.lower().endswith(".png"):
-                    messages.error(request, "Only .png files are allowed.")
-                    return redirect("payment_view")
 
-                if not team.payment_ref:
-                    messages.error(request, "Give Payment Reference")
-                    return redirect("payment_view")
-
+            if is_nitk_team:
+                # Require roll number and ID card
+                if not getattr(team, 'roll_number', None) or not screenshot:
+                    messages.error(request, "Provide your roll number and upload ID card.")
+                    return redirect('payment_view')
+                screenshot.name = f"{team.roll_number}.png"
+                team.payment_screenshot = screenshot
+            else:
+                # Require payment reference and screenshot
+                if not team.payment_ref or not screenshot:
+                    messages.error(request, "Provide payment reference and upload screenshot.")
+                    return redirect('payment_view')
                 screenshot.name = f"{team.payment_ref}.png"
                 team.payment_screenshot = screenshot
 
             team.save()
-            messages.success(
-                request,
-                "Payment proof uploaded. Waiting for verification by organisers."
-            )
+            messages.success(request, "Payment proof uploaded. Waiting for verification by organisers.")
             return redirect('teamprofile')
     else:
         form = PaymentProofForm(instance=team)
 
     return render(request, 'team_profile/register_pay.html', {
         'team': team,
-        'form': form
+        'form': form,
+        'is_nitk_team': is_nitk_team
     })

@@ -16,9 +16,7 @@ class Team(models.Model):
     def is_registered(self):
         return self.is_paid and self.is_verified
     def is_outsider(self):
-    # Returns True if any member is NOT an NITK user
-        return any(member.userprofile.college != "National Institute of Technology Karnataka" for member in self.members.all())
-
+        return any(member.profile.college != "National Institute of Technology Karnataka" for member in self.members.all())
 
     def is_full(self):
         return self.members.count()>=3
