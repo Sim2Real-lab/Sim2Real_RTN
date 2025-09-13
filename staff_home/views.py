@@ -15,60 +15,62 @@ from accounts.models import UserRole
 from django.core.paginator import Paginator
 from django.db.models.functions import ExtractYear
 from collections import defaultdict
+from django.core.paginator import Paginator
+from django.db.models import Q, Prefetch
+
 @login_required
 @organiser_only
 @profile_updated
 def staff_dashboard(request):
     return render(request, 'staff_home/dashboard.html')
 
-@login_required
-@organiser_only
-def checkregistration(request):
-    query = request.GET.get("q", "").strip()
-    event_year = request.GET.get("event_year", "").strip()
-    sort = request.GET.get("sort", "user__first_name")
-    direction = request.GET.get("direction", "asc")
+def check_registration(request):
+    query = request.GET.get("q", "")
+    filter_paid = request.GET.get("paid")
+    filter_verified = request.GET.get("verified")
+    filter_outsider = request.GET.get("outsider")
 
-    # Get profiles with related user + team
-    profiles = UserProfile.objects.select_related("user", "team").all()
+    teams = (
+        Team.objects.select_related("leader")
+        .prefetch_related(
+            Prefetch("members", queryset=User.objects.all().select_related("profile"))
+        )
+        .order_by("name")
+    )
 
-    # Search filter
+    # --- Search ---
     if query:
-        profiles = profiles.filter(
-            Q(user__first_name__icontains=query) |
-            Q(user__last_name__icontains=query) |
-            Q(team__name__icontains=query) |
-            Q(college__icontains=query) |
-            Q(branch__icontains=query)
+        teams = teams.filter(
+            Q(name__icontains=query)
+            | Q(leader__username__icontains=query)
+            | Q(leader__email__icontains=query)
         )
 
-    # Year filter
-    if event_year:
-        profiles = profiles.filter(team__event_year=event_year)
+    # --- Filters ---
+    if filter_paid in ["yes", "no"]:
+        teams = teams.filter(is_paid=(filter_paid == "yes"))
 
-    # Sorting
-    if sort:
-        if direction == "desc":
-            sort = f"-{sort}"
-        profiles = profiles.order_by(sort)
+    if filter_verified in ["yes", "no"]:
+        teams = teams.filter(is_verified=(filter_verified == "yes"))
 
-    # Group users by team
-    grouped_users = defaultdict(list)
-    for profile in profiles:
-        if profile.team:
-            grouped_users[profile.team.name].append(profile)
+    if filter_outsider == "yes":
+        teams = [t for t in teams if t.is_outsider()]
+    elif filter_outsider == "no":
+        teams = [t for t in teams if not t.is_outsider()]
 
-    # For dropdown
-    available_years = Team.objects.values_list("event_year", flat=True).distinct()
+    # --- Pagination ---
+    paginator = Paginator(teams, 20)  # 20 teams per page
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
 
-    return render(request, "staff_home/registration.html", {
-        "grouped_users": grouped_users,
+    context = {
+        "page_obj": page_obj,
         "query": query,
-        "sort": request.GET.get("sort", ""),
-        "direction": direction,
-        "event_year": event_year,
-        "available_years": available_years,
-    })
+        "filter_paid": filter_paid,
+        "filter_verified": filter_verified,
+        "filter_outsider": filter_outsider,
+    }
+    return render(request, "staff_home/registration.html", context)
 @login_required
 @organiser_only
 def upload_questions(request):
