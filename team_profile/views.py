@@ -212,40 +212,45 @@ def register_for_event(request):
 
     team = request.user.led_team
 
-    # already registered
+    # Already registered
     if team.is_paid and team.is_verified:
         messages.error(request, "Team is registered and payment completed. No changes allowed.")
         return redirect('manage_requests')
-    
+
+    # Payment submitted but pending verification
     if team.is_paid and not team.is_verified:
         messages.error(request, "Team payment completed. Waiting for organisers to verify your status.")
         return redirect('manage_requests')
 
-    # minimum team size
+    # Minimum team size
     if team.members.count() < 2:
         messages.error(request, "You need at least 2 members to register.")
         return redirect('create_team_with_code')
 
     # ✅ Free registration for all-NITK teams
-    if not team.is_outsider():
-        team.is_paid = True
-        team.is_verified = False  # wait for organiser verification
-        team.save()
-        messages.success(
-            request,
-            "As all team members are NITK students, your team has been registered for free. Waiting for organisers to verify your status."
-        )
+    try:
+        if not team.is_outsider():  # uses user.userprofile internally
+            team.is_paid = True
+            team.is_verified = False  # wait for organiser verification
+            team.save()
+            messages.success(
+                request,
+                "As all team members are NITK students, your team has been registered for free. Waiting for organisers to verify your status."
+            )
+            return redirect('teamprofile')
+    except AttributeError:
+        messages.error(request, "Some members do not have a user profile set up. Please update profiles.")
         return redirect('teamprofile')
 
-    # outsiders exist → normal payment flow
+    # Outsiders exist → normal payment flow
     if request.method == 'POST':
-        return redirect('payment_page')
+        return redirect('payment_page')  # payment page view
 
+    # GET: show registration page / instructions
     return render(request, 'team_profile/manage_requests.html', {
         'team': team,
         'members_count': team.members.count()
     })
-
 
 
 @login_required
