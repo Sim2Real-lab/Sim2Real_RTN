@@ -104,7 +104,6 @@
         <div class="card-body text-center">
             <h3 class="card-title">✅ Payment Detail Submitted! Waiting for Confirmation</h3>
             <p class="card-text">You have already submitted Payment Details </br>Waiting for organisers to verify.</p>
-            <a href="{% url 'manage_requests' %}" class="btn btn-glow">Register Now!</a> {# Placeholder URL #}
         </div>
     </div>
     {% elif not registered %} {# Placeholder condition #}
@@ -112,7 +111,7 @@
         <div class="card-body text-center">
             <h3 class="card-title">🚀 Ready to Simulate to Real?</h3>
             <p class="card-text">Registration Closes on 14 September 2025.</br>If you have registered on Unstop make your team and upload necessary details to access problem Statement.</p>
-            <a href="{% url 'manage_requests' %}" class="btn btn-glow">Register Now!</a> {# Placeholder URL #}
+            <a href="{% url 'manage_requests' %}" class="btn btn-glow">Register Now!</a>
         </div>
     </div>
     {% else %}
