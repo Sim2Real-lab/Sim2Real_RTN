@@ -17,7 +17,13 @@
 <div class="overlay"></div>
 <div class="login-wrap">
     <div class="login-html">
-        <strong class="page-type" id="type">Sign In</strong>
+        <div class="login-html">
+    <div class="mb-3 text-start">
+        <a href="{% url 'landing_page' %}" class="btn btn-outline-light">
+            <i class="fa fa-home me-2"></i> Back to Home
+        </a>
+    </div>
+    <strong class="page-type" id="type">Sign In</strong>
         <div class="login-form">
             <form class="sign-in-htm" method="post" action="{% url 'login' %}">
                 {% csrf_token %}
@@ -43,12 +49,19 @@
 
                 <div class="hr"></div>
                 {% if messages %}
-                <ul>
-                {% for message in messages %}
-                    <li style="color: green;">{{ message }}</li>
-                {% endfor %}
-                </ul>
-                {% endif %}
+  {% for message in messages %}
+    <div class="alert 
+         {% if message.tags == 'success' %}alert-success
+         {% elif message.tags == 'error' or message.tags == 'danger' %}alert-danger
+         {% elif message.tags == 'warning' %}alert-warning
+         {% else %}alert-info{% endif %}
+         alert-dismissible fade show" role="alert">
+      {{ message }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  {% endfor %}
+{% endif %}
+
                 <div class="foot-lnk">
                     <a href="{%url 'request_otp'%}">Forgot Password?</a>
                 </div>
