@@ -71,38 +71,24 @@
                         <a href="{% url 'login' %}" class="btn btn-lg btn-sign-in">Sign In</a>
                     </div>
                 </div>
-                <div class="flip-clock text-center mt-5">
-    <h4 class="text-white mb-3">Registration Ends In:</h4>
-    <div class="flip-clock-container d-flex justify-content-center gap-3">
-        <div class="flip-unit">
-            <div class="flip-card">
-                <div class="top" id="daysTop">00</div>
-                <div class="bottom" id="daysBottom">00</div>
-            </div>
-            <div class="label text-white">Days</div>
-        </div>
-        <div class="flip-unit">
-            <div class="flip-card">
-                <div class="top" id="hoursTop">00</div>
-                <div class="bottom" id="hoursBottom">00</div>
-            </div>
-            <div class="label text-white">Hours</div>
-        </div>
-        <div class="flip-unit">
-            <div class="flip-card">
-                <div class="top" id="minutesTop">00</div>
-                <div class="bottom" id="minutesBottom">00</div>
-            </div>
-            <div class="label text-white">Minutes</div>
-        </div>
-        <div class="flip-unit">
-            <div class="flip-card">
-                <div class="top" id="secondsTop">00</div>
-                <div class="bottom" id="secondsBottom">00</div>
-            </div>
-            <div class="label text-white">Seconds</div>
-        </div>
-    </div>
+                <div class="flip-clock-container">
+  <div class="time-block">
+    <div id="days" class="digit">00</div>
+    <div class="label">Days</div>
+  </div>
+  <div class="time-block">
+    <div id="hours" class="digit">00</div>
+    <div class="label">Hours</div>
+  </div>
+  <div class="time-block">
+    <div id="minutes" class="digit">00</div>
+    <div class="label">Minutes</div>
+  </div>
+  <div class="time-block">
+    <div id="seconds" class="digit">00</div>
+    <div class="label">Seconds</div>
+  </div>
+</div>
 </div>
 
  <!--
@@ -504,15 +490,15 @@
 }
     </script>
 <script>
-function startCountdown() {
-  const endDate = new Date("September 17, 2025 11:00:00").getTime();
+document.addEventListener("DOMContentLoaded", function () {
+  const endDate = new Date("September 17, 2025 11:00:00 GMT+0530").getTime();
 
   function updateClock() {
     const now = new Date().getTime();
     const distance = endDate - now;
 
     if (distance <= 0) {
-      document.querySelectorAll(".top, .bottom").forEach(el => el.innerText = "00");
+      document.querySelectorAll(".digit").forEach(el => el.textContent = "00");
       clearInterval(timer);
       return;
     }
@@ -522,29 +508,17 @@ function startCountdown() {
     const minutes = String(Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, "0");
     const seconds = String(Math.floor((distance % (1000 * 60)) / 1000)).padStart(2, "0");
 
-    updateFlip("days", days);
-    updateFlip("hours", hours);
-    updateFlip("minutes", minutes);
-    updateFlip("seconds", seconds);
+    document.getElementById("days").textContent = days;
+    document.getElementById("hours").textContent = hours;
+    document.getElementById("minutes").textContent = minutes;
+    document.getElementById("seconds").textContent = seconds;
   }
 
-  function updateFlip(id, newValue) {
-    const top = document.getElementById(id + "Top");
-    const bottom = document.getElementById(id + "Bottom");
-    if (top.innerText !== newValue) {
-      top.innerText = newValue;
-      bottom.innerText = newValue;
-      top.parentElement.classList.add("flip");
-      setTimeout(() => top.parentElement.classList.remove("flip"), 500);
-    }
-  }
-
-  updateClock(); // run instantly
+  updateClock();
   const timer = setInterval(updateClock, 1000);
-}
-
-startCountdown();
+});
 </script>
+
 
 
 </body>
