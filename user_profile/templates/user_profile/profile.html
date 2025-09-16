@@ -56,14 +56,16 @@
 <form id="profile-form" method="post" enctype="multipart/form-data">
     {%csrf_token%}
   <strong class="instruction">All the below fields are mandatory</strong>
-    <!-- Message Ticker -->
+<body>
+  <!-- Message Toasts -->
   {% if messages %}
-  <div class="message-ticker bg-dark text-white py-2">
-    <marquee behavior="scroll" direction="left" scrollamount="5">
-      {% for message in messages %}
-        {{ message }}&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
-      {% endfor %}
-    </marquee>
+  <div id="toast-container">
+    {% for message in messages %}
+    <div class="toast-message">
+      <span>{{ message }}</span>
+      <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+    </div>
+    {% endfor %}
   </div>
   {% endif %}
   <section class="personal-details">
