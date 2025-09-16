@@ -34,7 +34,7 @@
                 <li class="nav-item"><a class="nav-link" href="#schedule">Time Line</a></li>
                 <li class="nav-item"><a class="nav-link" href="#prizes">Prizes</a></li>
                 <li class="nav-item"><a class="nav-link" href="#brochure">Brochure</a></li>
-                <li class="nav-item"><a class="nav-link" href="#testimonials">Testimonials</a> {# New link #}
+                <li class="nav-item"><a class="nav-link" href="#testimonials">Testimonials</a></li>
                 <li class="nav-item"><a class="nav-link" href="#faq">FAQ</a></li>
                 <li class="nav-item"><a class="nav-link" href="#queries">Queries</a></li>
                 <li class="nav-item"><a class="nav-link" href="{% url 'landing_page:sponsor_page' %}">Sponsor Us</a></li>
@@ -395,11 +395,8 @@
                     <label for="message" class="form-label">Message</label>
                     <textarea class="form-control" id="message" name="message" rows="4" required></textarea>
                 </div>
-                <form action="?" method="POST">
       <div class="g-recaptcha" data-sitekey="your_site_key"></div>
       <br/>
-      <input type="submit" value="Submit">
-    </form>
                 <button type="submit" class="btn btn-lg btn-glow w-100">Submit Query</button>
             </form>
         </div>
@@ -487,66 +484,70 @@
     </script>
 <script type="application/ld+json">
     {
-      "@context": "https://schema.org",
-      "@type": "Event",
-      "name": "Sim2Real Robotics Competition",
-      "organizer": {
-        "@type": "CollegeOrUniversity",
-        "name": "NITK Surathkal",
-        "url": "https://www.nitk.ac.in/"
-      },
-      "url": "https://sim2real.nitk.ac.in/",
-      "startDate": "2025-09-10T11:00:00+05:30",
-      "endDate": "2025-09-28T23:00:00+05:30",
-      "location": {
-        "@type": "Place",
-        "name": "NITK Surathkal",
-        "address": "Mangalore, India"
+  "@context": "https://schema.org",
+  "@type": "Event",
+  "name": "Sim2Real Robotics Competition",
+  "organizer": {
+    "@type": "CollegeOrUniversity",
+    "name": "National Institute of Technology Karnataka",
+    "url": "https://www.nitk.ac.in"
+  },
+  "startDate": "2025-09-12T09:00+05:30",
+  "endDate": "2025-09-28T15:00+05:30",
+  "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+  "eventStatus": "https://schema.org/EventScheduled",
+  "location": {
+    "@type": "Place",
+    "name": "NITK Surathkal",
+    "address": "NH 66, Srinivasnagar, Surathkal, Mangalore, Karnataka 575025"
+  }
+}
+    </script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const endDate = new Date("September 17, 2025 11:00:00 GMT+0530").getTime();
+
+  const sections = {
+    days: document.querySelector("#days span"),
+    hours: document.querySelector("#hours span"),
+    minutes: document.querySelector("#minutes span"),
+    seconds: document.querySelector("#seconds span"),
+  };
+
+  function updateClock() {
+    const now = new Date().getTime();
+    const distance = endDate - now;
+
+    if (distance <= 0) {
+      Object.values(sections).forEach(el => el.textContent = "00");
+      clearInterval(timer);
+      return;
+    }
+
+    const d = Math.floor(distance / (1000 * 60 * 60 * 24));
+    const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    const s = Math.floor((distance % (1000 * 60)) / 1000);
+
+    const values = { days: d, hours: h, minutes: m, seconds: s };
+
+    for (let key in values) {
+      const newVal = String(values[key]).padStart(2, "0");
+      const span = sections[key];
+
+      if (span.textContent !== newVal) {
+        span.parentElement.classList.add("flip");
+        setTimeout(() => {
+          span.textContent = newVal;
+          span.parentElement.classList.remove("flip");
+        }, 300);
       }
     }
-    </script>
-    <script>
-const targetDate = new Date("September 17, 2025 11:00:00 GMT+0530").getTime();
+  }
 
-function pad(n){ return n.toString().padStart(2,'0'); }
-
-function flipUpdate(unit, value) {
-    const top = document.getElementById(unit+'Top');
-    const bottom = document.getElementById(unit+'Bottom');
-    if(top.innerText !== value) {
-        top.innerText = bottom.innerText;
-        bottom.innerText = value;
-
-        const parent = top.parentElement;
-        parent.classList.remove('flip');
-        void parent.offsetWidth; // trigger reflow
-        parent.classList.add('flip');
-    }
-}
-
-function updateFlipClock() {
-    const now = new Date().getTime();
-    const distance = targetDate - now;
-
-    if(distance < 0){
-        document.querySelector('.flip-clock-container').innerHTML = "<h4 class='text-white'>Registration Closed</h4>";
-        clearInterval(interval);
-        return;
-    }
-
-    const days = Math.floor(distance / (1000*60*60*24));
-    const hours = Math.floor((distance % (1000*60*60*24)) / (1000*60*60));
-    const minutes = Math.floor((distance % (1000*60*60)) / (1000*60));
-    const seconds = Math.floor((distance % (1000*60)) / 1000);
-
-    flipUpdate('days', pad(days));
-    flipUpdate('hours', pad(hours));
-    flipUpdate('minutes', pad(minutes));
-    flipUpdate('seconds', pad(seconds));
-}
-
-const interval = setInterval(updateFlipClock, 1000);
-updateFlipClock();
+  updateClock();
+  const timer = setInterval(updateClock, 1000);
+});
 </script>
 
 </body>
