@@ -20,6 +20,7 @@
 <link rel="icon" type="image/png" sizes="16x16" href="{% static 'assets/sim2real_logo.png' %}">
 <link rel="apple-touch-icon" sizes="180x180" href="{% static 'assets/sim2real_logo.png' %}">
 <link rel="shortcut icon" href="{% static 'assets/sim2real_logo.png' %}">
+<script src="https://www.google.com/recaptcha/api.js" async defer></script> 
 </head>
 <body>
 
@@ -394,6 +395,11 @@
                     <label for="message" class="form-label">Message</label>
                     <textarea class="form-control" id="message" name="message" rows="4" required></textarea>
                 </div>
+                <form action="?" method="POST">
+      <div class="g-recaptcha" data-sitekey="your_site_key"></div>
+      <br/>
+      <input type="submit" value="Submit">
+    </form>
                 <button type="submit" class="btn btn-lg btn-glow w-100">Submit Query</button>
             </form>
         </div>
