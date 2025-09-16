@@ -32,38 +32,6 @@ body {
     color: var(--text-color); /* Default text color */
 }
 
-/* Improve visibility of alerts on dark backgrounds */
-.alert {
-  color: #fff !important;              /* white text */
-  font-weight: 500;
-  border-radius: 8px;
-  opacity: 0.95;
-}
-
-.alert-info {
-  background-color: #0dcaf0 !important; /* Bootstrap cyan */
-  border: none;
-}
-
-.alert-warning {
-  background-color: #ffc107 !important; /* amber */
-  border: none;
-}
-
-.alert-danger {
-  background-color: #dc3545 !important; /* red */
-  border: none;
-}
-
-.alert-success {
-  background-color: #198754 !important; /* green */
-  border: none;
-}
-
-/* Optional: small shadow to stand out from purple bg */
-.alert {
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-}
 
 
 /* Keyframes for the body's animated gradient background */
@@ -312,22 +280,24 @@ a { color:inherit; text-decoration: none; }
 }
 
 /* Specific message types */
+/* Specific message types - aligned with Bootstrap alert colors */
 .messages.error-message, .messages li.error {
-    background-color: rgba(220, 53, 69, 0.85); /* Slightly less opaque */
-    border: 1px solid #dc3545;
+    background-color: #dc3545 !important; /* red */
+    border: none;
 }
 .messages li.success {
-    background-color: rgba(40, 167, 69, 0.85);
-    border: 1px solid #28a745;
+    background-color: #198754 !important; /* green */
+    border: none;
 }
 .messages li.info {
-    background-color: rgba(23, 162, 184, 0.85);
-    border: 1px solid #17a2b8;
+    background-color: #0dcaf0 !important; /* cyan */
+    border: none;
 }
 .messages li.warning {
-    background-color: rgba(255, 193, 7, 0.85);
-    border: 1px solid #ffc107;
+    background-color: #ffc107 !important; /* amber */
+    border: none;
 }
+
 
 .hr {
     height: 1px; /* Thinner line */
