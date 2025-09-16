@@ -8,6 +8,8 @@ from staff_home.models import Brochure
 from django.http import HttpResponseForbidden,FileResponse, Http404,HttpResponse
 import os
 from django.http import FileResponse, Http404
+from django.conf import settings
+import requests
 
 def main_landing_page_view(request):
     """
@@ -43,18 +45,35 @@ def landing_page_sponsor_view(request):
 def general_query_submit_view(request):
     """
     Handles submissions from the general query form on the main landing page.
-    Uses the GeneralQuery model.
+    Uses the GeneralQuery model and verifies Google reCAPTCHA.
     """
     if request.method == 'POST':
         name = request.POST.get('name')
         contact_email = request.POST.get('contact_email')
         institution_name = request.POST.get('institution_name')
         message_text = request.POST.get('message')
+        recaptcha_response = request.POST.get('g-recaptcha-response')
 
+        # Check required fields
         if not all([name, contact_email, message_text]):
             messages.error(request, "Please fill in all required fields (Name, Email, Message).")
             return redirect(reverse('landing_page:main_landing_page') + '#queries')
 
+        # Verify reCAPTCHA
+        recaptcha_secret = settings.RECAPTCHA_SECRET_KEY
+        recaptcha_verify_url = 'https://www.google.com/recaptcha/api/siteverify'
+        data = {
+            'secret': recaptcha_secret,
+            'response': recaptcha_response
+        }
+        r = requests.post(recaptcha_verify_url, data=data)
+        result = r.json()
+
+        if not result.get('success'):
+            messages.error(request, "Invalid reCAPTCHA. Please try again.")
+            return redirect(reverse('landing_page:main_landing_page') + '#queries')
+
+        # If CAPTCHA passed, save the query
         try:
             GeneralQuery.objects.create(
                 name=name,
