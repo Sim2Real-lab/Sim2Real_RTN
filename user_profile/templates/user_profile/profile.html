@@ -56,29 +56,16 @@
 <form id="profile-form" method="post" enctype="multipart/form-data">
     {%csrf_token%}
   <strong class="instruction">All the below fields are mandatory</strong>
-<body>
-  <body>
-  <!-- Bootstrap Toast Messages -->
+    <!-- Message Ticker -->
   {% if messages %}
-  <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 2000;">
-    {% for message in messages %}
-    <div class="toast align-items-center 
-        {% if message.tags == 'success' %}text-bg-success
-        {% elif message.tags == 'error' or message.tags == 'danger' %}text-bg-danger
-        {% elif message.tags == 'warning' %}text-bg-warning
-        {% else %}text-bg-primary{% endif %}
-        border-0 show" role="alert" aria-live="assertive" aria-atomic="true">
-      <div class="d-flex">
-        <div class="toast-body">
-          {{ message }}
-        </div>
-        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-      </div>
-    </div>
-    {% endfor %}
+  <div class="message-ticker bg-dark text-white py-2">
+    <marquee behavior="scroll" direction="left" scrollamount="5">
+      {% for message in messages %}
+        {{ message }}&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+      {% endfor %}
+    </marquee>
   </div>
   {% endif %}
-
   <section class="personal-details">
     <div class="form-group">
       <label for="first_name">First Name</label>
