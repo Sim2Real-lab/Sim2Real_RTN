@@ -504,51 +504,48 @@
 }
     </script>
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-  const endDate = new Date("September 17, 2025 11:00:00 GMT+0530").getTime();
-
-  const sections = {
-    days: document.querySelector("#days span"),
-    hours: document.querySelector("#hours span"),
-    minutes: document.querySelector("#minutes span"),
-    seconds: document.querySelector("#seconds span"),
-  };
+function startCountdown() {
+  const endDate = new Date("September 17, 2025 11:00:00").getTime();
 
   function updateClock() {
     const now = new Date().getTime();
     const distance = endDate - now;
 
     if (distance <= 0) {
-      Object.values(sections).forEach(el => el.textContent = "00");
+      document.querySelectorAll(".top, .bottom").forEach(el => el.innerText = "00");
       clearInterval(timer);
       return;
     }
 
-    const d = Math.floor(distance / (1000 * 60 * 60 * 24));
-    const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-    const s = Math.floor((distance % (1000 * 60)) / 1000);
+    const days = String(Math.floor(distance / (1000 * 60 * 60 * 24))).padStart(2, "0");
+    const hours = String(Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, "0");
+    const minutes = String(Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, "0");
+    const seconds = String(Math.floor((distance % (1000 * 60)) / 1000)).padStart(2, "0");
 
-    const values = { days: d, hours: h, minutes: m, seconds: s };
+    updateFlip("days", days);
+    updateFlip("hours", hours);
+    updateFlip("minutes", minutes);
+    updateFlip("seconds", seconds);
+  }
 
-    for (let key in values) {
-      const newVal = String(values[key]).padStart(2, "0");
-      const span = sections[key];
-
-      if (span.textContent !== newVal) {
-        span.parentElement.classList.add("flip");
-        setTimeout(() => {
-          span.textContent = newVal;
-          span.parentElement.classList.remove("flip");
-        }, 300);
-      }
+  function updateFlip(id, newValue) {
+    const top = document.getElementById(id + "Top");
+    const bottom = document.getElementById(id + "Bottom");
+    if (top.innerText !== newValue) {
+      top.innerText = newValue;
+      bottom.innerText = newValue;
+      top.parentElement.classList.add("flip");
+      setTimeout(() => top.parentElement.classList.remove("flip"), 500);
     }
   }
 
-  updateClock();
+  updateClock(); // run instantly
   const timer = setInterval(updateClock, 1000);
-});
+}
+
+startCountdown();
 </script>
+
 
 </body>
 </html>
