@@ -32,6 +32,40 @@ body {
     color: var(--text-color); /* Default text color */
 }
 
+/* Improve visibility of alerts on dark backgrounds */
+.alert {
+  color: #fff !important;              /* white text */
+  font-weight: 500;
+  border-radius: 8px;
+  opacity: 0.95;
+}
+
+.alert-info {
+  background-color: #0dcaf0 !important; /* Bootstrap cyan */
+  border: none;
+}
+
+.alert-warning {
+  background-color: #ffc107 !important; /* amber */
+  border: none;
+}
+
+.alert-danger {
+  background-color: #dc3545 !important; /* red */
+  border: none;
+}
+
+.alert-success {
+  background-color: #198754 !important; /* green */
+  border: none;
+}
+
+/* Optional: small shadow to stand out from purple bg */
+.alert {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+
 /* Keyframes for the body's animated gradient background */
 @keyframes gradientAnimation {
     0% { background-position: 0% 50%; }
