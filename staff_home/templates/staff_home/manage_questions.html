@@ -46,8 +46,8 @@
       <td>{{ q.negative_marks }}</td>
       <td>{{ q.compiler_enabled|yesno:"Yes,No" }}</td>
       <td>
-        <a href="{% url 'edit_question' test.id q.id %}" class="btn btn-sm btn-warning">Edit</a>
-        <a href="{% url 'delete_question' test.id q.id %}" class="btn btn-sm btn-danger">Delete</a>
+        <a href="{% url 'edit_question' q.id %}" class="btn btn-sm btn-warning">Edit</a>
+        <a href="{% url 'delete_question' q.id %}" class="btn btn-sm btn-danger">Delete</a>
       </td>
     </tr>
     {% empty %}
