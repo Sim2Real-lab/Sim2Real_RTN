@@ -105,7 +105,7 @@ class QuestionForm(forms.ModelForm):
             "correct_answer",     # For MCQ or coding expected output
             "marks",
             "negative_marks",
-            "enable_compiler",    # Boolean for coding questions
+            "compiler_enabled",    # Boolean for coding questions
         ]
         widgets = {
             "text": forms.Textarea(attrs={"class": "form-control", "rows": 3}),
@@ -114,5 +114,5 @@ class QuestionForm(forms.ModelForm):
             "correct_answer": forms.TextInput(attrs={"class": "form-control"}),
             "marks": forms.NumberInput(attrs={"class": "form-control", "min": 0}),
             "negative_marks": forms.NumberInput(attrs={"class": "form-control", "min": 0}),
-            "enable_compiler": forms.CheckboxInput(attrs={"class": "form-check-input"}),
+            "compiler_enabled": forms.CheckboxInput(attrs={"class": "form-check-input"}),
         }
