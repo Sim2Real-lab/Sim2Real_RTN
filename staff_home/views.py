@@ -486,7 +486,7 @@ def upload_brochure(request):
 @organiser_only
 def manage_submissions(request):
     windows = SubmissionWindow.objects.all().order_by("-start_date")
-    return render(request, "manage_submissions.html", {"windows": windows})
+    return render(request, "staff_home/manage_submissions.html", {"windows": windows})
 
 @login_required
 @organiser_only
@@ -501,14 +501,14 @@ def create_window(request):
             return redirect("manage_submissions")
     else:
         form = SubmissionWindowForm()
-    return render(request, "create_window.html", {"form": form})
+    return render(request, "staff_home/create_window.html", {"form": form})
 
 @login_required
 @organiser_only
 def window_detail(request, window_id):
     window = get_object_or_404(SubmissionWindow, id=window_id)
     submissions = window.submissions.select_related("team").order_by("-submitted_at")
-    return render(request, "window_detail.html", {"window": window, "submissions": submissions})
+    return render(request, "staff_home/window_detail.html", {"window": window, "submissions": submissions})
 
 @login_required
 @organiser_only
