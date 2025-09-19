@@ -115,7 +115,7 @@ class Question(models.Model):
     test = models.ForeignKey(Test,related_name='questions',on_delete=models.CASCADE)
     text = models.TextField()
     question_type = models.CharField(max_length=20, choices=[("single", "Single Choice"), ("multiple", "Multiple Choice"), ("code", "Code")])
-    marks = models.FloatField
+    marks = models.FloatField()
     negative_marks = models.FloatField(default=0)
     options = models.JSONField(blank=True,null=True)
     correct_answer = models.JSONField(blank=True, null=True)
