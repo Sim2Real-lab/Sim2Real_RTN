@@ -20,11 +20,13 @@
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label for="id_start_date" class="form-label">Start Date</label>
-                        {{ form.start_date }}
+                        <input type="datetime-local" name="start_date" id="id_start_date" class="form-control"
+                               value="{{ form.start_date.value|default_if_none:'' }}">
                     </div>
                     <div class="col-md-6 mb-3">
                         <label for="id_end_date" class="form-label">End Date</label>
-                        {{ form.end_date }}
+                        <input type="datetime-local" name="end_date" id="id_end_date" class="form-control"
+                               value="{{ form.end_date.value|default_if_none:'' }}">
                     </div>
                 </div>
 
