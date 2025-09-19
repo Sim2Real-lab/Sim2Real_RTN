@@ -23,6 +23,107 @@ from django.db.models import Q, Prefetch
 @login_required
 @organiser_only
 @profile_updated
+def all_users_view(request):
+    query = request.GET.get("q", "").strip()
+    filter_year = request.GET.get("event_year")
+    filter_role = request.GET.get("role")
+    filter_college = request.GET.get("college")
+    filter_team = request.GET.get("team")
+    download_csv = request.GET.get("download") == "csv"
+
+    # Base queryset (bring in profiles + roles efficiently)
+    users = User.objects.select_related("userprofile", "userrole").prefetch_related("team", "led_team")
+
+    # --- Search ---
+    if query:
+        users = users.filter(
+            Q(username__icontains=query) |
+            Q(email__icontains=query) |
+            Q(first_name__icontains=query) |
+            Q(last_name__icontains=query) |
+            Q(userprofile__college_name__icontains=query)
+        )
+
+    # --- Filters ---
+    if filter_year:
+        users = users.filter(userprofile__event_year=filter_year)
+
+    if filter_role:
+        if filter_role == "organiser":
+            users = users.filter(userrole__is_organiser=True)
+        elif filter_role == "participant":
+            users = users.filter(userrole__is_organiser=False)
+
+    if filter_college:
+        users = users.filter(userprofile__college_name__icontains=filter_college)
+
+    if filter_team:
+        users = users.filter(
+            Q(team__name__icontains=filter_team) |
+            Q(led_team__name__icontains=filter_team)
+        ).distinct()
+
+    # --- CSV Download ---
+    if download_csv:
+        response = HttpResponse(content_type="text/csv")
+        response["Content-Disposition"] = 'attachment; filename="users.csv"'
+
+        writer = csv.writer(response)
+        writer.writerow([
+            "Username", "Full Name", "Email", "College", "Event Year", "Role", "Teams"
+        ])
+
+        for u in users:
+            profile = getattr(u, "userprofile", None)
+            role = "Organiser" if getattr(u.userrole, "is_organiser", False) else "Participant"
+
+            # Teams: both member + leader
+            team_names = list(u.team.values_list("name", flat=True))
+            if hasattr(u, "led_team"):
+                team_names.append(u.led_team.name)
+            teams_str = ", ".join(team_names) if team_names else "No Team"
+
+            writer.writerow([
+                u.username,
+                u.get_full_name(),
+                u.email,
+                getattr(profile, "college_name", "N/A"),
+                getattr(profile, "event_year", "N/A"),
+                role,
+                teams_str
+            ])
+        return response
+
+    # --- Pagination ---
+    paginator = Paginator(users, 20)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+
+    # Dropdown values
+    available_years = (UserProfile.objects.values_list("event_year", flat=True)
+                       .distinct().order_by("event_year"))
+    available_colleges = (UserProfile.objects.values_list("college_name", flat=True)
+                          .distinct().order_by("college_name"))
+    available_roles = ["organiser", "participant"]
+
+    context = {
+        "users": page_obj,
+        "page_obj": page_obj,
+        "query": query,
+        "filter_year": filter_year,
+        "filter_role": filter_role,
+        "filter_college": filter_college,
+        "filter_team": filter_team,
+        "available_years": available_years,
+        "available_colleges": available_colleges,
+        "available_roles": available_roles,
+    }
+    return render(request, "staff_home/all_users.html", context)
+
+
+@login_required
+@organiser_only
+@profile_updated
 def staff_dashboard(request):
     return render(request, 'staff_home/dashboard.html')
 
