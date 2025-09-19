@@ -19,10 +19,20 @@ from collections import defaultdict
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 from django.db.models import Q, Prefetch
+import csv
+from django.http import HttpResponse
+from django.db.models import Q, Prefetch
+from django.core.paginator import Paginator
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
+from django.contrib.auth.models import User
+
+from staff_home.decorators import organiser_only, profile_updated
+
 
 @login_required
 @organiser_only
-def users_list(request):
+def all_users_view(request):
     query = request.GET.get("q", "")
     filter_year = request.GET.get("event_year")
     filter_college = request.GET.get("college")
@@ -111,16 +121,6 @@ def users_list(request):
 @profile_updated
 def staff_dashboard(request):
     return render(request, 'staff_home/dashboard.html')
-
-import csv
-from django.http import HttpResponse
-from django.db.models import Q, Prefetch
-from django.core.paginator import Paginator
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
-from django.contrib.auth.models import User
-
-from staff_home.decorators import organiser_only, profile_updated
 
 @login_required
 @organiser_only
