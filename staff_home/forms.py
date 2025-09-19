@@ -1,7 +1,7 @@
 from django import forms
 from .models import Announcments,Resource
 import datetime
-from .models import ProblemStatementConfig, ProblemStatementSection,Brochure
+from .models import ProblemStatementConfig, ProblemStatementSection,Brochure, Submission, SubmissionWindow
 class AnnouncmentForm(forms.ModelForm):
     class Meta:
         model=Announcments
@@ -62,3 +62,13 @@ class BrochureForm(forms.ModelForm):
             if file.size > max_size:
                 raise forms.ValidationError("File too large (max 50 MB).")
             return file
+
+class SubmissionWindowForm(forms.ModelForm):
+    class Meta:
+        model = SubmissionWindow
+        fields = ["title", "description", "start_date", "end_date", "is_visible"]
+
+class SubmissionForm(forms.ModelForm):
+    class Meta:
+        model = Submission
+        fields = ["link"]

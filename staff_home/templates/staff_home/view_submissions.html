@@ -1,0 +1,16 @@
+<h2>Submissions for {{ window.title }}</h2>
+<a href="?download=csv">Download CSV</a>
+<table>
+  <tr>
+    <th>Team</th>
+    <th>Link</th>
+    <th>Submitted At</th>
+  </tr>
+  {% for s in submissions %}
+  <tr>
+    <td>{{ s.team.name }}</td>
+    <td><a href="{{ s.link }}" target="_blank">View</a></td>
+    <td>{{ s.submitted_at }}</td>
+  </tr>
+  {% endfor %}
+</table>

@@ -1,0 +1,15 @@
+<h2>Submission Windows</h2>
+<ul>
+  {% for w in windows %}
+    <li>
+      {{ w.title }} ({{ w.start_date }} – {{ w.end_date }})
+      {% if user.userrole.is_organiser %}
+        <a href="{% url 'view_submissions' w.id %}">View Submissions</a>
+      {% else %}
+        <a href="{% url 'submit_work' w.id %}">Submit</a>
+      {% endif %}
+    </li>
+  {% empty %}
+    <li>No active submission windows.</li>
+  {% endfor %}
+</ul>

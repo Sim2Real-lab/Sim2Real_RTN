@@ -10,8 +10,8 @@ from team_profile.models import Team
 from django.db.models import Q
 import csv
 from django.http import JsonResponse
-from .forms import AnnouncmentForm,ProblemStatementConfigForm,ProblemStatementSectionForm,ResourceForm,BrochureForm
-from .models import Announcments,ProblemStatementConfig,ProblemStatementSection,Resource,Brochure
+from .forms import AnnouncmentForm,ProblemStatementConfigForm,ProblemStatementSectionForm,ResourceForm,BrochureForm,SubmissionForm,SubmissionWindowForm
+from .models import Announcments,ProblemStatementConfig,ProblemStatementSection,Resource,Brochure,SubmissionWindow,Submission
 from accounts.models import UserRole
 from django.core.paginator import Paginator
 from django.db.models.functions import ExtractYear
@@ -480,3 +480,81 @@ def upload_brochure(request):
         "brochure": brochure
     })
 
+
+@login_required
+@organiser_only
+@profile_updated
+def create_window(request):
+    if request.method == "POST":
+        form = SubmissionWindowForm(request.POST)
+        if form.is_valid():
+            window = form.save(commit=False)
+            window.created_by = request.user
+            window.save()
+            messages.success(request, "Submission window created successfully.")
+            return redirect("list_windows")
+    else:
+        form = SubmissionWindowForm()
+    return render(request, "submissions/create_window.html", {"form": form})
+
+
+# organiser + participants: list all windows
+@login_required
+@organiser_only
+@profile_updated
+def list_windows(request):
+    if request.user.userrole.is_organiser:
+        windows = SubmissionWindow.objects.all().order_by("-start_date")
+    else:
+        windows = SubmissionWindow.objects.filter(is_visible=True).order_by("-start_date")
+    return render(request, "submissions/list_windows.html", {"windows": windows})
+
+
+# participants: submit a google drive link
+@login_required
+@organiser_only
+@profile_updated
+def submit_work(request, window_id):
+    window = get_object_or_404(SubmissionWindow, id=window_id, is_visible=True)
+    team = request.user.team.first()
+    if not team:
+        return render(request, "submissions/no_team.html")
+
+    if request.method == "POST":
+        form = SubmissionForm(request.POST)
+        if form.is_valid():
+            # allow only one submission per team per window
+            Submission.objects.update_or_create(
+                window=window,
+                team=team,
+                defaults={"link": form.cleaned_data["link"]},
+            )
+            messages.success(request, "Submission uploaded successfully.")
+            return redirect("list_windows")
+    else:
+        form = SubmissionForm()
+    return render(request, "submissions/submit_work.html", {"form": form, "window": window})
+
+
+# organiser: view all submissions for a window + CSV export
+@profile_updated
+@login_required
+@organiser_only
+def view_submissions(request, window_id):
+    window = get_object_or_404(SubmissionWindow, id=window_id)
+    submissions = window.submissions.select_related("team").order_by("-submitted_at")
+
+    # CSV export
+    if request.GET.get("download") == "csv":
+        response = HttpResponse(content_type="text/csv")
+        response["Content-Disposition"] = f'attachment; filename="{window.title}_submissions.csv"'
+        writer = csv.writer(response)
+        writer.writerow(["Team Name", "Link", "Submitted At"])
+        for s in submissions:
+            writer.writerow([s.team.name, s.link, s.submitted_at])
+        return response
+
+    return render(request, "submissions/view_submissions.html", {
+        "window": window,
+        "submissions": submissions
+    })

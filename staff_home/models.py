@@ -75,3 +75,24 @@ class Brochure(models.Model):
 
     def __str__(self):
         return f"Brochure ({self.file.name})"
+
+
+class SubmissionWindow(models.Model):
+    title = models.CharField(max_length=255)
+    description = models.TextField(blank=True, null=True)
+    start_date = models.DateTimeField()
+    end_date = models.DateTimeField()
+    is_visible = models.BooleanField(default=True)  # 👈 organiser toggle
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.title
+
+class Submission(models.Model):
+    window = models.ForeignKey(SubmissionWindow, on_delete=models.CASCADE, related_name="submissions")
+    team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name="submissions")
+    link = models.URLField()
+    submitted_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.team.name} → {self.window.title}"
