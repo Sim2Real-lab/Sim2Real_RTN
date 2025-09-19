@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import staff_dashboard,checkregistration,manage_submissions,create_window,window_detail,all_users_view,grade_submission,upload_questions,upload_brochure,queries,manage_resources,create_announcement,resolve_query,announcement_list,announcement_edit,verify_payments,view_payment_screenshot,add_section,manage_problem_statement,delete_section,edit_section
+from .views import staff_dashboard,checkregistration,manage_submissions,toggle_window_visibility,create_window,window_detail,all_users_view,grade_submission,upload_questions,upload_brochure,queries,manage_resources,create_announcement,resolve_query,announcement_list,announcement_edit,verify_payments,view_payment_screenshot,add_section,manage_problem_statement,delete_section,edit_section
 
 urlpatterns = [
     path('', staff_dashboard, name='staff_dashboard'),
@@ -24,4 +24,5 @@ urlpatterns = [
     path("create/", create_window, name="create_window"),
     path("window/<int:window_id>/", window_detail, name="window_detail"),
     path("grade/<int:submission_id>/", grade_submission, name="grade_submission"),
+    path("windows/<int:window_id>/toggle_visibility/", toggle_window_visibility, name="toggle_window_visibility"),
 ]

@@ -1,7 +1,19 @@
 {% extends "staff_home/base.html" %}
 {% block content %}
 <h2>{{ window.title }}</h2>
-<p>Start: {{ window.start_date }} | End: {{ window.end_date }} | Visible: {{ window.is_visible }}</p>
+<p>
+    Start: {{ window.start_date }} | End: {{ window.end_date }}
+    | <span id="visibility-status">
+        {% if window.is_visible %}
+            Visible ✅
+        {% else %}
+            Hidden 🚫
+        {% endif %}
+    </span>
+    <button id="toggleVisibilityBtn" class="btn btn-sm btn-info">
+        {% if window.is_visible %}Make Hidden{% else %}Make Visible{% endif %}
+    </button>
+</p>
 
 <table class="table">
     <tr><th>Team</th><th>Link</th><th>Submitted At</th><th>Score</th><th>Action</th></tr>
@@ -29,6 +41,7 @@
 </div>
 
 <script>
+// --- Grade logic ---
 document.querySelectorAll(".grade-btn").forEach(btn=>{
     btn.addEventListener("click", ()=>{
         document.getElementById("submission_id").value = btn.dataset.id;
@@ -48,6 +61,21 @@ document.getElementById("gradeForm").addEventListener("submit", function(e){
         if(data.success){
             document.getElementById("score-"+id).innerText = data.score;
             document.getElementById("gradeModal").style.display = "none";
+        }
+    });
+});
+
+// --- Toggle Visibility ---
+document.getElementById("toggleVisibilityBtn").addEventListener("click", ()=>{
+    fetch("{% url 'toggle_window_visibility' window.id %}", {
+        method: "POST",
+        headers: { "X-CSRFToken": "{{ csrf_token }}" }
+    }).then(r=>r.json()).then(data=>{
+        if(data.success){
+            document.getElementById("visibility-status").innerText =
+                data.is_visible ? "Visible ✅" : "Hidden 🚫";
+            document.getElementById("toggleVisibilityBtn").innerText =
+                data.is_visible ? "Make Hidden" : "Make Visible";
         }
     });
 });

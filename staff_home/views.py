@@ -26,6 +26,7 @@ from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.contrib.auth.models import User
+from django.views.decorators.http import require_POST
 
 from staff_home.decorators import organiser_only, profile_updated
 
@@ -520,3 +521,13 @@ def grade_submission(request, submission_id):
         submission.save()
         return JsonResponse({"success": True, "score": submission.score})
     return JsonResponse({"success": False})
+
+
+@login_required
+@organiser_only
+@require_POST
+def toggle_window_visibility(request, window_id):
+    window = get_object_or_404(SubmissionWindow, id=window_id)
+    window.is_visible = not window.is_visible
+    window.save()
+    return JsonResponse({"success": True, "is_visible": window.is_visible})
