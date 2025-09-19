@@ -2,7 +2,13 @@
 {% block content %}
 <h2 style="color:white;">Manage Tests</h2>
 <a href="{% url 'create_test' %}" class="btn btn-primary mb-3" style="color:white;">+ Create Test</a>
-
+{% if messages %}
+  <div class="mt-2">
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+  </div>
+{% endif %}
 <table class="table table-striped">
     <thead>
         <tr>
