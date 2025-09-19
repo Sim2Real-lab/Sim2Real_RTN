@@ -1,7 +1,7 @@
 {% extends "staff_home/base.html" %}
 {% block content %}
-<h2>{{ window.title }}</h2>
-<p>
+<h2 style="color:white;">{{ window.title }}</h2>
+<p style="color:white;">
     Start: {{ window.start_date }} | End: {{ window.end_date }}
     | <span id="visibility-status">
         {% if window.is_visible %}
