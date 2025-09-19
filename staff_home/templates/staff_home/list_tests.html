@@ -1,0 +1,39 @@
+{% extends "staff_home/base.html" %}
+{% block content %}
+<h2>Manage Tests</h2>
+<a href="{% url 'create_test' %}" class="btn btn-primary mb-3">+ Create Test</a>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Code</th>
+            <th>Start</th>
+            <th>End</th>
+            <th>Duration (mins)</th>
+            <th>Visible</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for test in tests %}
+        <tr>
+            <td>{{ test.title }}</td>
+            <td>{{ test.code }}</td>
+            <td>{{ test.start_datetime }}</td>
+            <td>{{ test.end_datetime }}</td>
+            <td>{{ test.duration_minutes }}</td>
+            <td>{{ test.is_visible }}</td>
+            <td>
+                <a href="{% url 'edit_test' test.id %}" class="btn btn-sm btn-warning">Edit</a>
+                <a href="{% url 'manage_questions' test.id %}" class="btn btn-sm btn-info">Questions</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="7">No tests found.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

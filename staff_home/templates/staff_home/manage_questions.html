@@ -1,0 +1,38 @@
+{% extends "staff_home/base.html" %}
+{% block content %}
+<h2>Questions for "{{ test.title }}"</h2>
+<a href="{% url 'add_question' test.id %}" class="btn btn-primary mb-3">+ Add Question</a>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Text</th>
+            <th>Type</th>
+            <th>Marks</th>
+            <th>Negative Marks</th>
+            <th>Compiler</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for q in questions %}
+        <tr>
+            <td>{{ q.text }}</td>
+            <td>{{ q.question_type }}</td>
+            <td>{{ q.marks }}</td>
+            <td>{{ q.negative_marks }}</td>
+            <td>{{ q.enable_compiler }}</td>
+            <td>
+                <a href="{% url 'edit_question' test.id q.id %}" class="btn btn-sm btn-warning">Edit</a>
+                <a href="{% url 'delete_question' test.id q.id %}" class="btn btn-sm btn-danger">Delete</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="6">No questions added yet.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<a href="{% url 'list_tests' %}" class="btn btn-secondary mt-3">Back to Tests</a>
+{% endblock %}

@@ -1,5 +1,6 @@
 from django import forms
-from .models import Announcments,Resource
+from .models import Announcments,Resource,Question
+from django.forms import DateTimeInput
 import datetime
 from .models import ProblemStatementConfig, ProblemStatementSection,Brochure, Submission, SubmissionWindow
 class AnnouncmentForm(forms.ModelForm):
@@ -72,3 +73,46 @@ class SubmissionForm(forms.ModelForm):
     class Meta:
         model = Submission
         fields = ["link"]
+
+class TestForm(forms.ModelForm):
+    class Meta:
+        fields= [
+             "title",
+            "description",
+            "code",
+            "start_datetime",
+            "end_datetime",
+            "duration_minutes",
+            "is_visible",
+        ]
+        widgets = {
+            "start_datetime": DateTimeInput(attrs={"type": "datetime-local", "class": "form-control"}),
+            "end_datetime": DateTimeInput(attrs={"type": "datetime-local", "class": "form-control"}),
+            "duration_minutes": forms.NumberInput(attrs={"class": "form-control", "min": 1}),
+            "title": forms.TextInput(attrs={"class": "form-control"}),
+            "description": forms.Textarea(attrs={"class": "form-control", "rows": 3}),
+            "code": forms.TextInput(attrs={"class": "form-control"}),
+            "is_visible": forms.CheckboxInput(attrs={"class": "form-check-input"}),
+        }
+
+class QuestionForm(forms.ModelForm):
+    class Meta:
+        model = Question
+        fields = [
+            "text",
+            "question_type",      # e.g., MCQ, Descriptive, Coding
+            "options",            # JSON/TextField for MCQs
+            "correct_answer",     # For MCQ or coding expected output
+            "marks",
+            "negative_marks",
+            "enable_compiler",    # Boolean for coding questions
+        ]
+        widgets = {
+            "text": forms.Textarea(attrs={"class": "form-control", "rows": 3}),
+            "question_type": forms.Select(attrs={"class": "form-select"}),
+            "options": forms.Textarea(attrs={"class": "form-control", "rows": 3, "placeholder": "For MCQs: comma separated options"}),
+            "correct_answer": forms.TextInput(attrs={"class": "form-control"}),
+            "marks": forms.NumberInput(attrs={"class": "form-control", "min": 0}),
+            "negative_marks": forms.NumberInput(attrs={"class": "form-control", "min": 0}),
+            "enable_compiler": forms.CheckboxInput(attrs={"class": "form-check-input"}),
+        }

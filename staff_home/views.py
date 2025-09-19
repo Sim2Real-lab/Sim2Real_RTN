@@ -10,7 +10,7 @@ from team_profile.models import Team
 from django.db.models import Q
 import csv
 from django.http import JsonResponse
-from .forms import AnnouncmentForm,ProblemStatementConfigForm,ProblemStatementSectionForm,ResourceForm,BrochureForm,SubmissionForm,SubmissionWindowForm
+from .forms import AnnouncmentForm,TestForm,QuestionForm,ProblemStatementConfigForm,ProblemStatementSectionForm,ResourceForm,BrochureForm,SubmissionForm,SubmissionWindowForm
 from .models import Announcments,ProblemStatementConfig,ProblemStatementSection,Resource,Brochure,SubmissionWindow,Submission
 from accounts.models import UserRole
 from django.core.paginator import Paginator
@@ -531,3 +531,155 @@ def toggle_window_visibility(request, window_id):
     window.is_visible = not window.is_visible
     window.save()
     return JsonResponse({"success": True, "is_visible": window.is_visible})
+
+
+#Test Module
+from .models import Test,Question,ParticipantTest,ParticipantAnswer
+
+@organiser_only
+@profile_updated
+@login_required
+def list_tests(request):
+    tests = Test.objects.all().order_by('-start_datetime')
+    return render(request,"staff_home/list_tests.html",{"tests":tests})
+
+@organiser_only
+@profile_updated
+@login_required
+def create_test(request):
+    if request.method == "POST":
+        form = TestForm(request.POST)
+        if form.is_valid():
+            test = form.save(commit=False)
+            test.created_by = request.user
+            test.save()
+            messages.success(request,"Test created Successfully !")
+            return redirect("list_tests")
+    else:
+        form = TestForm()
+    return render(request,"staff_home/create_test.html",{"form":form})
+
+@login_required
+@profile_updated
+@organiser_only
+def edit_test(request, test_id):
+    test = get_object_or_404(Test,id=test_id)
+    if request.method == "POST":
+        form = TestForm(request.POST,instance=test)
+        if form.is_valid():
+            form.save()
+            messages.success(request,"Changes made Successfully")
+            return redirect("list_tests")
+    else:
+        form = TestForm(instance=test)
+    return render(request,"staff_home/create_test.html",{"form":form,"edit":True})
+
+
+@login_required
+@organiser_only
+@profile_updated
+def delete_test(request, test_id):
+    test = get_object_or_404(Test, id=test_id)
+    test.delete()
+    messages.success(request, "Test deleted successfully!")
+    return redirect("list_tests")
+
+@login_required
+@organiser_only
+@profile_updated
+def manage_questions(request, test_id):
+    test = get_object_or_404(Test, id=test_id)
+    questions = test.questions.all()
+    return render(request, "staff_home/manage_questions.html", {"test": test, "questions": questions})
+
+@login_required
+@organiser_only
+@profile_updated
+def add_question(request, test_id):
+    test = get_object_or_404(Test, id=test_id)
+    if request.method == "POST":
+        form = QuestionForm(request.POST)
+        if form.is_valid():
+            question = form.save(commit=False)
+            question.test = test
+            question.save()
+            messages.success(request, "Question added successfully!")
+            return redirect("manage_questions", test_id=test.id)
+    else:
+        form = QuestionForm()
+    return render(request, "staff_home/add_edit_question.html", {"form": form, "test": test, "add": True})
+
+
+@login_required
+@organiser_only
+@profile_updated
+def edit_question(request, question_id):
+    question = get_object_or_404(Question, id=question_id)
+    test = question.test
+    if request.method == "POST":
+        form = QuestionForm(request.POST, instance=question)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Question updated successfully!")
+            return redirect("manage_questions", test_id=test.id)
+    else:
+        form = QuestionForm(instance=question)
+    return render(request, "staff_home/add_edit_question.html", {"form": form, "test": test, "edit": True})
+
+
+@login_required
+@organiser_only
+@profile_updated
+def delete_question(request, question_id):
+    question = get_object_or_404(Question, id=question_id)
+    test_id = question.test.id
+    question.delete()
+    messages.success(request, "Question deleted successfully!")
+    return redirect("manage_questions", test_id=test_id)
+
+
+@login_required
+@organiser_only
+@profile_updated
+def view_submissions(request, test_id):
+    test = get_object_or_404(Test, id=test_id)
+    submissions = ParticipantTest.objects.filter(test=test).select_related("participant").order_by("-start_time")
+
+    # CSV Export
+    if request.GET.get("download") == "csv":
+        response = HttpResponse(content_type="text/csv")
+        response["Content-Disposition"] = f'attachment; filename="{test.title}_submissions.csv"'
+        writer = csv.writer(response)
+        writer.writerow(["Participant", "Email", "Score", "Status", "Started At", "Ended At"])
+        for s in submissions:
+            writer.writerow([s.participant.get_full_name(), s.participant.email, s.score, s.status, s.start_time, s.end_time])
+        return response
+
+    return render(request, "staff_home/view_submissions.html", {"test": test, "submissions": submissions})
+
+
+@login_required
+@organiser_only
+@profile_updated
+def view_analysis(request, participant_test_id):
+    ptest = get_object_or_404(ParticipantTest, id=participant_test_id)
+    answers = ptest.answers.select_related("question").all()
+    return render(request, "staff_home/view_analysis.html", {"ptest": ptest, "answers": answers})
+
+@login_required
+@organiser_only
+@profile_updated
+def grade_participant(request, participant_test_id):
+    if request.method == "POST":
+        ptest = get_object_or_404(ParticipantTest, id=participant_test_id)
+        for ans in ptest.answers.all():
+            marks = float(request.POST.get(f"marks_{ans.id}", 0))
+            ans.marks_awarded = marks
+            ans.save()
+        # update total score
+        total = sum([a.marks_awarded for a in ptest.answers.all()])
+        ptest.score = total
+        ptest.status = "attempted"
+        ptest.save()
+        return JsonResponse({"success": True, "score": total})
+    return JsonResponse({"success": False, "error": "Invalid request"})

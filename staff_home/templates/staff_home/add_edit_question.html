@@ -1,0 +1,43 @@
+{% extends "staff_home/base.html" %}
+{% block content %}
+<h2>{% if question %}Edit Question{% else %}Add Question{% endif %} for "{{ test.title }}"</h2>
+
+<form method="POST">
+    {% csrf_token %}
+    <div class="mb-3">
+        {{ form.text.label_tag }} {{ form.text }}
+    </div>
+
+    <div class="mb-3">
+        {{ form.question_type.label_tag }} {{ form.question_type }}
+    </div>
+
+    <div class="mb-3">
+        {{ form.marks.label_tag }} {{ form.marks }}
+    </div>
+
+    <div class="mb-3">
+        {{ form.negative_marks.label_tag }} {{ form.negative_marks }}
+    </div>
+
+    <div class="form-check mb-3">
+        {{ form.enable_compiler }} {{ form.enable_compiler.label_tag }}
+    </div>
+
+    {% if form.question_type.value == "MCQ" %}
+    <div class="mb-3">
+        <label>Options</label>
+        {% for i in "1234" %}
+            {{ form["option_"|add:i] }}
+        {% endfor %}
+    </div>
+
+    <div class="mb-3">
+        {{ form.correct_option.label_tag }} {{ form.correct_option }}
+    </div>
+    {% endif %}
+
+    <button type="submit" class="btn btn-success">Save</button>
+    <a href="{% url 'manage_questions' test.id %}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}
