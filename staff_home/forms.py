@@ -57,12 +57,12 @@ class BrochureForm(forms.ModelForm):
         model = Brochure
         fields = ["file"]
 
-        def clean_file(self):
-            file = self.cleaned_data.get('file')
-            max_size = 50 * 1024 * 1024  # 50 MB
-            if file.size > max_size:
-                raise forms.ValidationError("File too large (max 50 MB).")
-            return file
+    def clean_file(self):
+        file = self.cleaned_data.get('file')
+        max_size = 50 * 1024 * 1024  # 50 MB
+        if file.size > max_size:
+            raise forms.ValidationError("File too large (max 50 MB).")
+        return file
 
 class SubmissionWindowForm(forms.ModelForm):
     class Meta:
@@ -89,7 +89,7 @@ class TestForm(forms.ModelForm):
         widgets = {
             "start_datetime": DateTimeInput(attrs={"type": "datetime-local", "class": "form-control"}),
             "end_datetime": DateTimeInput(attrs={"type": "datetime-local", "class": "form-control"}),
-            "duration_minutes": forms.NumberInput(attrs={"class": "form-control", "min": 1}),
+            "duration": forms.NumberInput(attrs={"class": "form-control", "min": 1}),
             "title": forms.TextInput(attrs={"class": "form-control"}),
             "description": forms.Textarea(attrs={"class": "form-control", "rows": 3}),
             "code": forms.TextInput(attrs={"class": "form-control"}),
