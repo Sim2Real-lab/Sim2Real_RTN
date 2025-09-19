@@ -19,11 +19,12 @@ class Team(models.Model):
     def is_outsider(self):
         for member in self.members.all():
             try:
-                if member.profile.college != "National Institute of Technology Karnataka":
+                if member.userprofile.college != "National Institute of Technology Karnataka":
                     return True
             except AttributeError:
                 return True  # treat users without profile as outsider
         return False
+
 
     def is_full(self):
         return self.members.count()>=3
