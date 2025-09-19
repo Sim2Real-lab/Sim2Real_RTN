@@ -22,75 +22,60 @@ from django.db.models import Q, Prefetch
 
 @login_required
 @organiser_only
-@profile_updated
-def all_users_view(request):
-    query = request.GET.get("q", "").strip()
+def users_list(request):
+    query = request.GET.get("q", "")
     filter_year = request.GET.get("event_year")
-    filter_role = request.GET.get("role")
     filter_college = request.GET.get("college")
+    filter_branch = request.GET.get("branch")
+    filter_role = request.GET.get("role")  # "organiser" or "participant"
     filter_team = request.GET.get("team")
     download_csv = request.GET.get("download") == "csv"
 
-    # Base queryset (bring in profiles + roles efficiently)
-    users = User.objects.select_related("userprofile", "userrole").prefetch_related("team", "led_team")
+    users = User.objects.select_related("userprofile", "userrole").all()
 
     # --- Search ---
     if query:
         users = users.filter(
-            Q(username__icontains=query) |
-            Q(email__icontains=query) |
-            Q(first_name__icontains=query) |
-            Q(last_name__icontains=query) |
-            Q(userprofile__college__icontains=query)
+            Q(userprofile__first_name__icontains=query) |
+            Q(userprofile__last_name__icontains=query) |
+            Q(email__icontains=query)
         )
 
     # --- Filters ---
     if filter_year:
         users = users.filter(userprofile__event_year=filter_year)
-
-    if filter_role:
-        if filter_role == "organiser":
-            users = users.filter(userrole__is_organiser=True)
-        elif filter_role == "participant":
-            users = users.filter(userrole__is_organiser=False)
-
     if filter_college:
         users = users.filter(userprofile__college__icontains=filter_college)
-
+    if filter_branch:
+        users = users.filter(userprofile__branch__icontains=filter_branch)
+    if filter_role in ["organiser", "participant"]:
+        is_organiser = (filter_role == "organiser")
+        users = users.filter(userrole__is_organiser=is_organiser)
     if filter_team:
-        users = users.filter(
-            Q(team__name__icontains=filter_team) |
-            Q(led_team__name__icontains=filter_team)
-        ).distinct()
+        users = users.filter(team__name__icontains=filter_team)
+
+    users = users.distinct()
 
     # --- CSV Download ---
     if download_csv:
         response = HttpResponse(content_type="text/csv")
         response["Content-Disposition"] = 'attachment; filename="users.csv"'
-
         writer = csv.writer(response)
-        writer.writerow([
-            "Username", "Full Name", "Email", "College", "Event Year", "Role", "Teams"
-        ])
-
+        writer.writerow(["Name", "Email", "Contact", "College", "Branch", "Year", "Team", "Role"])
         for u in users:
             profile = getattr(u, "userprofile", None)
+            team = getattr(u, "team", None)
+            team_name = team.first().name if team.exists() else "Nil"
             role = "Organiser" if getattr(u.userrole, "is_organiser", False) else "Participant"
-
-            # Teams: both member + leader
-            team_names = list(u.team.values_list("name", flat=True))
-            if hasattr(u, "led_team"):
-                team_names.append(u.led_team.name)
-            teams_str = ", ".join(team_names) if team_names else "No Team"
-
             writer.writerow([
-                u.username,
-                u.get_full_name(),
+                f"{profile.first_name} {profile.last_name}" if profile else u.get_full_name(),
                 u.email,
-                getattr(profile, "college", "N/A"),
-                getattr(profile, "event_year", "N/A"),
-                role,
-                teams_str
+                getattr(profile, "contact", "N/A") if profile else "N/A",
+                getattr(profile, "college", "N/A") if profile else "N/A",
+                getattr(profile, "branch", "N/A") if profile else "N/A",
+                getattr(profile, "event_year", "N/A") if profile else "N/A",
+                team_name,
+                role
             ])
         return response
 
@@ -99,26 +84,26 @@ def all_users_view(request):
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
 
-    # Dropdown values
-    available_years = (UserProfile.objects.values_list("event_year", flat=True)
-                       .distinct().order_by("event_year"))
-    available_colleges = (UserProfile.objects.values_list("college", flat=True)
-                          .distinct().order_by("college"))
-    available_roles = ["organiser", "participant"]
+    # --- For filter dropdowns ---
+    available_years = UserProfile.objects.values_list("event_year", flat=True).distinct().order_by("event_year")
+    available_colleges = UserProfile.objects.values_list("college", flat=True).distinct().order_by("college")
+    available_branches = UserProfile.objects.values_list("branch", flat=True).distinct().order_by("branch")
 
     context = {
         "users": page_obj,
         "page_obj": page_obj,
         "query": query,
         "filter_year": filter_year,
-        "filter_role": filter_role,
         "filter_college": filter_college,
+        "filter_branch": filter_branch,
+        "filter_role": filter_role,
         "filter_team": filter_team,
         "available_years": available_years,
         "available_colleges": available_colleges,
-        "available_roles": available_roles,
+        "available_branches": available_branches,
     }
-    return render(request, "staff_home/all_users.html", context)
+    return render(request, "staff_home/users_list.html", context)
+
 
 
 @login_required
