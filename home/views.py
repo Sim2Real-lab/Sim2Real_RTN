@@ -118,7 +118,7 @@ def download_brochure(request):
     return response
 @login_required
 def user_submission_windows(request):
-    team = getattr(request.user, "team", None)
+    team = request.user.team.first()
     windows = SubmissionWindow.objects.filter(is_visible=True, end_date__gte=now())
     submissions = {}
     if team:
@@ -133,11 +133,11 @@ def user_submission_windows(request):
 @login_required
 def submit_to_window(request, window_id):
     window = get_object_or_404(SubmissionWindow, id=window_id, is_visible=True)
-    team = getattr(request.user, "team", None)
-
+    team = request.user.team.first()
     if not team:
-        messages.error(request, "You must be in a team to submit.")
-        return redirect("user_submission_windows")
+        messages.error(request, "You are not in any team.")
+        return redirect("user_submissions")
+
 
     if request.method == "POST":
         link = request.POST.get("link")
