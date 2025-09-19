@@ -1,15 +1,55 @@
-<h2>Submissions for "{{ submission_definition.title }}"</h2>
-<table>
-  <tr>
-    <th>Team</th>
-    <th>Link</th>
-    <th>Submitted At</th>
-  </tr>
-  {% for submission in submissions %}
-    <tr>
-      <td>{{ submission.team }}</td>
-      <td><a href="{{ submission.link }}" target="_blank">View Link</a></td>
-      <td>{{ submission.submitted_at }}</td>
+{% extends "staff_home/base.html" %}
+{% block content %}
+<h2>{{ window.title }}</h2>
+<p>Start: {{ window.start_date }} | End: {{ window.end_date }} | Visible: {{ window.is_visible }}</p>
+
+<table class="table">
+    <tr><th>Team</th><th>Link</th><th>Submitted At</th><th>Score</th><th>Action</th></tr>
+    {% for s in submissions %}
+    <tr id="row-{{s.id}}">
+        <td>{{ s.team.name }}</td>
+        <td><a href="{{ s.link }}" target="_blank">Open</a></td>
+        <td>{{ s.submitted_at }}</td>
+        <td id="score-{{s.id}}">{{ s.score|default:"-" }}</td>
+        <td><button class="btn btn-sm btn-warning grade-btn" data-id="{{s.id}}">Grade</button></td>
     </tr>
-  {% endfor %}
+    {% empty %}
+        <tr><td colspan="5">No submissions yet</td></tr>
+    {% endfor %}
 </table>
+
+<!-- Grade Modal -->
+<div id="gradeModal" style="display:none;">
+    <form id="gradeForm">
+        <input type="hidden" name="submission_id" id="submission_id">
+        <label>Enter Score:</label>
+        <input type="number" step="0.01" name="score" id="score_input">
+        <button type="submit">Save</button>
+    </form>
+</div>
+
+<script>
+document.querySelectorAll(".grade-btn").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+        document.getElementById("submission_id").value = btn.dataset.id;
+        document.getElementById("gradeModal").style.display = "block";
+    })
+});
+
+document.getElementById("gradeForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    let id = document.getElementById("submission_id").value;
+    let score = document.getElementById("score_input").value;
+    fetch("{% url 'grade_submission' 0 %}".replace("0", id), {
+        method:"POST",
+        headers:{ "X-CSRFToken": "{{csrf_token}}"},
+        body: new URLSearchParams({score: score})
+    }).then(r=>r.json()).then(data=>{
+        if(data.success){
+            document.getElementById("score-"+id).innerText = data.score;
+            document.getElementById("gradeModal").style.display = "none";
+        }
+    });
+});
+</script>
+{% endblock %}
