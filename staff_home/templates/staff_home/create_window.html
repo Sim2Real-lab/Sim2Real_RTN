@@ -1,0 +1,41 @@
+{% extends "staff_home/base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="mb-0">Create Submission Window</h2>
+        <a href="{% url 'manage_submissions' %}" class="btn btn-secondary">Back</a>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="id_title" class="form-label">Title</label>
+                    {{ form.title|add_class:"form-control" }}
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="id_start_date" class="form-label">Start Date</label>
+                        {{ form.start_date|add_class:"form-control" }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="id_end_date" class="form-label">End Date</label>
+                        {{ form.end_date|add_class:"form-control" }}
+                    </div>
+                </div>
+
+                <div class="form-check mb-3">
+                    {{ form.is_visible }}
+                    <label for="id_is_visible" class="form-check-label">Visible to Participants</label>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Create</button>
+                <a href="{% url 'manage_submissions' %}" class="btn btn-outline-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
