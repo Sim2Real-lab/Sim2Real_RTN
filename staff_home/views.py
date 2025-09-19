@@ -112,7 +112,7 @@ def all_users_view(request):
         "available_colleges": available_colleges,
         "available_branches": available_branches,
     }
-    return render(request, "staff_home/users_list.html", context)
+    return render(request, "staff_home/all_users.html", context)
 
 
 
