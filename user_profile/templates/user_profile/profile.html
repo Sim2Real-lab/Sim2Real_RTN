@@ -99,7 +99,6 @@
          {% if is_nitk %} disabled {% endif %}
          required />
   {% if is_nitk %}
-    <!-- Hidden field ensures value is submitted even if disabled -->
     <input type="hidden" name="college" value="{{ college_value }}">
   {% endif %}
 </div>
@@ -114,7 +113,7 @@
       <label for="dob">Date of Birth</label>
       <input type="date" name="dob" value="{{ profile.dob|date:"Y-m-d" }}" required />
     </div>
-    <div class="form-group">
+    <div class="form-group" style="display:none;">
       <label for="photo">Upload Photo</label>
       <input type="file" name="photo">
     </div>
