@@ -41,7 +41,7 @@ def all_users_view(request):
             Q(email__icontains=query) |
             Q(first_name__icontains=query) |
             Q(last_name__icontains=query) |
-            Q(userprofile__college_name__icontains=query)
+            Q(userprofile__college__icontains=query)
         )
 
     # --- Filters ---
@@ -55,7 +55,7 @@ def all_users_view(request):
             users = users.filter(userrole__is_organiser=False)
 
     if filter_college:
-        users = users.filter(userprofile__college_name__icontains=filter_college)
+        users = users.filter(userprofile__college__icontains=filter_college)
 
     if filter_team:
         users = users.filter(
@@ -87,7 +87,7 @@ def all_users_view(request):
                 u.username,
                 u.get_full_name(),
                 u.email,
-                getattr(profile, "college_name", "N/A"),
+                getattr(profile, "college", "N/A"),
                 getattr(profile, "event_year", "N/A"),
                 role,
                 teams_str
@@ -102,8 +102,8 @@ def all_users_view(request):
     # Dropdown values
     available_years = (UserProfile.objects.values_list("event_year", flat=True)
                        .distinct().order_by("event_year"))
-    available_colleges = (UserProfile.objects.values_list("college_name", flat=True)
-                          .distinct().order_by("college_name"))
+    available_colleges = (UserProfile.objects.values_list("college", flat=True)
+                          .distinct().order_by("college"))
     available_roles = ["organiser", "participant"]
 
     context = {
