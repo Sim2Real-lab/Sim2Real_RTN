@@ -29,10 +29,10 @@ urlpatterns = [
     path('staff/tests/create/', create_test, name='create_test'),       # Create new test
     path('staff/tests/<int:test_id>/edit/', edit_test, name='edit_test'),  # Edit test details
     path('staff/tests/<int:test_id>/delete/', delete_test, name='delete_test'),  # Delete test
-    path('staff/tests/<int:test_id>/questions/', manage_questions, name='manage_questions'),  # List questions in a test
-    path('staff/tests/<int:test_id>/questions/add/', add_question, name='add_question'),       # Add question
-    path('staff/tests/questions/<int:question_id>/edit/', edit_question, name='edit_question'),  # Edit question
-    path('staff/tests/questions/<int:question_id>/delete/', delete_question, name='delete_question'),  # Delete question
+    path('staff/tests/<int:test_id>/questions/', manage_questions, name='manage_questions'),  # list
+path('staff/tests/<int:test_id>/questions/add/', add_question, name='add_question'),      # add
+path('staff/tests/questions/<int:question_id>/edit/', edit_question, name='edit_question'),  # edit
+path('staff/tests/questions/<int:question_id>/delete/', delete_question, name='delete_question'),  # delete
     path('staff/tests/<int:test_id>/submissions/', view_submissions, name='test_submissions'),  # View all submissions for a test
     path('staff/tests/submissions/<int:submission_id>/grade/', grade_submission, name='grade_submission'),  # Grade a submission
 ]
