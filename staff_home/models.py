@@ -93,6 +93,7 @@ class Submission(models.Model):
     team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name="submissions")
     link = models.URLField()
     submitted_at = models.DateTimeField(auto_now_add=True)
+    score = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)  # grading
 
     def __str__(self):
         return f"{self.team.name} → {self.window.title}"
