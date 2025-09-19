@@ -97,3 +97,40 @@ class Submission(models.Model):
 
     def __str__(self):
         return f"{self.team.name} → {self.window.title}"
+    
+class Test(models.Model):
+    title = models.CharField(max_length=200)
+    description = models.TextField(blank=True)
+    code = models.CharField(max_length=10, unique=True)
+    start_datetime = models.DateTimeField()
+    end_datetime= models.DateTimeField()
+    duration = models.PositiveIntegerField(help_text="Duration in minutes")
+    is_visible = models.BooleanField(default=False)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    event_year = models.IntegerField(default=2025)
+    def __str__(self):
+        return f"{self.title} ({self.code})"
+    
+class Question(models.Model):
+    test = models.ForeignKey(Test,related_name='questions',on_delete=models.CASCADE)
+    text = models.TextField()
+    question_type = models.CharField(max_length=20, choices=[("single", "Single Choice"), ("multiple", "Multiple Choice"), ("code", "Code")])
+    marks = models.FloatField
+    negative_marks = models.FloatField(default=0)
+    options = models.JSONField(blank=True,null=True)
+    correct_answer = models.JSONField(blank=True, null=True)
+    compiler_enabled = models.BooleanField(default=False)
+
+class ParticipantTest(models.Model):
+    participant = models.ForeignKey(User, on_delete=models.CASCADE)
+    test = models.ForeignKey(Test, on_delete=models.CASCADE)
+    start_time = models.DateTimeField(auto_now_add=True)
+    end_time = models.DateTimeField(blank=True, null=True)
+    score = models.FloatField(default=0)
+    status = models.CharField(max_length=20, choices=[("attempted", "Attempted"), ("not_attempted", "Not Attempted")], default="not_attempted")
+
+class ParticipantAnswer(models.Model):
+    participant_test = models.ForeignKey(ParticipantTest, related_name="answers", on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    answer = models.JSONField()
+    marks_awarded = models.FloatField(default=0)
