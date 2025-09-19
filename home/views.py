@@ -5,7 +5,7 @@ from django.http import HttpResponseForbidden,FileResponse, Http404
 from .decorator import user_view,organiser_only,profile_updated
 from user_profile.models import UserProfile
 from team_profile.models import Team
-from staff_home.models import Announcments,ProblemStatementConfig,Resource,Brochure
+from staff_home.models import Announcments,ProblemStatementConfig,Resource,Brochure,SubmissionWindow,Submission
 from itertools import chain
 from django.contrib import messages
 from operator import attrgetter
@@ -114,3 +114,36 @@ def download_brochure(request):
         filename=brochure.file.name
     )
     return response
+@login_required
+def user_submission_windows(request):
+    team = getattr(request.user, "team", None)
+    windows = SubmissionWindow.objects.filter(is_visible=True, end_date__gte=now())
+    submissions = {}
+    if team:
+        team_subs = Submission.objects.filter(team=team)
+        submissions = {s.window.id: s for s in team_subs}
+    return render(request, "submissions/user_windows.html", {
+        "windows": windows,
+        "submissions": submissions,
+        "team": team
+    })
+
+@login_required
+def submit_to_window(request, window_id):
+    window = get_object_or_404(SubmissionWindow, id=window_id, is_visible=True)
+    team = getattr(request.user, "team", None)
+
+    if not team:
+        messages.error(request, "You must be in a team to submit.")
+        return redirect("user_submission_windows")
+
+    if request.method == "POST":
+        link = request.POST.get("link")
+        sub, created = Submission.objects.update_or_create(
+            window=window, team=team,
+            defaults={"link": link}
+        )
+        messages.success(request, "Submission saved successfully!")
+        return redirect("user_submission_windows")
+
+    return render(request, "submissions/submit_form.html", {"window": window})

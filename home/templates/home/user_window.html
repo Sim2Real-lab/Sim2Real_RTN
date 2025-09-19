@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 style="color:white;">Available Submissions</h2>
+
+{% if not team %}
+<p><strong>You are not in a team. Join a team to submit.</strong></p>
+{% endif %}
+
+<ul>
+    {% for w in windows %}
+        <li>
+            <strong>{{ w.title }}</strong> ({{ w.start_date }} - {{ w.end_date }})
+            {% if submissions.w.id %}
+                ✅ Already Submitted: 
+                <a href="{{ submissions.w.id.link }}" target="_blank">View Link</a>
+                <a href="{% url 'submit_to_window' w.id %}">Resubmit</a>
+            {% else %}
+                {% if team %}
+                    <a href="{% url 'submit_to_window' w.id %}">Submit</a>
+                {% endif %}
+            {% endif %}
+        </li>
+    {% empty %}
+        <p>No active submissions.</p>
+    {% endfor %}
+</ul>
+{% endblock %}
