@@ -1,20 +1,9 @@
 {% extends "staff_home/base.html" %}
 {% block content %}
-<h2 style="color:white;">
-    {% if question %}Edit Question{% else %}Add Question{% endif %} for "{{ test.title }}"
-</h2>
+<h2 style="color:white;">{% if question %}Edit Question{% else %}Add Question{% endif %} for "{{ test.title }}"</h2>
 
-{% if messages %}
-  <div class="mt-2">
-    {% for message in messages %}
-      <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-    {% endfor %}
-  </div>
-{% endif %}
-
-<form method="POST">
+<form method="POST" id="questionForm">
     {% csrf_token %}
-
     <div class="mb-3" style="color:white;">
         {{ form.text.label_tag }} {{ form.text }}
     </div>
@@ -35,89 +24,61 @@
         {{ form.compiler_enabled }} {{ form.compiler_enabled.label_tag }}
     </div>
 
-    <!-- Options container -->
-    <div id="options-section" class="mb-3" style="color:white; display:none;">
-        <label>Options:</label>
-        <div id="options-container"></div>
-        <button type="button" class="btn btn-sm btn-info mt-2" onclick="addOption()">Add Option</button>
+    <!-- Options for MCQ/MAQ -->
+    <div id="optionsContainer" style="color:white; display:none;">
+        <label>Options</label>
+        <div id="optionList">
+            {% if question and question.options %}
+                {% for opt in question.options %}
+                <div class="mb-2 option-row">
+                    <input type="text" name="options[]" value="{{ opt.text }}" class="form-control d-inline-block" style="width:70%;">
+                    <input type="checkbox" name="correct_answer[]" value="{{ forloop.counter0 }}" {% if opt.correct %}checked{% endif %}> Correct
+                    <button type="button" class="btn btn-sm btn-danger remove-option">X</button>
+                </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <button type="button" class="btn btn-sm btn-primary mt-2" id="addOption">+ Add Option</button>
     </div>
 
-    <!-- Short Answer container -->
-    <div id="short-answer-section" class="mb-3" style="color:white; display:none;">
-        <label>Correct Answer:</label>
-        <input type="text" class="form-control" id="short-answer-input">
-    </div>
+    <!-- Hidden field to store correct answer(s) for non-MCQ -->
+    {{ form.correct_answer }}
 
-    <!-- Hidden fields -->
-    <input type="hidden" name="options" id="options-field">
-    <input type="hidden" name="correct_answer" id="correct-answer-field">
-
-    <button type="submit" class="btn btn-success">Save</button>
-    <a href="{% url 'manage_questions' test.id %}" class="btn btn-secondary">Cancel</a>
+    <button type="submit" class="btn btn-success mt-3">Save</button>
+    <a href="{% url 'manage_questions' test.id %}" class="btn btn-secondary mt-3">Cancel</a>
 </form>
 
 <script>
-let optionCount = 0;
-let questionType = "{{ form.question_type.value|default:'' }}";  
-
-function addOption(text = '', isCorrect = false) {
-    optionCount++;
-    const container = document.getElementById("options-container");
-
-    const optionDiv = document.createElement("div");
-    optionDiv.classList.add("d-flex", "align-items-center", "mb-2");
-
-    let inputControl;
-    if (questionType === "MCQ") {
-        inputControl = `<input type="radio" name="correct_option" value="${optionCount}" class="form-check-input me-2" ${isCorrect ? "checked" : ""}>`;
-    } else if (questionType === "MAQ") {
-        inputControl = `<input type="checkbox" name="correct_option" value="${optionCount}" class="form-check-input me-2" ${isCorrect ? "checked" : ""}>`;
+function showOptions() {
+    const type = document.getElementById("id_question_type").value;
+    const container = document.getElementById("optionsContainer");
+    if(type === "single" || type === "multiple") {
+        container.style.display = "block";
+    } else {
+        container.style.display = "none";
     }
+}
 
-    optionDiv.innerHTML = `
-        ${inputControl}
-        <input type="text" class="form-control me-2" placeholder="Option ${optionCount}" value="${text}">
-        <button type="button" class="btn btn-danger btn-sm" onclick="this.parentNode.remove()">✕</button>
+document.getElementById("id_question_type").addEventListener("change", showOptions);
+window.addEventListener("load", showOptions);
+
+// Add new option
+document.getElementById("addOption").addEventListener("click", () => {
+    const div = document.createElement("div");
+    div.classList.add("mb-2", "option-row");
+    div.innerHTML = `
+        <input type="text" name="options[]" class="form-control d-inline-block" style="width:70%;">
+        <input type="checkbox" name="correct_answer[]"> Correct
+        <button type="button" class="btn btn-sm btn-danger remove-option">X</button>
     `;
+    document.getElementById("optionList").appendChild(div);
+});
 
-    container.appendChild(optionDiv);
-}
-
-// Handle visibility depending on question type
-function toggleSections() {
-    questionType = document.querySelector("#id_question_type").value;
-
-    document.getElementById("options-section").style.display = (questionType === "MCQ" || questionType === "MAQ") ? "block" : "none";
-    document.getElementById("short-answer-section").style.display = (questionType === "Short Answer") ? "block" : "none";
-}
-
-document.querySelector("#id_question_type").addEventListener("change", toggleSections);
-toggleSections(); // run on page load
-
-// Before submit → gather data
-document.querySelector("form").addEventListener("submit", function(e) {
-    let options = [];
-    let correctAnswers = [];
-
-    if (questionType === "MCQ" || questionType === "MAQ") {
-        const optionDivs = document.querySelectorAll("#options-container div");
-        optionDivs.forEach((div, idx) => {
-            const text = div.querySelector("input[type='text']").value.trim();
-            if (text) options.push(text);
-        });
-
-        const selected = document.querySelectorAll("input[name='correct_option']:checked");
-        selected.forEach(sel => {
-            const idx = Array.from(document.querySelectorAll("input[name='correct_option']")).indexOf(sel);
-            correctAnswers.push(options[idx] || "");
-        });
-    } else if (questionType === "Short Answer") {
-        correctAnswers.push(document.getElementById("short-answer-input").value.trim());
+// Remove option
+document.getElementById("optionList").addEventListener("click", function(e){
+    if(e.target.classList.contains("remove-option")){
+        e.target.parentElement.remove();
     }
-
-    // Save to hidden fields
-    document.getElementById("options-field").value = options.join("||");   // use delimiter
-    document.getElementById("correct-answer-field").value = correctAnswers.join("||");
 });
 </script>
 {% endblock %}
