@@ -1,6 +1,6 @@
 {% extends "staff_home/base.html" %}
 {% block content %}
-<h2>{% if test %}Edit Test{% else %}Create Test{% endif %}</h2>
+<h2 style="color:white;">{% if test %}Edit Test{% else %}Create Test{% endif %}</h2>
 
 <form method="POST">
     {% csrf_token %}
