@@ -481,9 +481,15 @@ def upload_brochure(request):
     })
 
 
+
 @login_required
 @organiser_only
-@profile_updated
+def manage_submissions(request):
+    windows = SubmissionWindow.objects.all().order_by("-start_date")
+    return render(request, "submissions/manage_submissions.html", {"windows": windows})
+
+@login_required
+@organiser_only
 def create_window(request):
     if request.method == "POST":
         form = SubmissionWindowForm(request.POST)
@@ -492,69 +498,25 @@ def create_window(request):
             window.created_by = request.user
             window.save()
             messages.success(request, "Submission window created successfully.")
-            return redirect("list_windows")
+            return redirect("manage_submissions")
     else:
         form = SubmissionWindowForm()
     return render(request, "submissions/create_window.html", {"form": form})
 
-
-# organiser + participants: list all windows
 @login_required
 @organiser_only
-@profile_updated
-def list_windows(request):
-    if request.user.userrole.is_organiser:
-        windows = SubmissionWindow.objects.all().order_by("-start_date")
-    else:
-        windows = SubmissionWindow.objects.filter(is_visible=True).order_by("-start_date")
-    return render(request, "submissions/list_windows.html", {"windows": windows})
-
-
-# participants: submit a google drive link
-@login_required
-@organiser_only
-@profile_updated
-def submit_work(request, window_id):
-    window = get_object_or_404(SubmissionWindow, id=window_id, is_visible=True)
-    team = request.user.team.first()
-    if not team:
-        return render(request, "submissions/no_team.html")
-
-    if request.method == "POST":
-        form = SubmissionForm(request.POST)
-        if form.is_valid():
-            # allow only one submission per team per window
-            Submission.objects.update_or_create(
-                window=window,
-                team=team,
-                defaults={"link": form.cleaned_data["link"]},
-            )
-            messages.success(request, "Submission uploaded successfully.")
-            return redirect("list_windows")
-    else:
-        form = SubmissionForm()
-    return render(request, "submissions/submit_work.html", {"form": form, "window": window})
-
-
-# organiser: view all submissions for a window + CSV export
-@profile_updated
-@login_required
-@organiser_only
-def view_submissions(request, window_id):
+def window_detail(request, window_id):
     window = get_object_or_404(SubmissionWindow, id=window_id)
     submissions = window.submissions.select_related("team").order_by("-submitted_at")
+    return render(request, "submissions/window_detail.html", {"window": window, "submissions": submissions})
 
-    # CSV export
-    if request.GET.get("download") == "csv":
-        response = HttpResponse(content_type="text/csv")
-        response["Content-Disposition"] = f'attachment; filename="{window.title}_submissions.csv"'
-        writer = csv.writer(response)
-        writer.writerow(["Team Name", "Link", "Submitted At"])
-        for s in submissions:
-            writer.writerow([s.team.name, s.link, s.submitted_at])
-        return response
-
-    return render(request, "submissions/view_submissions.html", {
-        "window": window,
-        "submissions": submissions
-    })
+@login_required
+@organiser_only
+def grade_submission(request, submission_id):
+    submission = get_object_or_404(Submission, id=submission_id)
+    if request.method == "POST":
+        score = request.POST.get("score")
+        submission.score = score
+        submission.save()
+        return JsonResponse({"success": True, "score": submission.score})
+    return JsonResponse({"success": False})
