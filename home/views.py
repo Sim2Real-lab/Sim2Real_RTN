@@ -124,7 +124,7 @@ def user_submission_windows(request):
     if team:
         team_subs = Submission.objects.filter(team=team)
         submissions = {s.window.id: s for s in team_subs}
-    return render(request, "submissions/user_windows.html", {
+    return render(request, "home/user_windows.html", {
         "windows": windows,
         "submissions": submissions,
         "team": team
@@ -148,4 +148,4 @@ def submit_to_window(request, window_id):
         messages.success(request, "Submission saved successfully!")
         return redirect("user_submission_windows")
 
-    return render(request, "submissions/submit_form.html", {"window": window})
+    return render(request, "home/submit_form.html", {"window": window})
