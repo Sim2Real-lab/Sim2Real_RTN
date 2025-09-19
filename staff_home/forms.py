@@ -1,5 +1,5 @@
 from django import forms
-from .models import Announcments,Resource,Question
+from .models import Announcments,Resource,Question,Test
 from django.forms import DateTimeInput
 import datetime
 from .models import ProblemStatementConfig, ProblemStatementSection,Brochure, Submission, SubmissionWindow
@@ -76,13 +76,14 @@ class SubmissionForm(forms.ModelForm):
 
 class TestForm(forms.ModelForm):
     class Meta:
+        model=Test
         fields= [
              "title",
             "description",
             "code",
             "start_datetime",
             "end_datetime",
-            "duration_minutes",
+            "duration",
             "is_visible",
         ]
         widgets = {
